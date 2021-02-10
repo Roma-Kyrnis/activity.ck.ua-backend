@@ -15,7 +15,6 @@ exports.up = async (knex) => {
     table.uuid('refresh_token').nullable();
     table.timestamp('deleted_at').nullable();
     table.timestamps();
-    table.unique('username', 'users_username_unk');
     table.unique('email', 'users_email_unk');
   });
 
