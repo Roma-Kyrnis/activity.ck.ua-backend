@@ -21,6 +21,7 @@ exports.up = async (knex) => {
   await knex.schema.createTable('places', (table) => {
     table.increments('id');
     table.string('category_id').notNullable();
+    table.string('type').nullable();
     table.string('name').notNullable();
     table.string('phone').nullable();
     table.string('address').notNullable();
