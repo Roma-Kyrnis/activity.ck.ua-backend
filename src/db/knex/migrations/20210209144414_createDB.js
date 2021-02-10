@@ -3,10 +3,16 @@ exports.up = async (knex) => {
     table.increments('id');
     table.string('name').notNullable();
     table.string('avatar').notNullable();
-    table.string('username').notNullable();
     table.string('password_hash').notNullable();
     table.string('email').notNullable();
-    table.string('refresh_token', 36).notNullable();
+    table
+      .enu('role', ['user', 'organizer', 'moderator'], {
+        useNative: true,
+        enumName: 'role_type',
+      })
+      .notNullable()
+      .defaultTo('user');
+    table.uuid('refresh_token').nullable();
     table.timestamp('deleted_at').nullable();
     table.timestamps();
     table.unique('username', 'users_username_unk');
@@ -25,7 +31,7 @@ exports.up = async (knex) => {
     table.boolean('dog_friendly').notNullable().defaultTo(false);
     table.boolean('child_friendly').notNullable().defaultTo(false);
     table.text('about_info').notNullable();
-    table.decimal('rating').notNullable().defaultTo(0.0);
+    table.decimal('rating').notNullable().defaultTo(1.0);
     table.timestamp('deleted_at').nullable();
     table.timestamps();
     table.integer('user_id').notNullable();
@@ -43,7 +49,7 @@ exports.up = async (knex) => {
     table.increments('id');
     table.integer('place_id').notNullable();
     table.integer('user_id').notNullable();
-    table.integer('rating').nullable();
+    table.integer('rating').notNullable();
     table.text('review_text').notNullable();
     table.foreign('place_id', 'reviews_fk0').references('places.id');
     table.foreign('user_id', 'reviews_fk1').references('users.id');
@@ -62,7 +68,7 @@ exports.up = async (knex) => {
   await knex.schema.createTable('events', (table) => {
     table.increments('id');
     table.string('name').notNullable();
-    table.string('location').notNullable();
+    table.string('address').notNullable();
     table.date('date').notNullable();
     table.time('time').notNullable();
     table.string('organizer').notNullable();
@@ -113,4 +119,5 @@ exports.down = async (knex) => {
   await knex.schema.dropTable('places_photos');
   await knex.schema.dropTable('places');
   await knex.schema.dropTable('users');
+  await knex.raw('DROP TYPE "role_type"');
 };
