@@ -26,7 +26,7 @@ exports.up = async (knex) => {
     table.string('phone').nullable();
     table.string('address').notNullable();
     table.string('website').nullable();
-    table.string('work_time').notNullable();
+    table.json('work_time').notNullable();
     table.boolean('accessibility').notNullable().defaultTo(false);
     table.boolean('dog_friendly').notNullable().defaultTo(false);
     table.boolean('child_friendly').notNullable().defaultTo(false);
@@ -35,7 +35,9 @@ exports.up = async (knex) => {
     table.timestamp('deleted_at').nullable();
     table.timestamps();
     table.integer('user_id').notNullable();
+    table.integer('moderated').nullable();
     table.foreign('user_id', 'places_fk0').references('users.id');
+    table.foreign('moderated', 'places_fk1').references('users.id');
   });
 
   await knex.schema.createTable('places_photos', (table) => {
@@ -85,7 +87,10 @@ exports.up = async (knex) => {
     table.timestamp('deleted_at').nullable();
     table.timestamps();
     table.integer('user_id').notNullable();
-    table.foreign('user_id', 'events_fk0').references('users.id');
+    table.integer('moderated').nullable();
+    table.foreign('place_id', 'events_fk0').references('places.id');
+    table.foreign('user_id', 'events_fk1').references('users.id');
+    table.foreign('moderated', 'events_fk2').references('users.id');
   });
 
   await knex.schema.createTable('events_photos', (table) => {
