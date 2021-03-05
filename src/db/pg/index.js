@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const { Pool } = require('pg');
-
-const name = 'pg';
+const { checkError } = require('../checkError');
 
 module.exports = (config) => {
   const client = new Pool(config);
@@ -9,7 +8,7 @@ module.exports = (config) => {
   return {
     testConnection: async () => {
       try {
-        console.log(`hello from ${name} testConnection`);
+        console.log(`hello from pg testConnection`);
         await client.query('SELECT NOW();');
       } catch (err) {
         console.error(err.message || err);
@@ -18,7 +17,7 @@ module.exports = (config) => {
     },
 
     close: async () => {
-      console.log(`INFO: Closing ${name} DB wrapper`);
+      console.log(`INFO: Closing pg DB wrapper`);
       client.end();
     },
 
@@ -32,9 +31,9 @@ module.exports = (config) => {
         // if (!place.phones) place.phones = null;
         place.phones = `{${place.phones.map((p) => `"${p}"`).join(', ')}}`;
         if (!place.website) place.website = null;
-        if (!place.accessibility) place.accessibility = false;
+        /* if (!place.accessibility) place.accessibility = false;
         if (!place.dog_friendly) place.dog_friendly = false;
-        if (!place.child_friendly) place.child_friendly = false;
+        if (!place.child_friendly) place.child_friendly = false; */
         if (!place.type_id) place.type_id = null;
 
         const timestamp = new Date();
@@ -96,7 +95,7 @@ module.exports = (config) => {
         place.phones = place.phones.slice(1, -1).split(',');
 
         const { rows: photos } = await client.query(
-          `SELECT id, url, author_name, author_link, description FROM photos
+          `SELECT id, url, author_name, author_link FROM photos
             WHERE place_id = $1;`,
           [id],
         );
@@ -189,6 +188,10 @@ module.exports = (config) => {
           throw new Error('ERROR: No place id defined');
         }
 
+        if (!Object.keys(place).length) {
+          throw new Error('ERROR: Nothing to update');
+        }
+
         if (place.phones) place.phones = `{${place.phones.map((p) => `"${p}"`).join(', ')}}`;
         place.updated_at = new Date();
 
@@ -199,10 +202,6 @@ module.exports = (config) => {
         for (const [i, [k, v]] of Object.entries(place).entries()) {
           query.push(`${k} = $${i + 1}`);
           values.push(v);
-        }
-
-        if (!values.length) {
-          throw new Error('ERROR: Nothing to update');
         }
 
         values.push(id);
