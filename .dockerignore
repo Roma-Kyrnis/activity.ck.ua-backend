@@ -1,0 +1,13 @@
+node_modules
+npm-debug.log
+test-result.xml
+system-test-result.xml
+deployment/
+coverage/
+./docker-volumes
+docker-compose.override.yml
+.env
+.vscode/
+.git/
+.gitignore
+docker-up.sh

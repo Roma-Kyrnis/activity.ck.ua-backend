@@ -1,10 +1,18 @@
 require('dotenv').config();
 
-const { fatal } = require('../utils');
+const fatal = require('../utils/fatalError');
 
 const config = {
-  port: Number(process.env.PORT) || 3000,
-  host: process.env.HOST || 'localhost',
+  server: {
+    PORT: Number(process.env.PORT) || 3012,
+    HOST: process.env.HOST || 'localhost',
+    prefix: {
+      API_V1: '/api/v1',
+      PLACES: '/places',
+    },
+    NODE_ENV: process.env.NODE_ENV,
+    MORGAN_FORMAT: 'dev',
+  },
   secretKey: process.env.ACCESS_TOKEN_SECRET || fatal('FATAL: ACCESS_TOKEN_SECRET is not defined'),
   db: {
     defaultType: process.env.DB_WRAPPER_TYPE || 'pg',
