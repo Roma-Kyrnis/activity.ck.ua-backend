@@ -1,8 +1,15 @@
 const { Pool } = require('pg');
+const organizations = require('./organizations');
 const places = require('./places');
 
 module.exports = (config) => {
   const client = new Pool(config);
+  const {
+    createOrganization,
+    getOrganizations,
+    updateOrganization,
+    deleteOrganization,
+  } = organizations(client);
   const { createPlace, getPlace, getPlaces, updatePlace, deletePlace } = places(client);
 
   return {
@@ -20,6 +27,11 @@ module.exports = (config) => {
       console.log(`INFO: Closing pg DB wrapper`);
       client.end();
     },
+
+    createOrganization,
+    getOrganizations,
+    updateOrganization,
+    deleteOrganization,
 
     createPlace,
     getPlace,
