@@ -1,4 +1,6 @@
+const log = require('./logger')(__filename);
+
 module.exports = (message) => {
-  console.error(message);
+  log.fatal(message);
   process.exit(1);
 };

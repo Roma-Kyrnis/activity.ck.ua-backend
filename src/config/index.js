@@ -13,19 +13,18 @@ const config = {
     NODE_ENV: process.env.NODE_ENV,
     MORGAN_FORMAT: 'dev',
   },
-  secretKey: process.env.ACCESS_TOKEN_SECRET || fatal('FATAL: ACCESS_TOKEN_SECRET is not defined'),
+  secretKey: process.env.ACCESS_TOKEN_SECRET || fatal('ACCESS_TOKEN_SECRET is not defined'),
   db: {
     defaultType: process.env.DB_WRAPPER_TYPE || 'pg',
     config: {
       knex: {
         client: 'postgresql',
         connection: {
-          user: process.env.POSTGRES_USER || fatal('FATAL: POSTGRES_USER is not defined'),
-          host: process.env.POSTGRES_HOST || fatal('FATAL: DB_HOST is not defined'),
-          port: Number(process.env.POSTGRES_PORT) || fatal('FATAL: DB_PORT is not defined'),
-          database: process.env.POSTGRES_DB || fatal('FATAL: POSTGRES_DB is not defined'),
-          password:
-            process.env.POSTGRES_PASSWORD || fatal('FATAL: POSTGRES_PASSWORD is not defined'),
+          user: process.env.POSTGRES_USER || fatal('POSTGRES_USER is not defined'),
+          host: process.env.POSTGRES_HOST || fatal('DB_HOST is not defined'),
+          port: Number(process.env.POSTGRES_PORT) || fatal('DB_PORT is not defined'),
+          database: process.env.POSTGRES_DB || fatal('POSTGRES_DB is not defined'),
+          password: process.env.POSTGRES_PASSWORD || fatal('POSTGRES_PASSWORD is not defined'),
         },
         pool: {
           min: 2,
@@ -35,11 +34,11 @@ const config = {
       },
 
       pg: {
-        user: process.env.POSTGRES_USER || fatal('FATAL: POSTGRES_USER is not defined'),
-        host: process.env.POSTGRES_HOST || fatal('FATAL: DB_HOST is not defined'),
-        port: Number(process.env.POSTGRES_PORT) || fatal('FATAL: DB_PORT is not defined'),
-        database: process.env.POSTGRES_DB || fatal('FATAL: POSTGRES_DB is not defined'),
-        password: process.env.POSTGRES_PASSWORD || fatal('FATAL: POSTGRES_PASSWORD is not defined'),
+        user: process.env.POSTGRES_USER || fatal('POSTGRES_USER is not defined'),
+        host: process.env.POSTGRES_HOST || fatal('DB_HOST is not defined'),
+        port: Number(process.env.POSTGRES_PORT) || fatal('DB_PORT is not defined'),
+        database: process.env.POSTGRES_DB || fatal('POSTGRES_DB is not defined'),
+        password: process.env.POSTGRES_PASSWORD || fatal('POSTGRES_PASSWORD is not defined'),
       },
     },
   },

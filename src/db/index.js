@@ -3,13 +3,15 @@ const {
 } = require('../config');
 const { fatal } = require('../utils');
 
+const log = require('../utils/logger')(__filename);
+
 const db = {};
 let type = defaultType;
 
 const funcWrapper = (func) =>
   typeof func === 'function'
     ? func
-    : fatal(`FATAL: Cannot find ${func.name} function for current DB wrapper`);
+    : fatal(`Cannot find ${func.name} function for current DB wrapper`);
 
 const init = async () => {
   try {
@@ -19,7 +21,7 @@ const init = async () => {
       const wrapper = require(`./${k}`)(v);
       // eslint-disable-next-line no-await-in-loop
       await wrapper.testConnection();
-      console.log(`INFO: DB wrapper for ${k} initiated`);
+      log.info(`DB wrapper for ${k} initiated`);
       db[k] = wrapper;
     }
   } catch (err) {
@@ -32,17 +34,17 @@ const end = async () => {
   for (const [k, v] of Object.entries(db)) {
     // eslint-disable-next-line no-await-in-loop
     await v.close();
-    console.log(`INFO: DB wrapper for ${k} was closed`);
+    log.info(`DB wrapper for ${k} was closed`);
   }
 };
 
 const setType = (t) => {
   if (!t || !db[t]) {
-    console.log('WARNING: Cannot find provided DB type!');
+    log.warn('Cannot find provided DB type!');
     return false;
   }
   type = t;
-  console.log(`INFO: The DB type has been changed to ${t}`);
+  log.info(`The DB type has been changed to ${t}`);
   return true;
 };
 

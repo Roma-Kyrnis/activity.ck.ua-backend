@@ -1,4 +1,7 @@
 /* eslint-disable no-underscore-dangle */
+
+const log = require('../../utils/logger')(__filename);
+
 module.exports = (client) => {
   return {
     // place.user_id, place.organization_id
@@ -46,11 +49,10 @@ module.exports = (client) => {
           ],
         );
 
-        console.log(`DEBUG: New place created: ${JSON.stringify(res.rows[0])}`);
+        log.debug(`New place created: ${JSON.stringify(res.rows[0])}`);
         return res.rows[0];
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -84,8 +86,7 @@ module.exports = (client) => {
 
         return place;
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -156,8 +157,7 @@ module.exports = (client) => {
 
         return res;
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -195,11 +195,10 @@ module.exports = (client) => {
           values,
         );
 
-        console.log(`DEBUG: Place updated: ${JSON.stringify(res.rows[0])}`);
+        log.debug(`Place updated: ${JSON.stringify(res.rows[0])}`);
         return res.rows[0];
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -214,8 +213,7 @@ module.exports = (client) => {
 
         return true;
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },

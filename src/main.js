@@ -1,13 +1,18 @@
 const { start, stop } = require('./server');
+const { close } = require('./db');
 const { gracefulShutdown } = require('./utils');
+
+const log = require('./utils/logger')(__filename);
 
 async function boot() {
   gracefulShutdown(async (err) => {
-    if (err) console.log(`\n\nServer stopped because of ${err}`);
+    if (err) log.error(`\n\nServer stopped because of ${err}`);
 
     await stop();
 
-    console.log('Server stopped!');
+    await close();
+
+    log.info('Server stopped!');
     process.exit(1);
   });
   await start();
