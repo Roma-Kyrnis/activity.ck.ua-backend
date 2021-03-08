@@ -27,7 +27,10 @@ exports.up = async (knex) => {
     // table.string('address').notNullable();
     // table.text('description').notNullable();
     table.integer('user_id').notNullable();
+    table.boolean('moderated').notNullable().defaultTo(false);
     table.foreign('user_id', 'organizations_fk0').references('users.id');
+    table.unique('email', 'organizations_email_unk');
+    table.unique('name', 'organizations_name_unk');
   });
 
   await knex.schema.createTable('general_info', (table) => {
@@ -35,7 +38,8 @@ exports.up = async (knex) => {
     table.string('name').notNullable();
     table.string('address').notNullable();
     // table.specificType('coordinates', 'POINT').notNullable();
-    table.string('phones').nullable();
+    // table.string('phones').nullable();
+    table.specificType('phones', 'CHARACTER VARYING(13)[]').notNullable();
     table.string('website').nullable();
     table.string('main_photo').notNullable();
     table.text('description').notNullable();
@@ -52,9 +56,10 @@ exports.up = async (knex) => {
   await knex.schema.createTable('places', (table) => {
     table.increments('id');
     table.string('category_id').notNullable();
-    table.string('type').nullable();
+    table.string('type_id').nullable();
     table.json('work_time').notNullable();
     table.decimal('rating').notNullable().defaultTo(1.0);
+    table.decimal('popularity_rating').notNullable().defaultTo(1.0);
     table.integer('organization_id').notNullable();
     table.foreign('organization_id', 'places_fk0').references('organizations.id');
     table.inherits('general_info');
@@ -109,9 +114,10 @@ exports.up = async (knex) => {
 
   await knex.schema.createTable('photos', (table) => {
     table.increments('id');
-    table.string('photo_url').notNullable();
-    table.string('author_name').notNullable();
+    table.string('url').notNullable();
+    table.string('author_name').nullable();
     table.string('author_link').nullable();
+    // table.string('description').nullable();
     table.integer('place_id').nullable();
     table.integer('event_id').nullable();
     table.foreign('place_id', 'photos_fk0').references('places.id');
