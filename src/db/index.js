@@ -62,6 +62,13 @@ module.exports = {
   testConnection: async () => funcWrapper(dbWrapper().testConnection)(),
   close: async () => funcWrapper(dbWrapper().close)(),
 
+  createUser: async (user) => funcWrapper(dbWrapper().createUser)(user),
+  getUser: async (email) => funcWrapper(dbWrapper().getUser)(email),
+  checkUser: async (email) => funcWrapper(dbWrapper().getUser)(email),
+  getUserCredentials: async (email) => funcWrapper(dbWrapper().getUserCredentials)(email),
+  updateUser: async (user) => funcWrapper(dbWrapper().updateUser)(user),
+  deleteUser: async (id) => funcWrapper(dbWrapper().deleteUser)(id),
+
   createOrganization: async (organization) =>
     funcWrapper(dbWrapper().createOrganization)(organization),
   getOrganizations: async () => funcWrapper(dbWrapper().getOrganization)(),
