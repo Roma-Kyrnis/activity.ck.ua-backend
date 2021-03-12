@@ -64,30 +64,22 @@ module.exports = {
 
   createUser: async (user) => funcWrapper(dbWrapper().createUser)(user),
   getUser: async (email) => funcWrapper(dbWrapper().getUser)(email),
-  checkUser: async (email) => funcWrapper(dbWrapper().getUser)(email),
+  checkUser: async (email) => funcWrapper(dbWrapper().checkUser)(email),
   getUserCredentials: async (email) => funcWrapper(dbWrapper().getUserCredentials)(email),
   updateUser: async (user) => funcWrapper(dbWrapper().updateUser)(user),
   deleteUser: async (id) => funcWrapper(dbWrapper().deleteUser)(id),
 
   createOrganization: async (organization) =>
     funcWrapper(dbWrapper().createOrganization)(organization),
-  getOrganizations: async () => funcWrapper(dbWrapper().getOrganization)(),
+  getOrganizations: async () => funcWrapper(dbWrapper().getOrganizations)(),
   updateOrganization: async (organization) =>
     funcWrapper(dbWrapper().updateOrganization)(organization),
   deleteOrganization: async (id) => funcWrapper(dbWrapper().deleteOrganization)(id),
 
   createPlace: async (place) => funcWrapper(dbWrapper().createPlace)(place),
   getPlace: async (id) => funcWrapper(dbWrapper().getPlace)(id),
-  getPlaces: async (categoryId, types, accessibility, dogFrnd, childFrnd, limit, page) =>
-    funcWrapper(dbWrapper().getPlaces)(
-      categoryId,
-      types,
-      accessibility,
-      dogFrnd,
-      childFrnd,
-      limit,
-      page,
-    ),
+  getPlaces: async (filters, limit, page) =>
+    funcWrapper(dbWrapper().getPlaces)(filters, limit, page),
   updatePlace: async (place) => funcWrapper(dbWrapper().updatePlace)(place),
   deletePlace: async (id) => funcWrapper(dbWrapper().deletePlace)(id),
 };
