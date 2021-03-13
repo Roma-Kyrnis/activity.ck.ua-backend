@@ -88,7 +88,7 @@ module.exports = (client) => {
       try {
         const { categoryId, types, accessibility, dogFriendly, childFriendly } = filters;
 
-        if (!types || !categoryId === !types.length) {
+        if (!categoryId === !types) {
           throw new Error('ERROR: Invalid filters!');
         }
 
@@ -146,8 +146,8 @@ module.exports = (client) => {
         res.places = places;
         /* res._limit = limit;
         res._page = page; */
-        res._total = count;
-        res._totalPages = Math.ceil(count / limit);
+        res._total = count || 0;
+        res._totalPages = Math.ceil(count ? count / limit : 0);
 
         return res;
       } catch (err) {
