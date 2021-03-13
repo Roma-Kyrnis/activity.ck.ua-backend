@@ -22,7 +22,7 @@ exports.up = async (knex) => {
   await knex.schema.createTable('organizations', (table) => {
     table.increments('id');
     table.string('name').notNullable();
-    table.string('phones').notNullable();
+    table.specificType('phones', 'CHARACTER VARYING(13)[]').notNullable();
     table.string('email').notNullable();
     // table.string('address').notNullable();
     // table.text('description').notNullable();
