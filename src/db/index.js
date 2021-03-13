@@ -1,7 +1,7 @@
 const {
   db: { config, defaultType },
 } = require('../config');
-const { fatal } = require('../utils');
+const fatal = require('../utils/fatalError')(__filename);
 
 const log = require('../utils/logger')(__filename);
 
@@ -17,6 +17,8 @@ const init = async () => {
   try {
     // eslint-disable-next-line no-restricted-syntax
     for (const [k, v] of Object.entries(config)) {
+      // eslint-disable-next-line no-continue
+      if (k === 'knex') continue;
       // eslint-disable-next-line global-require, import/no-dynamic-require
       const wrapper = require(`./${k}`)(v);
       // eslint-disable-next-line no-await-in-loop

@@ -1,6 +1,10 @@
-const log = require('./logger')(__filename);
+const logger = require('./logger');
 
-module.exports = (message) => {
-  log.fatal(message);
-  process.exit(1);
+module.exports = (filename) => {
+  const log = logger(filename);
+
+  return (message) => {
+    log.fatal(message);
+    process.exit(1);
+  };
 };

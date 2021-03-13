@@ -74,7 +74,7 @@ module.exports = (client) => {
           [id],
         );
 
-        place.phones = place.phones.slice(1, -1).split(',');
+        // place.phones = place.phones.slice(1, -1).split(',');
 
         const { rows: photos } = await client.query(
           `SELECT id, url, author_name, author_link FROM photos

@@ -26,7 +26,7 @@ function start() {
 }
 
 async function stop(callback) {
-  await serverInstance.close(callback);
+  if (serverInstance) await serverInstance.close(callback);
 }
 
 module.exports = {

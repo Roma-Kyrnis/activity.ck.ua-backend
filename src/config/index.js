@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const fatal = require('../utils/fatalError');
+const fatal = require('../utils/fatalError')(__filename);
 
 const config = {
   server: {
