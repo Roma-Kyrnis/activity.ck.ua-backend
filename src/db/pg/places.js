@@ -87,7 +87,7 @@ module.exports = (client) => {
       try {
         const { categoryId, types, accessibility, dogFriendly, childFriendly } = filters;
 
-        if (!types || !categoryId === !types.length) {
+        if (!categoryId === !types) {
           throw new Error('ERROR: Invalid filters!');
         }
 
