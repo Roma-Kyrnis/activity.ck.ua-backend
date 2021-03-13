@@ -19,5 +19,7 @@ router.prefix(PLACES);
 router.post('/', { validate: validator.create }, places.create);
 router.get('/:id', { validator: validator.getOne }, places.getOne);
 router.get('/', { validate: validator.getAll }, places.getAll);
+router.put('/:id', { validator: validator.update }, places.update);
+router.delete('/:id', { validator: validator.remove }, places.remove);
 
 module.exports = router;

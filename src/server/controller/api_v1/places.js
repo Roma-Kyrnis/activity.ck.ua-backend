@@ -1,7 +1,10 @@
-const { createPlace, getPlace, getPlaces } = require('../../../db');
-const log = require('../../../utils/logger')(__filename);
+const { createPlace, getPlace, getPlaces, updatePlace, deletePlace } = require('../../../db');
 
-const place = { LIMIT: 3, PAGE: 1 };
+const {
+  places: {
+    default: { LIMIT, PAGE },
+  },
+} = require('../../../config');
 
 async function createOrganization(organization) {
   console.log({ organization });
@@ -49,9 +52,9 @@ async function getOne(ctx) {
 
 async function getAll(ctx) {
   // eslint-disable-next-line no-underscore-dangle
-  const limit = parseInt(ctx.request.query._limit || place.LIMIT, 10);
+  const limit = parseInt(ctx.request.query._limit || LIMIT, 10);
   // eslint-disable-next-line no-underscore-dangle
-  const page = parseInt(ctx.request.query._page || place.PAGE, 10);
+  const page = parseInt(ctx.request.query._page || PAGE, 10);
 
   const {
     type_id: types,
@@ -74,4 +77,18 @@ async function getAll(ctx) {
   ctx.body = data;
 }
 
-module.exports = { create, getOne, getAll };
+async function update(ctx) {
+  const id = parseInt(ctx.request.params.id, 10);
+  await updatePlace({ id, place: ctx.request.body.place });
+
+  ctx.body = { message: 'OK' };
+}
+
+async function remove(ctx) {
+  const id = parseInt(ctx.request.params.id, 10);
+  await deletePlace(id);
+
+  ctx.body = { message: 'OK' };
+}
+
+module.exports = { create, getOne, getAll, update, remove };
