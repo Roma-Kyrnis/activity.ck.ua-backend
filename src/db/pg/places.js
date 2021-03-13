@@ -146,7 +146,7 @@ module.exports = (client) => {
         res.places = places;
         /* res._limit = limit;
         res._page = page; */
-        res._total = count;
+        res._total = count || 0;
         res._totalPages = Math.ceil(count ? count / limit : 0);
 
         return res;
