@@ -17,7 +17,7 @@ const config = {
     default: {
       LIMIT: 5,
       PAGE: 1,
-    }
+    },
   },
   secretKey: process.env.ACCESS_TOKEN_SECRET || fatal('ACCESS_TOKEN_SECRET is not defined'),
   db: {
