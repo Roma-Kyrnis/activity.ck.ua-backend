@@ -78,9 +78,9 @@ const getAll = {
   query: Joi.object({
     category_id: Joi.string(),
     type_id: Joi.string().pattern(/^([a-z]|-)+$/),
-    accessibility: Joi.string().pattern(/^true|false$/),
-    dog_friendly: Joi.string().pattern(/^true|false$/),
-    child_friendly: Joi.string().pattern(/^true|false$/),
+    accessibility: Joi.boolean().truthy('true').falsy('false'),
+    dog_friendly: Joi.boolean().truthy('true').falsy('false'),
+    child_friendly: Joi.boolean().truthy('true').falsy('false'),
     _page: Joi.string().pattern(/^[1-9]\d*$/),
     _limit: Joi.string().pattern(/^[1-9]\d*$/),
   }), // .xor('category_id', 'type_id')

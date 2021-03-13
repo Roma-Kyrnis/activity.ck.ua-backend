@@ -1,6 +1,8 @@
 const { createPlace, getPlace, getPlaces } = require('../../../db');
 const log = require('../../../utils/logger')(__filename);
 
+const place = { LIMIT: 3, PAGE: 1 };
+
 async function createOrganization(organization) {
   console.log({ organization });
   const id = 1;
@@ -46,11 +48,28 @@ async function getOne(ctx) {
 }
 
 async function getAll(ctx) {
-  let types = ctx.request.query.type_id;
-  if (types) types = types.split('-');
   // eslint-disable-next-line no-underscore-dangle
-  const limit = parseInt(ctx.request.query._limit, 10);
-  const data = await getPlaces(ctx.request.query.category_id, types);
+  const limit = parseInt(ctx.request.query._limit || place.LIMIT, 10);
+  // eslint-disable-next-line no-underscore-dangle
+  const page = parseInt(ctx.request.query._page || place.PAGE, 10);
+
+  const {
+    type_id: types,
+    category_id: categoryId,
+    accessibility,
+    dog_friendly: dogFriendly,
+    child_friendly: childFriendly,
+  } = ctx.request.query;
+
+  const filters = {
+    categoryId,
+    types: types ? types.split('-') : undefined,
+    accessibility: accessibility === 'true',
+    dogFriendly: dogFriendly === 'true',
+    childFriendly: childFriendly === 'true',
+  };
+
+  const data = await getPlaces(filters, limit, page);
 
   ctx.body = data;
 }

@@ -4,19 +4,14 @@ const log = require('../../utils/logger')(__filename);
 
 module.exports = (client) => {
   return {
-    // place.user_id, place.organization_id
     createPlace: async (place) => {
       try {
         if (!place) {
           throw new Error('ERROR: No place defined');
         }
 
-        // if (!place.phones) place.phones = null;
-        place.phones = `{${place.phones.map((p) => `"${p}"`).join(', ')}}`;
+        // place.phones = `{${place.phones.map((p) => `"${p}"`).join(', ')}}`;
         if (!place.website) place.website = null;
-        /* if (!place.accessibility) place.accessibility = false;
-        if (!place.dog_friendly) place.dog_friendly = false;
-        if (!place.child_friendly) place.child_friendly = false; */
         if (!place.type_id) place.type_id = null;
 
         const timestamp = new Date();
@@ -74,8 +69,6 @@ module.exports = (client) => {
           [id],
         );
 
-        // place.phones = place.phones.slice(1, -1).split(',');
-
         const { rows: photos } = await client.query(
           `SELECT id, url, author_name, author_link FROM photos
             WHERE place_id = $1;`,
@@ -91,8 +84,14 @@ module.exports = (client) => {
       }
     },
 
-    getPlaces: async (categoryId, types, accessibility, dogFrnd, childFrnd, limit, page) => {
+    getPlaces: async (filters, limit, page) => {
       try {
+        const { categoryId, types, accessibility, dogFriendly, childFriendly } = filters;
+
+        if (!types || !categoryId === !types.length) {
+          throw new Error('ERROR: Invalid filters!');
+        }
+
         let queryFilter;
         const values = [];
 
@@ -120,8 +119,8 @@ module.exports = (client) => {
 
         let queryAccessibility = '';
         if (accessibility) queryAccessibility = 'AND accessibility';
-        if (dogFrnd) queryAccessibility += ' AND dog_friendly';
-        if (childFrnd) queryAccessibility += ' AND child_friendly';
+        if (dogFriendly) queryAccessibility += ' AND dog_friendly';
+        if (childFriendly) queryAccessibility += ' AND child_friendly';
 
         const { rows: places } = await client.query(
           `SELECT id, name, address, phones, website, main_photo, work_time, rating
@@ -133,17 +132,12 @@ module.exports = (client) => {
           values,
         );
 
-        places.forEach((place) => {
-          place.phones = place.phones.slice(1, -1).split(',');
-        });
-
         const {
           rows: [count],
         } = await client.query(
           `SELECT COUNT(*) FROM places
             WHERE ${queryFilter} ${queryAccessibility}
               AND moderated AND deleted_at IS NULL
-            ORDER BY popularity_rating DESC
             LIMIT $${values.length - 1} OFFSET $${values.length};`,
           values,
         );
@@ -172,7 +166,7 @@ module.exports = (client) => {
           throw new Error('ERROR: Nothing to update');
         }
 
-        if (place.phones) place.phones = `{${place.phones.map((p) => `"${p}"`).join(', ')}}`;
+        // if (place.phones) place.phones = `{${place.phones.map((p) => `"${p}"`).join(', ')}}`;
         place.updated_at = new Date();
 
         const query = [];
