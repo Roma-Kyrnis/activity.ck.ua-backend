@@ -147,7 +147,7 @@ module.exports = (client) => {
         /* res._limit = limit;
         res._page = page; */
         res._total = count;
-        res._totalPages = Math.ceil(count / limit);
+        res._totalPages = Math.ceil(count ? count / limit : 0);
 
         return res;
       } catch (err) {
