@@ -1,5 +1,4 @@
 const { checkError } = require('../checkError');
-
 const log = require('../../utils/logger')(__filename);
 
 module.exports = (client) => {

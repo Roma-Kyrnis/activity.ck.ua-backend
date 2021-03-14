@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-
 const log = require('../../utils/logger')(__filename);
 
 module.exports = (client) => {
