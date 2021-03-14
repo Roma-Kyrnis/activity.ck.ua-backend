@@ -71,6 +71,9 @@ const getOne = {
         }),
       },
     },
+    400: {
+      message: 'No place with id - 1',
+    },
   },
 };
 
