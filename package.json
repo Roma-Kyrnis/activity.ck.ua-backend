@@ -2,7 +2,7 @@
   "name": "activity.ck.ua-backend",
   "version": "1.0.0",
   "description": "activity.ck.ua-backend",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "node src/main.js",
     "eslint": "./node_modules/.bin/eslint ./src/",
@@ -28,6 +28,7 @@
   "homepage": "https://github.com/DmytroTy/activity.ck.ua-backend#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.17",
     "koa": "^2.13.1",
     "koa-helmet": "^6.0.0",

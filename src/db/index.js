@@ -17,8 +17,6 @@ const init = async () => {
   try {
     // eslint-disable-next-line no-restricted-syntax
     for (const [k, v] of Object.entries(config)) {
-      // eslint-disable-next-line no-continue
-      if (k === 'knex') continue;
       // eslint-disable-next-line global-require, import/no-dynamic-require
       const wrapper = require(`./${k}`)(v);
       // eslint-disable-next-line no-await-in-loop
