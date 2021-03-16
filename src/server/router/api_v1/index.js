@@ -1,5 +1,6 @@
 const Router = require('koa-joi-router');
 
+const auth = require('./auth');
 const places = require('./places');
 
 const {
@@ -12,6 +13,7 @@ const router = new Router();
 
 router.prefix(API_V1);
 
+router.use(auth);
 router.use(places);
 
 module.exports = router;

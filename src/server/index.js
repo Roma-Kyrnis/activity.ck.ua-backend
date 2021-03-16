@@ -1,6 +1,7 @@
 const Koa = require('koa');
 const helmet = require('koa-helmet');
 const morgan = require('koa-morgan');
+const bodyParser = require('koa-bodyparser');
 
 const router = require('./router');
 const { errorHandler } = require('./middleware');
@@ -14,9 +15,11 @@ const app = new Koa();
 app.use(helmet());
 app.use(morgan(MORGAN_FORMAT));
 
-app.use(router.middleware());
+app.use(errorHandler());
 
-app.on('error', errorHandler);
+app.use(bodyParser());
+
+app.use(router.middleware());
 
 let serverInstance;
 function start() {

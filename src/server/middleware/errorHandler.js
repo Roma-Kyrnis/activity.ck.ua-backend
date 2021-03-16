@@ -1,27 +1,37 @@
-const log = require('../../utils/logger')(__filename);
 const {
-  server: { NODE_ENV },
+  server: { JSON_ERROR_NAME: ERROR },
 } = require('../../config');
 
-function errorHandler(incomingError, ctx) {
-  const error = incomingError;
+function setErrorResponse(incomingError, ctx) {
+  ctx.status = incomingError.status || 500;
 
-  log.debug(error.message || error);
+  if (incomingError.name === 'DatabaseError') ctx.status = 400;
 
-  let errMessage = { message: 'Internal server error!' };
-  if (NODE_ENV === 'development') {
-    errMessage.message = error.message;
-    errMessage.stack = error.stack;
-    errMessage.body = error;
-    ctx.status = 400;
-  } else if (error.status && parseInt(error.status, 10) !== 500 && error.message) {
-    ctx.status = error.status;
-    errMessage = { message: error.message };
+  const defaultMessage = ctx.response.message;
+  const errMessage =
+    ctx.status < 500 ? `${defaultMessage}: ${incomingError.message}` : defaultMessage;
+
+  if (ctx.accepts('json')) {
+    ctx.body = { [ERROR]: errMessage };
   } else {
-    ctx.status = 500;
+    ctx.body = errMessage;
   }
+}
 
-  ctx.body = errMessage;
+async function handler(ctx, next) {
+  try {
+    await next();
+
+    if (ctx.status === 404) setErrorResponse({ status: 404, message: ctx.response.message }, ctx);
+  } catch (err) {
+    setErrorResponse(err, ctx);
+
+    ctx.app.emit('error', err, ctx);
+  }
+}
+
+function errorHandler() {
+  return handler;
 }
 
 module.exports = errorHandler;

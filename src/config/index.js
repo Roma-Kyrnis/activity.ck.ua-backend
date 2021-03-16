@@ -13,12 +13,13 @@ const config = {
     },
     NODE_ENV: process.env.NODE_ENV || 'production',
     MORGAN_FORMAT: 'dev',
+    JSON_ERROR_NAME: 'error',
     HASH_SECRET: process.env.HASH_SECRET || fatal('No HASH_SECRET'),
     tokens: {
       ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || fatal('No ACCESS_TOKEN_SECRET'),
       ACCESS_TOKEN_LIFE: process.env.ACCESS_TOKEN_LIFE || fatal('No ACCESS_TOKEN_LIFE'),
       REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || fatal('No REFRESH_TOKEN_SECRET'),
-      REFRESH_TOKEN_LIFE: process.env.ACCESS_TOKEN_SECRET || fatal('No REFRESH_TOKEN_LIFE'),
+      REFRESH_TOKEN_LIFE: process.env.REFRESH_TOKEN_LIFE || fatal('No REFRESH_TOKEN_LIFE'),
     },
   },
   places: {

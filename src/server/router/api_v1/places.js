@@ -17,9 +17,9 @@ const router = new Router();
 router.prefix(PLACES);
 
 router.post('/', { validate: validator.create }, places.create);
-router.get('/:id', { validator: validator.getOne }, places.getOne);
+router.get('/:id', { validate: validator.getOne }, places.getOne);
 router.get('/', { validate: validator.getAll }, places.getAll);
-router.put('/:id', { validator: validator.update }, places.update);
-router.delete('/:id', { validator: validator.remove }, places.remove);
+router.put('/:id', { validate: validator.update }, places.update);
+router.delete('/:id', { validate: validator.remove }, places.remove);
 
 module.exports = router;

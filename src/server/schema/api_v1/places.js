@@ -2,31 +2,37 @@ const { Joi } = require('koa-joi-router');
 
 const create = {
   body: Joi.object({
-    organization_id: Joi.number().min(0),
+    organization_id: Joi.number().min(0).required(),
     organization: Joi.object({
-      name: Joi.string().min(3).max(255),
-      phones: Joi.array().items(Joi.string().pattern(/^\+380\d{9}$/)),
-      email: Joi.string().email(),
+      name: Joi.string().min(3).max(255).required(),
+      phones: Joi.array()
+        .items(Joi.string().pattern(/^\+380\d{9}$/))
+        .required(),
+      email: Joi.string().email().required(),
     }),
     place: Joi.object({
-      name: Joi.string().min(3).max(255),
-      category_id: Joi.string().min(3).max(255), // change to ENUM
-      type_id: Joi.string().pattern(/^([a-z]|-)+$/),
-      address: Joi.string().min(3).max(255),
-      phones: Joi.array().items(Joi.string().pattern(/^\+380\d{9}$/)),
-      website: Joi.string().uri({ allowRelative: true }),
-      work_time: Joi.object().unknown(), // Just for test --- NEED TO BE CHANGED
-      accessibility: Joi.boolean(),
-      dog_friendly: Joi.boolean(),
-      child_friendly: Joi.boolean(),
-      description: Joi.string().min(20), // without max test size .max(511)
-      main_photo: Joi.string().uri(),
+      name: Joi.string().min(3).max(255).required(),
+      category_id: Joi.string().min(3).max(255).required(), // change to ENUM
+      type_id: Joi.string()
+        .pattern(/^([a-z]|-)+$/)
+        .required(),
+      address: Joi.string().min(3).max(255).required(),
+      phones: Joi.array()
+        .items(Joi.string().pattern(/^\+380\d{9}$/))
+        .required(),
+      website: Joi.string().uri({ allowRelative: true }).required(),
+      work_time: Joi.object().unknown().required(), // Just for test --- NEED TO BE CHANGED
+      accessibility: Joi.boolean().required(),
+      dog_friendly: Joi.boolean().required(),
+      child_friendly: Joi.boolean().required(),
+      description: Joi.string().min(20).required(), // without max test size .max(511)
+      main_photo: Joi.string().uri().required(),
     }),
     photos: Joi.array().items(
       Joi.object({
-        url: Joi.string().uri(),
-        author_name: Joi.string().min(3).max(255),
-        author_link: Joi.string().uri(),
+        url: Joi.string().uri().required(),
+        author_name: Joi.string().min(3).max(255).required(),
+        author_link: Joi.string().uri().required(),
       }),
     ),
   }).xor('organization_id', 'organization'),
@@ -42,7 +48,9 @@ const create = {
 
 const getOne = {
   params: Joi.object({
-    id: Joi.string().pattern(/^[1-9]\d*$/),
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
   }),
   output: {
     200: {
@@ -72,7 +80,9 @@ const getOne = {
       },
     },
     400: {
-      message: 'No place with id - 1',
+      body: {
+        message: 'No place with id - 1',
+      },
     },
   },
 };
@@ -117,7 +127,9 @@ const getAll = {
 
 const update = {
   params: Joi.object({
-    id: Joi.string().pattern(/^[1-9]\d*$/),
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
   }),
   body: Joi.object({
     organization_id: Joi.number().min(0),
@@ -155,7 +167,9 @@ const update = {
 
 const remove = {
   params: Joi.object({
-    id: Joi.string().pattern(/^[1-9]\d*$/),
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
   }),
   output: {
     200: {
