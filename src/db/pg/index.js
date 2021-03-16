@@ -2,8 +2,9 @@ const { Pool } = require('pg');
 const users = require('./users');
 const organizations = require('./organizations');
 const places = require('./places');
-
 const log = require('../../utils/logger')(__filename);
+
+const name = 'pg';
 
 module.exports = (config) => {
   const client = new Pool(config);
@@ -19,7 +20,7 @@ module.exports = (config) => {
   return {
     testConnection: async () => {
       try {
-        log.info(`hello from pg testConnection`);
+        log.info(`Hello from ${name} testConnection`);
         await client.query('SELECT NOW();');
       } catch (err) {
         log.error(err.message || err);
@@ -28,7 +29,7 @@ module.exports = (config) => {
     },
 
     close: async () => {
-      log.info(`Closing pg DB wrapper`);
+      log.info(`Closing ${name} DB wrapper`);
       client.end();
     },
 
