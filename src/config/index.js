@@ -28,6 +28,11 @@ const config = {
       PAGE: 1,
     },
   },
+  roles: {
+    USER: 'user',
+    ORGANIZER: 'organizer',
+    MODERATOR: 'moderator',
+  },
   secretKey: process.env.ACCESS_TOKEN_SECRET || fatal('ACCESS_TOKEN_SECRET is not defined'),
   db: {
     defaultType: process.env.DB_WRAPPER_TYPE || 'pg',
