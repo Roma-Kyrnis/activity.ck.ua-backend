@@ -1,8 +1,12 @@
 const { createUser, updateUser, getUserCredentials } = require('../../../db');
 const { hash, authorizationTokens } = require('../../../utils');
 
+function getCredentialsString(body) {
+  return `${body.email}${body.password}`;
+}
+
 async function registration(ctx) {
-  const passwordHash = hash.create(`${ctx.request.body.email}${ctx.request.body.password}`);
+  const passwordHash = hash.create(getCredentialsString(ctx.request.body));
   const user = {
     name: ctx.request.body.name,
     avatar: ctx.request.body.avatar,
@@ -19,7 +23,7 @@ async function registration(ctx) {
 async function login(ctx) {
   const user = await getUserCredentials(ctx.request.body.email);
   ctx.assert(user, 401, 'Incorrect credentials');
-  const passwordHash = hash.create(`${ctx.request.body.email}${ctx.request.body.password}`);
+  const passwordHash = hash.create(getCredentialsString(ctx.request.body));
   const isCompared = hash.compare(passwordHash, user.password_hash);
   ctx.assert(isCompared, 401, 'Incorrect credentials');
 
