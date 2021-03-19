@@ -3,6 +3,9 @@ const {
   authorizationTokens: { verifyAccessToken, verifyRefreshToken },
   hash,
 } = require('../../utils');
+const {
+  roles: { MODERATOR },
+} = require('../../config');
 
 function getAuthToken() {
   return (ctx, next) => {
@@ -18,7 +21,7 @@ function checkAccessToken(role) {
     try {
       const data = await verifyAccessToken(ctx.state.token);
 
-      ctx.assert(data.role === role, 401, 'Access denied for user');
+      ctx.assert(data.role === role || data.role === MODERATOR, 401, 'Access denied for user');
 
       ctx.state.authPayload = data;
 
