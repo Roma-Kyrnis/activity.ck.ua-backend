@@ -16,7 +16,7 @@ module.exports = (name = '', conf = { base: { name } }) => {
     crlf: true,
     level,
     prettifier: pinoPretty,
-    timestamp: () => `,"time":"${new Date(Date.now()).toUTCString()}"`,
+    timestamp: () => `,"time":"${new Date().toUTCString()}"`,
   };
 
   return pino(options);

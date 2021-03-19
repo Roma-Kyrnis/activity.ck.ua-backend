@@ -38,7 +38,6 @@ async function create(ctx) {
 async function getOne(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
 
-  if (!id || Number.isNaN(id)) ctx.throw(400, 'Incorrect id');
   try {
     const place = await getPlace(id);
 
@@ -79,7 +78,7 @@ async function getAll(ctx) {
 
 async function update(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
-  await updatePlace({ id, place: ctx.request.body.place });
+  await updatePlace({ id, ...ctx.request.body.place });
 
   ctx.body = { message: 'OK' };
 }
