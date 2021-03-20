@@ -12,7 +12,7 @@ exports.up = async (knex) => {
       })
       .notNullable()
       .defaultTo('user');
-    table.uuid('refresh_token').nullable();
+    table.string('refresh_token').nullable();
     // table.boolean('banned').notNullable().defaultTo(false);
     table.timestamp('deleted_at').nullable();
     table.timestamps();
