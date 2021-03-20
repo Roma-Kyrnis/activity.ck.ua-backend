@@ -66,15 +66,16 @@ module.exports = {
   close: async () => funcWrapper(dbWrapper().close)(),
 
   createUser: async (user) => funcWrapper(dbWrapper().createUser)(user),
-  getUser: async (email) => funcWrapper(dbWrapper().getUser)(email),
+  getUser: async (id) => funcWrapper(dbWrapper().getUser)(id),
   checkUser: async (email) => funcWrapper(dbWrapper().checkUser)(email),
   getUserCredentials: async (email) => funcWrapper(dbWrapper().getUserCredentials)(email),
+  getUserToken: async (id) => funcWrapper(dbWrapper().getUserToken)(id),
   updateUser: async (user) => funcWrapper(dbWrapper().updateUser)(user),
   deleteUser: async (id) => funcWrapper(dbWrapper().deleteUser)(id),
 
   createOrganization: async (organization) =>
     funcWrapper(dbWrapper().createOrganization)(organization),
-  getOrganizations: async () => funcWrapper(dbWrapper().getOrganizations)(),
+  getOrganizations: async (isModerated) => funcWrapper(dbWrapper().getOrganizations)(isModerated),
   updateOrganization: async (organization) =>
     funcWrapper(dbWrapper().updateOrganization)(organization),
   deleteOrganization: async (id) => funcWrapper(dbWrapper().deleteOrganization)(id),

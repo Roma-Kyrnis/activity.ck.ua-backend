@@ -32,19 +32,17 @@ module.exports = (client) => {
       }
     },
 
-    getOrganizations: async () => {
+    getOrganizations: async (isModerated) => {
       try {
-        const { rows: moderated } = await client.query(
+        const query =
+          isModerated === undefined ? '' : `WHERE ${isModerated ? '' : 'NOT'} moderated`;
+
+        const res = await client.query(
           `SELECT id, name FROM organizations
-            WHERE moderated;`,
+            ${query};`,
         );
 
-        const { rows: notModerated } = await client.query(
-          `SELECT id, name FROM organizations
-            WHERE NOT moderated;`,
-        );
-
-        return { moderated, notModerated };
+        return res.rows;
       } catch (err) {
         log.error(err.message || err);
         throw err;
