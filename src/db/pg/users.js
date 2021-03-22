@@ -32,16 +32,16 @@ module.exports = (client) => {
       }
     },
 
-    getUser: async (email) => {
+    getUser: async (id) => {
       try {
-        if (!email) {
-          throw new Error('ERROR: No user email defined');
+        if (!id) {
+          throw new Error('ERROR: No user id defined');
         }
 
         const res = await client.query(
           `SELECT id, name, avatar, email, role, created_at, updated_at FROM users
-            WHERE email = $1 AND deleted_at IS NULL;`,
-          [email],
+            WHERE id = $1 AND deleted_at IS NULL;`,
+          [id],
         );
 
         return res.rows[0];
@@ -73,9 +73,28 @@ module.exports = (client) => {
         }
 
         const res = await client.query(
-          `SELECT id, email, password_hash, role, refresh_token FROM users
+          `SELECT id, email, password_hash, role FROM users
             WHERE email = $1 AND deleted_at IS NULL;`,
           [email],
+        );
+
+        return res.rows[0];
+      } catch (err) {
+        log.error(err.message || err);
+        throw err;
+      }
+    },
+
+    getUserToken: async (id) => {
+      try {
+        if (!id) {
+          throw new Error('ERROR: No user id defined');
+        }
+
+        const res = await client.query(
+          `SELECT id, role, refresh_token FROM users
+            WHERE id = $1 AND deleted_at IS NULL;`,
+          [id],
         );
 
         return res.rows[0];
