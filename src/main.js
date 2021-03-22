@@ -1,5 +1,5 @@
 const { start, stop } = require('./server');
-const { init, close } = require('./db');
+const { init, end } = require('./db');
 const { gracefulShutdown } = require('./utils');
 
 const log = require('./utils/logger')(__filename);
@@ -9,7 +9,7 @@ async function boot() {
     if (err) log.error(`Server stopped because of ${err}`);
 
     await stop();
-    await close();
+    await end();
 
     log.info('Server stopped!');
     process.exit(1);
