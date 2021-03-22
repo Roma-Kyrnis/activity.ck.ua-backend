@@ -1,4 +1,4 @@
-const { getUserCredentials } = require('../../db');
+const { getUserToken } = require('../../db');
 const {
   authorizationTokens: { verifyAccessToken, verifyRefreshToken },
   hash,
@@ -38,7 +38,7 @@ function checkRefreshToken() {
       const { token: incomingToken } = ctx.state;
       const data = await verifyRefreshToken(incomingToken);
 
-      const { refresh_token: refreshToken } = await getUserCredentials(data.email);
+      const { refresh_token: refreshToken } = await getUserToken(data.id);
 
       ctx.assert(refreshToken, 401, 'Incorrect user`s token');
 

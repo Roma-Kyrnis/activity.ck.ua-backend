@@ -29,7 +29,6 @@ async function login(ctx) {
 
   const payload = {
     id: user.id,
-    email: user.email,
     role: user.role,
   };
   const tokens = {
@@ -48,7 +47,6 @@ async function refresh(ctx) {
 
   const payload = {
     id: authPayload.id,
-    email: authPayload.email,
     role: authPayload.role,
   };
 
