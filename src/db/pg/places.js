@@ -136,8 +136,7 @@ module.exports = (client) => {
         } = await client.query(
           `SELECT COUNT(*) FROM places
             WHERE ${queryFilter} ${queryAccessibility}
-              AND moderated AND deleted_at IS NULL
-            LIMIT $${values.length - 1} OFFSET $${values.length};`,
+              AND moderated AND deleted_at IS NULL;`,
           values,
         );
 
