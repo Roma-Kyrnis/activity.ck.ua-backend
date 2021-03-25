@@ -15,10 +15,13 @@ async function plantSeeds() {
   try {
     await init();
 
-    let { id: userId } = await checkUser(moderator.email);
-    if (!userId) {
+    const user = await checkUser(moderator.email);
+    let userId;
+    if (!user) {
       const { id } = await createUser(moderator);
       userId = id;
+    } else {
+      userId = user.id;
     }
     await updateUser({ id: userId, role: 'moderator' });
 
