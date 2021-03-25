@@ -52,8 +52,8 @@ const create = {
     photos: Joi.array().items(
       Joi.object({
         url: Joi.string().uri().required(),
-        author_name: Joi.string().min(3).max(255).required(),
-        author_link: Joi.string().uri().required(),
+        author_name: Joi.string().min(3).max(255),
+        author_link: Joi.string().uri(),
       }).required(),
     ),
   }).xor('organization_id', 'organization'),
@@ -212,8 +212,8 @@ const update = {
     // photos: Joi.array().items(
     //   Joi.object({
     //     url: Joi.string().uri().required(),
-    //     author_name: Joi.string().min(3).max(255).required(),
-    //     author_link: Joi.string().uri().required(),
+    //     author_name: Joi.string().min(3).max(255),
+    //     author_link: Joi.string().uri(),
     //   }).required(),
     // ),
   }).or(
