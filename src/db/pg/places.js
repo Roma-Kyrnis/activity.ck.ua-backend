@@ -114,7 +114,7 @@ module.exports = (client) => {
         }
 
         values.push(limit);
-        values.push(page * limit + 1);
+        values.push((page - 1) * limit);
 
         let queryAccessibility = '';
         if (accessibility) queryAccessibility = 'AND accessibility';
