@@ -33,21 +33,21 @@ nano .env
 
 ## 3. Start container
 ```bash
-docker-compose up --build || sudo docker-compose up --build
+sudo docker-compose up --build
 ```
 
 ## 4. Migrations
 ### 1. Find container_id with image name "node-app"
 ```bash
-docker ps
+sudo docker ps
 ```
 
 ### 2. Start migration with found container_id
 ```bash
-docker exec -it [CONTAINER_ID] npm run knex:migrate:latest
+sudo docker exec -it [CONTAINER_ID] npm run knex:migrate:latest
 ```
 
 ### 3. Plant seeds
 ```bash
-docker exec -it [CONTAINER_ID] npm run seeds:make
+sudo docker exec -it [CONTAINER_ID] npm run seeds:make
 ```
