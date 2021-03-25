@@ -29,11 +29,24 @@ const create = {
         )
         .required(),
       website: Joi.string().uri({ allowRelative: true }).required(),
-      work_time: Joi.object().unknown().required(), // Just for test --- NEED TO BE CHANGED
+      work_time: Joi.object()
+        .min(1)
+        .pattern(
+          /^(sat|mon|tue|wed|thu|fri|sun)$/,
+          Joi.object({
+            start: Joi.string()
+              .pattern(/^\d{2}:\d{2}$/)
+              .required(),
+            end: Joi.string()
+              .pattern(/^\d{2}:\d{2}$/)
+              .required(),
+          }).required(),
+        )
+        .required(),
       accessibility: Joi.boolean().required(),
       dog_friendly: Joi.boolean().required(),
       child_friendly: Joi.boolean().required(),
-      description: Joi.string().min(20).required(), // without max test size .max(511)
+      description: Joi.string().min(20).required(),
       main_photo: Joi.string().uri().required(),
     }),
     photos: Joi.array().items(
@@ -78,11 +91,23 @@ const getOne = {
             }),
           ),
           website: Joi.string().uri({ allowRelative: true }),
-          work_time: Joi.object().unknown(), // Just for test --- NEED TO BE CHANGED
+          work_time: Joi.object()
+            .min(1)
+            .pattern(
+              /^(sat|mon|tue|wed|thu|fri|sun)$/,
+              Joi.object({
+                start: Joi.string()
+                  .pattern(/^\d{2}:\d{2}$/)
+                  .required(),
+                end: Joi.string()
+                  .pattern(/^\d{2}:\d{2}$/)
+                  .required(),
+              }).required(),
+            ),
           accessibility: Joi.boolean(),
           dog_friendly: Joi.boolean(),
           child_friendly: Joi.boolean(),
-          description: Joi.string().min(20), // without max test size .max(511)
+          description: Joi.string().min(20),
           rating: Joi.string(),
         }),
       },
@@ -118,11 +143,23 @@ const getAll = {
             phones: Joi.array().items(Joi.string().pattern(/^\+380\d{9}$/)),
             website: Joi.string().uri({ allowRelative: true }),
             main_photo: Joi.string().uri(),
-            work_time: Joi.object().unknown(), // Just for test --- NEED TO BE CHANGED
+            work_time: Joi.object()
+              .min(1)
+              .pattern(
+                /^(sat|mon|tue|wed|thu|fri|sun)$/,
+                Joi.object({
+                  start: Joi.string()
+                    .pattern(/^\d{2}:\d{2}$/)
+                    .required(),
+                  end: Joi.string()
+                    .pattern(/^\d{2}:\d{2}$/)
+                    .required(),
+                }).required(),
+              ),
             // accessibility: Joi.boolean(),
             // dog_friendly: Joi.boolean(),
             // child_friendly: Joi.boolean(),
-            description: Joi.string().min(20), // without max test size .max(511)
+            description: Joi.string().min(20),
             rating: Joi.string(),
           }),
         ),
@@ -152,11 +189,23 @@ const update = {
           .required(),
       ),
       website: Joi.string().uri({ allowRelative: true }),
-      work_time: Joi.object().unknown(), // Just for test --- NEED TO BE CHANGED
+      work_time: Joi.object()
+        .min(1)
+        .pattern(
+          /^(sat|mon|tue|wed|thu|fri|sun)$/,
+          Joi.object({
+            start: Joi.string()
+              .pattern(/^\d{2}:\d{2}$/)
+              .required(),
+            end: Joi.string()
+              .pattern(/^\d{2}:\d{2}$/)
+              .required(),
+          }).required(),
+        ),
       accessibility: Joi.boolean(),
       dog_friendly: Joi.boolean(),
       child_friendly: Joi.boolean(),
-      description: Joi.string().min(20), // without max test size .max(511)
+      description: Joi.string().min(20),
       main_photo: Joi.string().uri(),
       moderated: Joi.boolean(),
     }),
@@ -211,11 +260,23 @@ const remove = {
             phones: Joi.array().items(Joi.string().pattern(/^\+380\d{9}$/)),
             website: Joi.string().uri({ allowRelative: true }),
             main_photo: Joi.string().uri(),
-            work_time: Joi.object().unknown(), // Just for test --- NEED TO BE CHANGED
+            work_time: Joi.object()
+              .min(1)
+              .pattern(
+                /^(sat|mon|tue|wed|thu|fri|sun)$/,
+                Joi.object({
+                  start: Joi.string()
+                    .pattern(/^\d{2}:\d{2}$/)
+                    .required(),
+                  end: Joi.string()
+                    .pattern(/^\d{2}:\d{2}$/)
+                    .required(),
+                }).required(),
+              ),
             // accessibility: Joi.boolean(),
             // dog_friendly: Joi.boolean(),
             // child_friendly: Joi.boolean(),
-            description: Joi.string().min(20), // without max test size .max(511)
+            description: Joi.string().min(20),
             rating: Joi.string(),
           }),
         ),
