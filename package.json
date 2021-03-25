@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/DmytroTy/activity.ck.ua-backend#readme",
   "dependencies": {
+    "@koa/cors": "^3.1.0",
     "dotenv": "^8.2.0",
     "faker": "^5.4.0",
     "jsonwebtoken": "^8.5.1",
