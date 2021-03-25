@@ -8,7 +8,7 @@ const name = 'pg';
 
 module.exports = (config) => {
   const client = new Pool(config);
-  const { createUser, getUser, getUserCredentials, updateUser, deleteUser } = users(client);
+  const { createUser, getUser, checkUser, getUserCredentials, updateUser, deleteUser } = users(client);
   const {
     createOrganization,
     getOrganizations,
@@ -35,6 +35,7 @@ module.exports = (config) => {
 
     createUser,
     getUser,
+    checkUser,
     getUserCredentials,
     updateUser,
     deleteUser,
