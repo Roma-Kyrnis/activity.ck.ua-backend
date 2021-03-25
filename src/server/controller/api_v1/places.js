@@ -72,13 +72,14 @@ async function getAll(ctx) {
     child_friendly: childFriendly,
   } = ctx.request.query;
 
-  const filters = {
-    categoryId,
-    types: types ? types.split('-') : undefined,
-    accessibility: accessibility === 'true',
-    dogFriendly: dogFriendly === 'true',
-    childFriendly: childFriendly === 'true',
-  };
+  const filters = {};
+
+  if (categoryId !== undefined) filters.categoryId = categoryId;
+  if (types !== undefined) filters.types = types.split('-');
+
+  if (accessibility !== undefined) filters.accessibility = accessibility === 'true';
+  if (dogFriendly !== undefined) filters.dogFriendly = dogFriendly === 'true';
+  if (childFriendly !== undefined) filters.childFriendly = childFriendly === 'true';
 
   const data = await getPlaces(filters, limit, page);
 
