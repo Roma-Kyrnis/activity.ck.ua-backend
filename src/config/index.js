@@ -10,6 +10,7 @@ const config = {
       API_V1: '/api/v1',
       AUTH: '/auth',
       PLACES: '/places',
+      ORGANIZATIONS: '/organizations',
     },
     NODE_ENV: process.env.NODE_ENV || 'production',
     MORGAN_FORMAT: 'dev',

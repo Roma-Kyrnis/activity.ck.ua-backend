@@ -38,7 +38,7 @@ module.exports = (client) => {
           isModerated === undefined ? '' : `WHERE ${isModerated ? '' : 'NOT'} moderated`;
 
         const res = await client.query(
-          `SELECT id, name FROM organizations
+          `SELECT id, name, phones, email, moderated FROM organizations
             ${query};`,
         );
 
