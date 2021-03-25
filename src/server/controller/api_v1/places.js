@@ -1,4 +1,11 @@
-const { createPlace, getPlace, getPlaces, updatePlace, deletePlace } = require('../../../db');
+const {
+  createPlace,
+  getPlace,
+  getPlaces,
+  updatePlace,
+  deletePlace,
+  createOrganization,
+} = require('../../../db');
 
 const {
   places: {
@@ -6,11 +13,7 @@ const {
   },
 } = require('../../../config');
 
-async function createOrganization(organization) {
-  console.log({ organization });
-  const id = 1;
-  return id;
-}
+const DEFAULT_USER_ID = 1; // CHANGE to truly user id from JWT token
 
 async function savePhotos(placeId, photos) {
   console.log({ photos, placeId });
@@ -19,12 +22,18 @@ async function savePhotos(placeId, photos) {
 }
 
 async function create(ctx) {
-  const organizationId =
-    ctx.request.body.organization_id || (await createOrganization(ctx.request.body.organization));
+  let organizationId = ctx.request.body.organization_id;
+  if (!organizationId) {
+    const organization = await createOrganization({
+      ...ctx.request.body.organization,
+      user_id: DEFAULT_USER_ID, // CHANGE to truly user id from JWT token
+    });
+    organizationId = organization.id;
+  }
 
   const dataPlace = {
     ...ctx.request.body.place,
-    user_id: 1, // CHANGE to truly user id from JWT token
+    user_id: DEFAULT_USER_ID, // CHANGE to truly user id from JWT token
     organization_id: organizationId,
   };
 
