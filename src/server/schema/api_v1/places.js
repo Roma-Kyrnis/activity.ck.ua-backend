@@ -35,10 +35,10 @@ const create = {
           /^(sat|mon|tue|wed|thu|fri|sun)$/,
           Joi.object({
             start: Joi.string()
-              .pattern(/^\d{2}:\d{2}$/)
+              .pattern(/^\d{1,2}:\d{2}$/)
               .required(),
             end: Joi.string()
-              .pattern(/^\d{2}:\d{2}$/)
+              .pattern(/^\d{1,2}:\d{2}$/)
               .required(),
           }).required(),
         )
@@ -97,10 +97,10 @@ const getOne = {
               /^(sat|mon|tue|wed|thu|fri|sun)$/,
               Joi.object({
                 start: Joi.string()
-                  .pattern(/^\d{2}:\d{2}$/)
+                  .pattern(/^\d{1,2}:\d{2}$/)
                   .required(),
                 end: Joi.string()
-                  .pattern(/^\d{2}:\d{2}$/)
+                  .pattern(/^\d{1,2}:\d{2}$/)
                   .required(),
               }).required(),
             ),
@@ -149,10 +149,10 @@ const getAll = {
                 /^(sat|mon|tue|wed|thu|fri|sun)$/,
                 Joi.object({
                   start: Joi.string()
-                    .pattern(/^\d{2}:\d{2}$/)
+                    .pattern(/^\d{1,2}:\d{2}$/)
                     .required(),
                   end: Joi.string()
-                    .pattern(/^\d{2}:\d{2}$/)
+                    .pattern(/^\d{1,2}:\d{2}$/)
                     .required(),
                 }).required(),
               ),
@@ -195,10 +195,10 @@ const update = {
           /^(sat|mon|tue|wed|thu|fri|sun)$/,
           Joi.object({
             start: Joi.string()
-              .pattern(/^\d{2}:\d{2}$/)
+              .pattern(/^\d{1,2}:\d{2}$/)
               .required(),
             end: Joi.string()
-              .pattern(/^\d{2}:\d{2}$/)
+              .pattern(/^\d{1,2}:\d{2}$/)
               .required(),
           }).required(),
         ),
@@ -266,10 +266,10 @@ const remove = {
                 /^(sat|mon|tue|wed|thu|fri|sun)$/,
                 Joi.object({
                   start: Joi.string()
-                    .pattern(/^\d{2}:\d{2}$/)
+                    .pattern(/^\d{1,2}:\d{2}$/)
                     .required(),
                   end: Joi.string()
-                    .pattern(/^\d{2}:\d{2}$/)
+                    .pattern(/^\d{1,2}:\d{2}$/)
                     .required(),
                 }).required(),
               ),
