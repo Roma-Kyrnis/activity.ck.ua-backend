@@ -66,7 +66,8 @@ function checkRefreshToken() {
 }
 
 function access(role) {
-  return [getAuthToken(), checkAccessToken(role)];
+  // return [getAuthToken(), checkAccessToken(role)];
+  return [checkAccessToken(role)];
 }
 
 function refresh() {
