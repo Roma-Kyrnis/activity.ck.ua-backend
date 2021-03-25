@@ -5,6 +5,7 @@
   "main": "src/main.js",
   "scripts": {
     "start": "node src/main.js",
+    "seeds:make": "node src/db/seeds/index.js",
     "eslint": "./node_modules/.bin/eslint ./src/",
     "debug": "npx node-dev@latest --inspect=0.0.0.0:9229 ./src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -28,6 +29,7 @@
   "homepage": "https://github.com/DmytroTy/activity.ck.ua-backend#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "faker": "^5.4.0",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.17",
     "koa": "^2.13.1",

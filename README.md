@@ -46,3 +46,8 @@ docker ps
 ```bash
 docker exec -it [CONTAINER_ID] npm run knex:migrate:latest
 ```
+
+### 3. Plant seeds
+```bash
+docker exec -it [CONTAINER_ID] npm run seeds:make
+```

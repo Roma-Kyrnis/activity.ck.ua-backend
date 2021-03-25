@@ -62,6 +62,15 @@ const config = {
       },
     },
   },
+  moderator: {
+    name: process.env.MODERATOR_NAME || fatal('No MODERATOR_NAME'),
+    avatar: process.env.MODERATOR_AVATAR || fatal('No MODERATOR_AVATAR'),
+    email: process.env.MODERATOR_EMAIL || fatal('No MODERATOR_EMAIL'),
+    password: process.env.MODERATOR_PASSWORD || fatal('No MODERATOR_PASSWORD'),
+  },
+  faker: {
+    userId: 1,
+  },
 };
 
 module.exports = config;
