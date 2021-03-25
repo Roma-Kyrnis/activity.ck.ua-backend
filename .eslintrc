@@ -19,6 +19,7 @@
         "props": false
       }
     ],
-    "no-return-await": "off"
+    "no-return-await": "off",
+    "no-restricted-syntax": "off"
   }
 }
