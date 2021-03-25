@@ -7,11 +7,11 @@ const {
 } = require('../config');
 
 async function generateAccessToken(payload) {
-  return await jwt.sign(payload, ACCESS_TOKEN_SECRET, ACCESS_TOKEN_LIFE);
+  return await jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_LIFE });
 }
 
 async function generateRefreshToken(payload) {
-  return await jwt.sign(payload, REFRESH_TOKEN_SECRET, REFRESH_TOKEN_LIFE);
+  return await jwt.sign(payload, REFRESH_TOKEN_SECRET, { expiresIn: REFRESH_TOKEN_LIFE });
 }
 
 async function verifyAccessToken(token) {
