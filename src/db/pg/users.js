@@ -24,7 +24,7 @@ module.exports = (client) => {
           [name, avatar, email, passwordHash || null, timestamp, timestamp],
         );
 
-        log.debug(`New user created: ${JSON.stringify(res.rows[0])}`);
+        log.debug(res.rows[0], 'New user created:');
         return res.rows[0];
       } catch (err) {
         log.error(err.message || err);
@@ -134,7 +134,7 @@ module.exports = (client) => {
           values,
         );
 
-        log.debug(`User updated: ${JSON.stringify(res.rows[0])}`);
+        log.debug(res.rows[0], 'User updated:');
         return res.rows[0];
       } catch (err) {
         log.error(err.message || err);

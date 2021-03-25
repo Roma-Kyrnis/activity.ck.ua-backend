@@ -43,7 +43,7 @@ module.exports = (client) => {
           ],
         );
 
-        log.debug(`New place created: ${JSON.stringify(res.rows[0])}`);
+        log.debug(res.rows[0], 'New place created:');
         return res.rows[0];
       } catch (err) {
         log.error(err.message || err);
@@ -188,7 +188,7 @@ module.exports = (client) => {
           values,
         );
 
-        log.debug(`Place updated: ${JSON.stringify(res.rows[0])}`);
+        log.debug(res.rows[0], 'Place updated:');
         return res.rows[0];
       } catch (err) {
         log.error(err.message || err);

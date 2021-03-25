@@ -24,7 +24,7 @@ module.exports = (client) => {
           [name, phones, email, userId],
         );
 
-        log.debug(`New organization created: ${JSON.stringify(res.rows[0])}`);
+        log.debug(res.rows[0], 'New organization created:');
         return res.rows[0];
       } catch (err) {
         log.error(err.message || err);
@@ -81,7 +81,7 @@ module.exports = (client) => {
           values,
         );
 
-        log.debug(`Organization updated: ${JSON.stringify(res.rows[0])}`);
+        log.debug(res.rows[0], 'Organization updated:');
         return res.rows[0];
       } catch (err) {
         log.error(err.message || err);
