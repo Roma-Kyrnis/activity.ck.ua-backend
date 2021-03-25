@@ -21,7 +21,11 @@ function checkAccessToken(role) {
     try {
       const data = await verifyAccessToken(ctx.state.token);
 
-      ctx.assert(data.role === role || data.role === MODERATOR, 401, 'Access denied for user');
+      ctx.assert(
+        data.role === role || data.role === MODERATOR,
+        401,
+        `Access denied for ${data.role}`,
+      );
 
       ctx.state.authPayload = data;
 
