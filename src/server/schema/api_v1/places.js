@@ -251,37 +251,6 @@ const remove = {
     200: {
       body: {
         message: 'OK',
-        places: Joi.array().items(
-          Joi.object({
-            id: Joi.number().min(0),
-            // organization_id: Joi.number().min(0),
-            name: Joi.string().min(3).max(255),
-            address: Joi.string().min(3).max(255),
-            phones: Joi.array().items(Joi.string().pattern(/^\+380\d{9}$/)),
-            website: Joi.string().uri({ allowRelative: true }),
-            main_photo: Joi.string().uri(),
-            work_time: Joi.object()
-              .min(1)
-              .pattern(
-                /^(sat|mon|tue|wed|thu|fri|sun)$/,
-                Joi.object({
-                  start: Joi.string()
-                    .pattern(/^\d{1,2}:\d{2}$/)
-                    .required(),
-                  end: Joi.string()
-                    .pattern(/^\d{1,2}:\d{2}$/)
-                    .required(),
-                }).required(),
-              ),
-            // accessibility: Joi.boolean(),
-            // dog_friendly: Joi.boolean(),
-            // child_friendly: Joi.boolean(),
-            description: Joi.string().min(20),
-            rating: Joi.string(),
-          }),
-        ),
-        _total: Joi.number().min(0),
-        _totalPages: Joi.number().min(0),
       },
     },
   },
