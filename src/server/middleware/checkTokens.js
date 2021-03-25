@@ -7,6 +7,8 @@ const {
   roles: { MODERATOR },
 } = require('../../config');
 
+const DEFAULT_USER_ID = 1; // CHANGE to truly user id from JWT token
+
 function getAuthToken() {
   return (ctx, next) => {
     const token = ctx.headers.authorization.split(' ')[1];
@@ -19,15 +21,19 @@ function getAuthToken() {
 function checkAccessToken(role) {
   return async (ctx, next) => {
     try {
-      const data = await verifyAccessToken(ctx.state.token);
+      // const data = await verifyAccessToken(ctx.state.token);
 
-      ctx.assert(
-        data.role === role || data.role === MODERATOR,
-        401,
-        `Access denied for ${data.role}`,
-      );
+      // ctx.assert(
+      // role.find(data.role) || data.role === MODERATOR,
+      //   401,
+      //   `Access denied for ${data.role}`,
+      // );
 
-      ctx.state.authPayload = data;
+      // ctx.state.authPayload = data;
+      ctx.state.authPayload = {
+        id: DEFAULT_USER_ID,
+        role: 'moderator',
+      };
 
       return next();
     } catch (err) {
