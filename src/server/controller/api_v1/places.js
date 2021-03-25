@@ -13,8 +13,6 @@ const {
   },
 } = require('../../../config');
 
-const DEFAULT_USER_ID = 1; // CHANGE to truly user id from JWT token
-
 async function savePhotos(placeId, photos) {
   console.log({ photos, placeId });
   const ids = [1, 2, 3];
@@ -26,14 +24,14 @@ async function create(ctx) {
   if (!organizationId) {
     const organization = await createOrganization({
       ...ctx.request.body.organization,
-      user_id: DEFAULT_USER_ID, // CHANGE to truly user id from JWT token
+      user_id: ctx.state.authPayload.id,
     });
     organizationId = organization.id;
   }
 
   const dataPlace = {
     ...ctx.request.body.place,
-    user_id: DEFAULT_USER_ID, // CHANGE to truly user id from JWT token
+    user_id: ctx.state.authPayload.id,
     organization_id: organizationId,
   };
 
