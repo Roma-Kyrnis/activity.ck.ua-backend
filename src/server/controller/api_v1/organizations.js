@@ -6,10 +6,17 @@ const {
 } = require('../../../db');
 
 async function create(ctx) {
-  await createOrganization({
-    ...ctx.request.body,
-    user_id: ctx.state.authPayload.id,
-  });
+  const userId = ctx.state.authPayload.id;
+
+  try {
+    await createOrganization({
+      ...ctx.request.body,
+      user_id: userId,
+    });
+  } catch (err) {
+    if (err.name === 'DatabaseError') throw err;
+    throw ctx.throw(400, `User with id ${userId} does not exist`);
+  }
 
   ctx.body = { message: 'OK' };
 }
