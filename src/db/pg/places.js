@@ -133,20 +133,21 @@ module.exports = (client) => {
 
         values.splice(-2);
         const {
-          rows: [count],
+          rows: [{ count }],
         } = await client.query(
           `SELECT COUNT(*) FROM places
             WHERE ${queryFilter} ${queryAccessibility}
               AND moderated AND deleted_at IS NULL;`,
           values,
         );
+        const total = Number(count);
 
         const res = {};
         res.places = places;
         /* res._limit = limit;
         res._page = page; */
-        res._total = count;
-        res._totalPages = Math.ceil(count / limit);
+        res._total = total;
+        res._totalPages = Math.ceil(total / limit);
 
         return res;
       } catch (err) {
