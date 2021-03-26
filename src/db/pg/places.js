@@ -131,6 +131,7 @@ module.exports = (client) => {
           values,
         );
 
+        values.splice(-2);
         const {
           rows: [count],
         } = await client.query(
