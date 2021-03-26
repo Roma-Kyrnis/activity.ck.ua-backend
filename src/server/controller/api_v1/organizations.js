@@ -1,4 +1,25 @@
-const { getOrganizations } = require('../../../db');
+const {
+  createOrganization,
+  getOrganizations,
+  updateOrganization,
+  deleteOrganization,
+} = require('../../../db');
+
+async function create(ctx) {
+  await createOrganization({
+    ...ctx.request.body,
+    user_id: ctx.state.authPayload.id,
+  });
+
+  ctx.body = { message: 'OK' };
+}
+
+async function getProposed(ctx) {
+  const organizations = await getOrganizations(false);
+  const proposedOrganizations = organizations.map(({ id, name }) => ({ id, name }));
+
+  ctx.body = { proposedOrganizations };
+}
 
 async function getAll(ctx) {
   const organizations = await getOrganizations();
@@ -16,4 +37,20 @@ async function getAll(ctx) {
   ctx.body = response;
 }
 
-module.exports = { getAll };
+async function update(ctx) {
+  const id = parseInt(ctx.request.params.id, 10);
+  const organization = await updateOrganization({ ...ctx.request.body, id });
+
+  ctx.assert(organization, 400, `Organization with id ${id} doesn't exist`);
+
+  ctx.body = { message: 'OK' };
+}
+
+async function remove(ctx) {
+  const id = parseInt(ctx.request.params.id, 10);
+  await deleteOrganization(id);
+
+  ctx.body = { message: 'OK' };
+}
+
+module.exports = { create, getProposed, getAll, update, remove };
