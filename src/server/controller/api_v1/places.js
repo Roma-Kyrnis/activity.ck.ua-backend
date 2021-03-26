@@ -75,9 +75,9 @@ async function getAll(ctx) {
   if (categoryId !== undefined) filters.categoryId = categoryId;
   if (types !== undefined) filters.types = types.split('-');
 
-  if (accessibility !== undefined) filters.accessibility = accessibility === 'true';
-  if (dogFriendly !== undefined) filters.dogFriendly = dogFriendly === 'true';
-  if (childFriendly !== undefined) filters.childFriendly = childFriendly === 'true';
+  if (accessibility !== undefined) filters.accessibility = accessibility;
+  if (dogFriendly !== undefined) filters.dogFriendly = dogFriendly;
+  if (childFriendly !== undefined) filters.childFriendly = childFriendly;
 
   const data = await getPlaces(filters, limit, page);
 
