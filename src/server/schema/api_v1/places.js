@@ -17,9 +17,7 @@ const create = {
     place: Joi.object({
       name: Joi.string().min(3).max(255).required(),
       category_id: Joi.string().min(3).max(255).required(), // change to ENUM
-      type_id: Joi.string()
-        .pattern(/^([a-z]|-)+$/)
-        .required(),
+      type_id: Joi.string().pattern(/^([a-z]|-)+$/),
       address: Joi.string().min(3).max(255).required(),
       phones: Joi.array()
         .items(
