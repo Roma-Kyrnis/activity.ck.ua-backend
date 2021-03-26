@@ -12,13 +12,6 @@ const registration = {
     password: Joi.string().pattern(/^\w+$/).min(8).max(255).required(),
   }),
   type: 'json',
-  output: {
-    200: {
-      body: {
-        user_id: Joi.number().min(0),
-      },
-    },
-  },
 };
 
 const login = {
@@ -27,15 +20,6 @@ const login = {
     password: Joi.string().pattern(/^\w+$/).min(8).max(255).required(),
   }),
   type: 'json',
-  output: {
-    200: {
-      body: {
-        access_token: Joi.string(),
-        refresh_token: Joi.string(),
-      },
-    },
-    401: { body: 'Incorrect credentials' },
-  },
 };
 
 const refresh = {
@@ -44,13 +28,6 @@ const refresh = {
       .pattern(/^[a-zA-Z]+ .+$/)
       .required(),
   }).unknown(),
-  200: {
-    body: {
-      access_token: Joi.string(),
-      refresh_token: Joi.string(),
-    },
-  },
-  401: { body: 'Unauthorized' },
 };
 
 const logout = {
@@ -59,12 +36,6 @@ const logout = {
       .pattern(/^[a-zA-Z]+ .+$/)
       .required(),
   }).unknown(),
-  200: {
-    body: {
-      message: 'OK',
-    },
-  },
-  401: { body: 'Unauthorized' },
 };
 
 module.exports = { registration, login, refresh, logout };
