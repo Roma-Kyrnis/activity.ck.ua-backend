@@ -113,13 +113,23 @@ module.exports = (client) => {
           throw new Error('ERROR: No filters!');
         }
 
-        values.push(limit);
-        values.push((page - 1) * limit);
-
         let queryAccessibility = '';
         if (accessibility) queryAccessibility = 'AND accessibility';
         if (dogFriendly) queryAccessibility += ' AND dog_friendly';
         if (childFriendly) queryAccessibility += ' AND child_friendly';
+
+        const {
+          rows: [{ count }],
+        } = await client.query(
+          `SELECT COUNT(*) FROM places
+            WHERE ${queryFilter} ${queryAccessibility}
+              AND moderated AND deleted_at IS NULL;`,
+          values,
+        );
+        const total = Number(count);
+
+        values.push(limit);
+        values.push((page - 1) * limit);
 
         const { rows: places } = await client.query(
           `SELECT id, name, address, phones, website, main_photo, work_time, rating
@@ -130,17 +140,6 @@ module.exports = (client) => {
             LIMIT $${values.length - 1} OFFSET $${values.length};`,
           values,
         );
-
-        values.splice(-2);
-        const {
-          rows: [{ count }],
-        } = await client.query(
-          `SELECT COUNT(*) FROM places
-            WHERE ${queryFilter} ${queryAccessibility}
-              AND moderated AND deleted_at IS NULL;`,
-          values,
-        );
-        const total = Number(count);
 
         const res = {};
         res.places = places;
