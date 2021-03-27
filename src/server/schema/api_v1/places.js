@@ -60,7 +60,7 @@ const getOne = {
   }),
 };
 
-const getAll = {
+const getApproved = {
   query: Joi.object({
     category_id: Joi.string(),
     type_id: Joi.string().pattern(/^([a-zA-Z]|-)+$/),
@@ -144,4 +144,4 @@ const remove = {
   }),
 };
 
-module.exports = { create, getOne, getAll, update, remove };
+module.exports = { create, getOne, getApproved, update, remove };

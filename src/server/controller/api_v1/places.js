@@ -56,7 +56,7 @@ async function getOne(ctx) {
   }
 }
 
-async function getAll(ctx) {
+async function getApproved(ctx) {
   // eslint-disable-next-line no-underscore-dangle
   const limit = parseInt(ctx.request.query._limit || LIMIT, 10);
   // eslint-disable-next-line no-underscore-dangle
@@ -98,4 +98,4 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { create, getOne, getAll, update, remove };
+module.exports = { create, getOne, getApproved, update, remove };

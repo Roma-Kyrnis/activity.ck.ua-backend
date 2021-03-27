@@ -21,7 +21,7 @@ router.prefix(PLACES);
 
 router.post('/', { validate: validator.create }, access(), places.create);
 router.get('/:id', { validate: validator.getOne }, places.getOne);
-router.get('/', { validate: validator.getAll }, places.getAll);
+router.get('/', { validate: validator.getApproved }, places.getApproved);
 router.put('/:id', { validate: validator.update }, places.update);
 router.delete('/:id', { validate: validator.remove }, places.remove);
 
