@@ -19,7 +19,9 @@ const create = {
       category_id: Joi.string().min(3).max(255).required(), // change to ENUM
       type_id: Joi.string().pattern(/^([a-z]|-)+$/),
       address: Joi.string().min(3).max(255).required(),
-      phones: Joi.array().items(Joi.string().pattern(/^\+380\d{9}$/)),
+      phones: Joi.array()
+        .items(Joi.string().pattern(/^\+380\d{9}$/))
+        .default([]),
       website: Joi.alternatives(Joi.allow(null), Joi.string().uri({ allowRelative: true })),
       work_time: Joi.object()
         .min(1)
