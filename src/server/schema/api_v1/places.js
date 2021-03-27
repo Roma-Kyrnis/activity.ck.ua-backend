@@ -43,13 +43,15 @@ const create = {
       description: Joi.string().min(20).required(),
       main_photo: Joi.string().uri().required(),
     }),
-    photos: Joi.array().items(
-      Joi.object({
-        url: Joi.string().uri().required(),
-        author_name: Joi.string().min(3).max(255),
-        author_link: Joi.string().uri(),
-      }),
-    ),
+    photos: Joi.array()
+      .items(
+        Joi.object({
+          url: Joi.string().uri().required(),
+          author_name: Joi.string().min(3).max(255),
+          author_link: Joi.string().uri(),
+        }).required(),
+      )
+      .required(),
   }).xor('organization_id', 'organization'),
   type: 'json',
 };
