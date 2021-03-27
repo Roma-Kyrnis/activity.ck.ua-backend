@@ -1,37 +1,34 @@
 const { Joi } = require('koa-joi-router');
 
+const {
+  places: {
+    default: { DAYS },
+    schema: { PHONE, TIME, TYPE_IDS },
+  },
+} = require('../../../config');
+
 const create = {
   body: Joi.object({
     organization_id: Joi.number().min(0),
     organization: Joi.object({
       name: Joi.string().min(3).max(255).required(),
-      phones: Joi.array()
-        .items(
-          Joi.string()
-            .pattern(/^\+380\d{9}$/)
-            .required(),
-        )
-        .required(),
+      phones: Joi.array().items(Joi.string().pattern(PHONE).required()).required(),
       email: Joi.string().email().required(),
     }),
     place: Joi.object({
       name: Joi.string().min(3).max(255).required(),
       category_id: Joi.string().min(3).max(255).required(), // change to ENUM
-      type_id: Joi.string().pattern(/^([a-z]|-)+$/),
+      type_id: Joi.string().pattern(TYPE_IDS),
       address: Joi.string().min(3).max(255).required(),
-      phones: Joi.array().items(Joi.string().pattern(/^\+380\d{9}$/)),
+      phones: Joi.array().items(Joi.string().pattern(PHONE)),
       website: Joi.alternatives(Joi.allow(null), Joi.string().uri({ allowRelative: true })),
       work_time: Joi.object()
         .min(1)
         .pattern(
-          /^(sat|mon|tue|wed|thu|fri|sun)$/,
+          new RegExp(`^(${DAYS.join('|')})$`),
           Joi.object({
-            start: Joi.string()
-              .pattern(/^\d{1,2}:\d{2}$/)
-              .required(),
-            end: Joi.string()
-              .pattern(/^\d{1,2}:\d{2}$/)
-              .required(),
+            start: Joi.string().pattern(TIME).required(),
+            end: Joi.string().pattern(TIME).required(),
           }).required(),
         )
         .required(),
@@ -63,7 +60,7 @@ const getOne = {
 const getAll = {
   query: Joi.object({
     category_id: Joi.string(),
-    type_id: Joi.string().pattern(/^([a-zA-Z]|-)+$/),
+    type_id: Joi.string().pattern(TYPE_IDS),
     accessibility: Joi.boolean().truthy('true').falsy('false'),
     dog_friendly: Joi.boolean().truthy('true').falsy('false'),
     child_friendly: Joi.boolean().truthy('true').falsy('false'),
@@ -83,25 +80,17 @@ const update = {
     place: Joi.object({
       name: Joi.string().min(3).max(255),
       category_id: Joi.string().min(3).max(255), // change to ENUM
-      type_id: Joi.string().pattern(/^([a-z]|-)+$/),
+      type_id: Joi.string().pattern(TYPE_IDS),
       address: Joi.string().min(3).max(255),
-      phones: Joi.array().items(
-        Joi.string()
-          .pattern(/^\+380\d{9}$/)
-          .required(),
-      ),
+      phones: Joi.array().items(Joi.string().pattern(PHONE).required()),
       website: Joi.alternatives(Joi.allow(null), Joi.string().uri({ allowRelative: true })),
       work_time: Joi.object()
         .min(1)
         .pattern(
-          /^(sat|mon|tue|wed|thu|fri|sun)$/,
+          new RegExp(`^(${DAYS.join('|')})$`),
           Joi.object({
-            start: Joi.string()
-              .pattern(/^\d{1,2}:\d{2}$/)
-              .required(),
-            end: Joi.string()
-              .pattern(/^\d{1,2}:\d{2}$/)
-              .required(),
+            start: Joi.string().pattern(TIME).required(),
+            end: Joi.string().pattern(TIME).required(),
           }).required(),
         ),
       accessibility: Joi.boolean(),

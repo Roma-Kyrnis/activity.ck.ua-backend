@@ -30,6 +30,12 @@ const config = {
     default: {
       LIMIT: 5,
       PAGE: 1,
+      DAYS: ['sat', 'mon', 'tue', 'wed', 'thu', 'fri', 'sun'],
+    },
+    schema: {
+      PHONE: /^\+380\d{9}$/,
+      TIME: /^\d{1,2}:\d{2}$/,
+      TYPE_IDS: /^([a-zA-Z]|-)+$/,
     },
   },
   roles: {
@@ -73,7 +79,23 @@ const config = {
     password: process.env.MODERATOR_PASSWORD || fatal('No MODERATOR_PASSWORD'),
   },
   faker: {
-    userId: 1,
+    USER_ID: 1,
+    ORGANIZATION_ID: 1,
+    CATEGORY_ID: [
+      'culture',
+      'recreation',
+      'children',
+      'todo_something',
+      'history',
+      'unique_things',
+      'sleeping',
+      'inspired_city',
+      'gastronomic_adventures',
+    ],
+    TYPE_IDS: ['', 'hotels', 'sport', 'water', 'coffee', 'fastfood', 'hostels', 'stadium', 'gym'],
+    MIN_PHOTO: 0,
+    MAX_PHOTO: 10,
+    PLACES_SEEDS: 50,
   },
 };
 
