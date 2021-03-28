@@ -72,16 +72,27 @@ const config = {
       },
     },
   },
-  moderator: {
-    name: process.env.MODERATOR_NAME || fatal('No MODERATOR_NAME'),
-    avatar: process.env.MODERATOR_AVATAR || fatal('No MODERATOR_AVATAR'),
-    email: process.env.MODERATOR_EMAIL || fatal('No MODERATOR_EMAIL'),
-    password: process.env.MODERATOR_PASSWORD || fatal('No MODERATOR_PASSWORD'),
-  },
   faker: {
+    user: {
+      PASSWORDS: ['12345678'],
+    },
+    default: {
+      MODERATOR: {
+        name: 'moderator',
+        avatar: 'https://www.google.com',
+        email: 'moderator@tourism.test.com',
+        password: '12345678',
+      },
+      PLACES_SEEDS: 50,
+      PARAMS: {
+        COUNT: 'count',
+        USER: 'user_id',
+        ORGANIZATION: 'organization_id',
+      },
+    },
     USER_ID: 1,
     ORGANIZATION_ID: 1,
-    CATEGORY_ID: [
+    CATEGORY_IDS: [
       'culture',
       'recreation',
       'children',
@@ -93,9 +104,8 @@ const config = {
       'gastronomic_adventures',
     ],
     TYPE_IDS: ['', 'hotels', 'sport', 'water', 'coffee', 'fastfood', 'hostels', 'stadium', 'gym'],
-    MIN_PHOTO: 0,
+    MIN_PHOTO: 1,
     MAX_PHOTO: 10,
-    PLACES_SEEDS: 50,
   },
 };
 

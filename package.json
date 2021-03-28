@@ -5,7 +5,8 @@
   "main": "src/main.js",
   "scripts": {
     "start": "node src/main.js",
-    "seeds:make": "node src/db/seeds/index.js",
+    "seeds:default": "node src/db/seeds default",
+    "seeds:places": "node src/db/seeds places",
     "eslint": "./node_modules/.bin/eslint ./src/",
     "debug": "npx node-dev@latest --inspect=0.0.0.0:9229 ./src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",

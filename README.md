@@ -1,24 +1,3 @@
-<!-- # activity.ck.ua-backend
-
-# 1 create .env file
-cp .env.example .env
-
-# 2 replace parameters with real
-nano .env
-
-# 3 install dependencies
-npm i -ci
-
-# 4 start docker-compose
-docker-compose up -d
-
-# 5 start migrations
-npm run knex:migrate:latest 
-
-# 6 run
-npm start -->
-
-
 # Docker-compose. Start server in container
 
 ## 1. Create .env file
@@ -37,6 +16,7 @@ sudo docker-compose up --build
 ```
 
 ## 4. Migrations
+Replace `[CONTAINER_ID]` with real container id from 4.1 pips
 ### 1. Find container_id with image name "node-app"
 ```bash
 sudo docker ps
@@ -46,8 +26,21 @@ sudo docker ps
 ```bash
 sudo docker exec -it [CONTAINER_ID] npm run knex:migrate:latest
 ```
-
-### 3. Plant seeds
+## Extra:
+### 3. Plant default user and organization seed
+This need to create place refer to `user_id` and `organization_id`
 ```bash
-sudo docker exec -it [CONTAINER_ID] npm run seeds:make
+sudo docker exec -it [CONTAINER_ID] npm run seeds:default
+```
+
+### 4. Plant places
+You can add extra parameters: `count`, `user_id` and `organization_id`. Where `count` is how many places will be create. If you don't add parameters they set by default.
+
+```bash
+sudo docker exec -it [CONTAINER_ID] npm run seeds:places
+```
+
+Example with `10` created places attach to user with id `1` and organization with id `1`
+```bash
+sudo docker exec -it [CONTAINER_ID] npm run seeds:places count=10 user_id=1 organization_id=1
 ```
