@@ -56,7 +56,7 @@ async function getOne(ctx) {
   }
 }
 
-async function getAll(ctx) {
+async function getApproved(ctx) {
   // eslint-disable-next-line no-underscore-dangle
   const limit = parseInt(ctx.request.query._limit || LIMIT, 10);
   // eslint-disable-next-line no-underscore-dangle
@@ -75,9 +75,9 @@ async function getAll(ctx) {
   if (categoryId !== undefined) filters.categoryId = categoryId;
   if (types !== undefined) filters.types = types.split('-');
 
-  if (accessibility !== undefined) filters.accessibility = accessibility === 'true';
-  if (dogFriendly !== undefined) filters.dogFriendly = dogFriendly === 'true';
-  if (childFriendly !== undefined) filters.childFriendly = childFriendly === 'true';
+  if (accessibility !== undefined) filters.accessibility = accessibility;
+  if (dogFriendly !== undefined) filters.dogFriendly = dogFriendly;
+  if (childFriendly !== undefined) filters.childFriendly = childFriendly;
 
   const data = await getPlaces(filters, limit, page);
 
@@ -98,4 +98,4 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { create, getOne, getAll, update, remove };
+module.exports = { create, getOne, getApproved, update, remove };

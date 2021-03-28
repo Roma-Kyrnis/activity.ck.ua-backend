@@ -1,3 +1,7 @@
+const {
+  errors: { DATABASE },
+} = require('../config');
+
 class DatabaseError extends Error {
   constructor(...params) {
     super(...params);
@@ -6,7 +10,7 @@ class DatabaseError extends Error {
       Error.captureStackTrace(this, DatabaseError);
     }
 
-    this.name = 'DatabaseError';
+    this.name = DATABASE;
   }
 }
 

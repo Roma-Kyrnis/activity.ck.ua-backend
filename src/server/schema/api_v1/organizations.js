@@ -13,56 +13,11 @@ const create = {
     email: Joi.string().email().required(),
   }).required(),
   type: 'json',
-  output: {
-    200: {
-      body: {
-        message: 'OK',
-      },
-    },
-  },
 };
 
-const getProposed = {
-  output: {
-    200: {
-      body: {
-        proposedOrganizations: Joi.array()
-          .items(
-            Joi.object({
-              id: Joi.number().required(),
-              name: Joi.string().min(3).max(255).required(),
-            }),
-          )
-          .required(),
-      },
-    },
-  },
-};
+const getProposed = {};
 
-const getAll = {
-  output: {
-    200: {
-      body: {
-        approvedOrganizations: Joi.array()
-          .items(
-            Joi.object({
-              id: Joi.number().required(),
-              name: Joi.string().min(3).max(255).required(),
-            }),
-          )
-          .required(),
-        proposedOrganizations: Joi.array()
-          .items(
-            Joi.object({
-              id: Joi.number().required(),
-              name: Joi.string().min(3).max(255).required(),
-            }),
-          )
-          .required(),
-      },
-    },
-  },
-};
+const getAll = {};
 
 const update = {
   params: Joi.object({
@@ -81,18 +36,6 @@ const update = {
     moderated: Joi.boolean(),
   }).or('name', 'phones', 'email', 'moderated'),
   type: 'json',
-  output: {
-    200: {
-      body: {
-        message: 'OK',
-      },
-    },
-    400: {
-      body: {
-        error: "Bad Request: Organization with id #id doesn't exist",
-      },
-    },
-  },
 };
 
 const remove = {
@@ -101,13 +44,6 @@ const remove = {
       .pattern(/^[1-9]\d*$/)
       .required(),
   }),
-  output: {
-    200: {
-      body: {
-        message: 'OK',
-      },
-    },
-  },
 };
 
 module.exports = { create, getProposed, getAll, update, remove };

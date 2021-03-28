@@ -17,18 +17,12 @@ const create = {
     place: Joi.object({
       name: Joi.string().min(3).max(255).required(),
       category_id: Joi.string().min(3).max(255).required(), // change to ENUM
-      type_id: Joi.string()
-        .pattern(/^([a-z]|-)+$/)
-        .required(),
+      type_id: Joi.string().pattern(/^([a-z]|-)+$/),
       address: Joi.string().min(3).max(255).required(),
       phones: Joi.array()
-        .items(
-          Joi.string()
-            .pattern(/^\+380\d{9}$/)
-            .required(),
-        )
-        .required(),
-      website: Joi.string().uri({ allowRelative: true }).required(),
+        .items(Joi.string().pattern(/^\+380\d{9}$/))
+        .default([]),
+      website: Joi.alternatives(Joi.allow(null), Joi.string().uri({ allowRelative: true })),
       work_time: Joi.object()
         .min(1)
         .pattern(
@@ -49,22 +43,17 @@ const create = {
       description: Joi.string().min(20).required(),
       main_photo: Joi.string().uri().required(),
     }),
-    photos: Joi.array().items(
-      Joi.object({
-        url: Joi.string().uri().required(),
-        author_name: Joi.string().min(3).max(255),
-        author_link: Joi.string().uri(),
-      }).required(),
-    ),
+    photos: Joi.array()
+      .items(
+        Joi.object({
+          url: Joi.string().uri().required(),
+          author_name: Joi.string().min(3).max(255),
+          author_link: Joi.string().uri(),
+        }).required(),
+      )
+      .required(),
   }).xor('organization_id', 'organization'),
   type: 'json',
-  output: {
-    200: {
-      body: {
-        message: 'OK',
-      },
-    },
-  },
 };
 
 const getOne = {
@@ -73,101 +62,18 @@ const getOne = {
       .pattern(/^[1-9]\d*$/)
       .required(),
   }),
-  output: {
-    200: {
-      body: {
-        place: Joi.object({
-          id: Joi.number().min(0),
-          organization_id: Joi.number().min(0),
-          name: Joi.string().min(3).max(255),
-          address: Joi.string().min(3).max(255),
-          phones: Joi.array().items(Joi.string().pattern(/^\+380\d{9}$/)),
-          photos: Joi.array().items(
-            Joi.object({
-              id: Joi.number().min(0),
-              url: Joi.string().uri(),
-              author_name: Joi.string().min(3).max(255),
-              author_link: Joi.string().uri(),
-            }),
-          ),
-          website: Joi.string().uri({ allowRelative: true }),
-          work_time: Joi.object()
-            .min(1)
-            .pattern(
-              /^(sat|mon|tue|wed|thu|fri|sun)$/,
-              Joi.object({
-                start: Joi.string()
-                  .pattern(/^\d{1,2}:\d{2}$/)
-                  .required(),
-                end: Joi.string()
-                  .pattern(/^\d{1,2}:\d{2}$/)
-                  .required(),
-              }).required(),
-            ),
-          accessibility: Joi.boolean(),
-          dog_friendly: Joi.boolean(),
-          child_friendly: Joi.boolean(),
-          description: Joi.string().min(20),
-          rating: Joi.string(),
-        }),
-      },
-    },
-    400: {
-      body: {
-        message: 'No place with id - 1',
-      },
-    },
-  },
 };
 
-const getAll = {
+const getApproved = {
   query: Joi.object({
     category_id: Joi.string(),
-    type_id: Joi.string().pattern(/^([a-z]|-)+$/),
+    type_id: Joi.string().pattern(/^([a-zA-Z]|-)+$/),
     accessibility: Joi.boolean().truthy('true').falsy('false'),
     dog_friendly: Joi.boolean().truthy('true').falsy('false'),
     child_friendly: Joi.boolean().truthy('true').falsy('false'),
     _page: Joi.string().pattern(/^[1-9]\d*$/),
     _limit: Joi.string().pattern(/^[1-9]\d*$/),
   }).xor('category_id', 'type_id'),
-  output: {
-    200: {
-      body: {
-        message: 'OK',
-        places: Joi.array().items(
-          Joi.object({
-            id: Joi.number().min(0),
-            // organization_id: Joi.number().min(0),
-            name: Joi.string().min(3).max(255),
-            address: Joi.string().min(3).max(255),
-            phones: Joi.array().items(Joi.string().pattern(/^\+380\d{9}$/)),
-            website: Joi.string().uri({ allowRelative: true }),
-            main_photo: Joi.string().uri(),
-            work_time: Joi.object()
-              .min(1)
-              .pattern(
-                /^(sat|mon|tue|wed|thu|fri|sun)$/,
-                Joi.object({
-                  start: Joi.string()
-                    .pattern(/^\d{1,2}:\d{2}$/)
-                    .required(),
-                  end: Joi.string()
-                    .pattern(/^\d{1,2}:\d{2}$/)
-                    .required(),
-                }).required(),
-              ),
-            // accessibility: Joi.boolean(),
-            // dog_friendly: Joi.boolean(),
-            // child_friendly: Joi.boolean(),
-            description: Joi.string().min(20),
-            rating: Joi.string(),
-          }),
-        ),
-        _total: Joi.number().min(0),
-        _totalPages: Joi.number().min(0),
-      },
-    },
-  },
 };
 
 const update = {
@@ -188,7 +94,7 @@ const update = {
           .pattern(/^\+380\d{9}$/)
           .required(),
       ),
-      website: Joi.string().uri({ allowRelative: true }),
+      website: Joi.alternatives(Joi.allow(null), Joi.string().uri({ allowRelative: true })),
       work_time: Joi.object()
         .min(1)
         .pattern(
@@ -232,13 +138,6 @@ const update = {
     'place.moderated',
   ),
   type: 'json',
-  output: {
-    200: {
-      body: {
-        message: 'OK',
-      },
-    },
-  },
 };
 
 const remove = {
@@ -247,13 +146,6 @@ const remove = {
       .pattern(/^[1-9]\d*$/)
       .required(),
   }),
-  output: {
-    200: {
-      body: {
-        message: 'OK',
-      },
-    },
-  },
 };
 
-module.exports = { create, getOne, getAll, update, remove };
+module.exports = { create, getOne, getApproved, update, remove };
