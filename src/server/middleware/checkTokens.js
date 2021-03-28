@@ -18,13 +18,13 @@ function getAuthToken() {
   };
 }
 
-function checkAccessToken(role) {
+function checkAccessToken(roles = []) {
   return async (ctx, next) => {
     try {
       // const data = await verifyAccessToken(ctx.state.token);
 
       // ctx.assert(
-      // role.find(data.role) || data.role === MODERATOR,
+      //   roles.find((role) => role === data.role) || data.role === MODERATOR,
       //   401,
       //   `Access denied for ${data.role}`,
       // );
@@ -32,7 +32,7 @@ function checkAccessToken(role) {
       // ctx.state.authPayload = data;
       ctx.state.authPayload = {
         id: DEFAULT_USER_ID,
-        role: 'moderator',
+        role: MODERATOR,
       };
 
       return next();
@@ -65,9 +65,9 @@ function checkRefreshToken() {
   };
 }
 
-function access(role) {
-  // return [getAuthToken(), checkAccessToken(role)];
-  return [checkAccessToken(role)];
+function access(roles) {
+  // return [getAuthToken(), checkAccessToken(roles)];
+  return [checkAccessToken(roles)];
 }
 
 function refresh() {

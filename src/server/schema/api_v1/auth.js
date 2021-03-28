@@ -2,11 +2,7 @@ const { Joi } = require('koa-joi-router');
 
 const registration = {
   body: Joi.object({
-    name: Joi.string()
-      .pattern(/^[a-zA-Z]+$/)
-      .min(3)
-      .max(255)
-      .required(),
+    name: Joi.string().min(3).max(255).required(),
     avatar: Joi.string().uri().required(),
     email: Joi.string().email().required(),
     password: Joi.string().pattern(/^\w+$/).min(8).max(255).required(),

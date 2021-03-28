@@ -34,12 +34,11 @@ module.exports = (client) => {
 
     getOrganizations: async (isModerated) => {
       try {
-        const query =
-          isModerated === undefined ? '' : `WHERE ${isModerated ? '' : 'NOT'} moderated`;
+        if (isModerated === undefined) throw new Error('ERROR: No parameter defined');
 
         const res = await client.query(
-          `SELECT id, name, moderated FROM organizations
-            ${query};`,
+          `SELECT id, name FROM organizations
+            WHERE ${isModerated ? '' : 'NOT'} moderated;`,
         );
 
         return res.rows;

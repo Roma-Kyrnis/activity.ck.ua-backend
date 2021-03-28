@@ -20,7 +20,7 @@ const create = {
       category_id: Joi.string().min(3).max(255).required(), // change to ENUM
       type_id: Joi.string().pattern(TYPE_IDS),
       address: Joi.string().min(3).max(255).required(),
-      phones: Joi.array().items(Joi.string().pattern(PHONE)),
+      phones: Joi.array().items(Joi.string().pattern(PHONE)).default([]),
       website: Joi.alternatives(Joi.allow(null), Joi.string().uri({ allowRelative: true })),
       work_time: Joi.object()
         .min(1)
@@ -38,13 +38,15 @@ const create = {
       description: Joi.string().min(20).required(),
       main_photo: Joi.string().uri().required(),
     }),
-    photos: Joi.array().items(
-      Joi.object({
-        url: Joi.string().uri().required(),
-        author_name: Joi.string().min(3).max(255),
-        author_link: Joi.string().uri(),
-      }),
-    ),
+    photos: Joi.array()
+      .items(
+        Joi.object({
+          url: Joi.string().uri().required(),
+          author_name: Joi.string().min(3).max(255),
+          author_link: Joi.string().uri(),
+        }).required(),
+      )
+      .required(),
   }).xor('organization_id', 'organization'),
   type: 'json',
 };
@@ -57,7 +59,7 @@ const getOne = {
   }),
 };
 
-const getAll = {
+const getApproved = {
   query: Joi.object({
     category_id: Joi.string(),
     type_id: Joi.string().pattern(TYPE_IDS),
@@ -100,13 +102,6 @@ const update = {
       main_photo: Joi.string().uri(),
       moderated: Joi.boolean(),
     }),
-    // photos: Joi.array().items(
-    //   Joi.object({
-    //     url: Joi.string().uri().required(),
-    //     author_name: Joi.string().min(3).max(255),
-    //     author_link: Joi.string().uri(),
-    //   }).required(),
-    // ),
   }).or(
     'place.name',
     'place.category_id',
@@ -133,4 +128,4 @@ const remove = {
   }),
 };
 
-module.exports = { create, getOne, getAll, update, remove };
+module.exports = { create, getOne, getApproved, update, remove };
