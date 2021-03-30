@@ -6,7 +6,7 @@ const {
 function setErrorResponse(incomingError, ctx) {
   ctx.status = incomingError.status || 500;
 
-  if (incomingError.name === DATABASE) ctx.status = 400;
+  if (incomingError.name === DATABASE) ctx.status = 409;
 
   const defaultMessage = ctx.response.message;
   const errMessage =
