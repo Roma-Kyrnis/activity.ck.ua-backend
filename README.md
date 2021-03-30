@@ -37,17 +37,12 @@ sudo docker-compose up --build
 ```
 
 ## 4. Migrations
-### 1. Find container_id with image name "node-app"
+### 1. Start migration with found container_id
 ```bash
-sudo docker ps
+sudo docker exec -it node npm run knex:migrate:latest
 ```
 
-### 2. Start migration with found container_id
+### 2. Plant seeds
 ```bash
-sudo docker exec -it [CONTAINER_ID] npm run knex:migrate:latest
-```
-
-### 3. Plant seeds
-```bash
-sudo docker exec -it [CONTAINER_ID] npm run seeds:make
+sudo docker exec -it node npm run seeds:make
 ```
