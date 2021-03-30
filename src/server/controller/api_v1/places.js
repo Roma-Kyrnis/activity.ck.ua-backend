@@ -13,8 +13,6 @@ const {
   },
 } = require('../../../config');
 
-const DEFAULT_USER_ID = 1; // CHANGE to truly user id from JWT token
-
 async function savePhotos(placeId, photos) {
   console.log({ photos, placeId });
   const ids = [1, 2, 3];
@@ -26,14 +24,14 @@ async function create(ctx) {
   if (!organizationId) {
     const organization = await createOrganization({
       ...ctx.request.body.organization,
-      user_id: DEFAULT_USER_ID, // CHANGE to truly user id from JWT token
+      user_id: ctx.state.authPayload.id,
     });
     organizationId = organization.id;
   }
 
   const dataPlace = {
     ...ctx.request.body.place,
-    user_id: DEFAULT_USER_ID, // CHANGE to truly user id from JWT token
+    user_id: ctx.state.authPayload.id,
     organization_id: organizationId,
   };
 
@@ -58,7 +56,7 @@ async function getOne(ctx) {
   }
 }
 
-async function getAll(ctx) {
+async function getApproved(ctx) {
   // eslint-disable-next-line no-underscore-dangle
   const limit = parseInt(ctx.request.query._limit || LIMIT, 10);
   // eslint-disable-next-line no-underscore-dangle
@@ -77,9 +75,9 @@ async function getAll(ctx) {
   if (categoryId !== undefined) filters.categoryId = categoryId;
   if (types !== undefined) filters.types = types.split('-');
 
-  if (accessibility !== undefined) filters.accessibility = accessibility === 'true';
-  if (dogFriendly !== undefined) filters.dogFriendly = dogFriendly === 'true';
-  if (childFriendly !== undefined) filters.childFriendly = childFriendly === 'true';
+  if (accessibility !== undefined) filters.accessibility = accessibility;
+  if (dogFriendly !== undefined) filters.dogFriendly = dogFriendly;
+  if (childFriendly !== undefined) filters.childFriendly = childFriendly;
 
   const data = await getPlaces(filters, limit, page);
 
@@ -100,4 +98,4 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { create, getOne, getAll, update, remove };
+module.exports = { create, getOne, getApproved, update, remove };

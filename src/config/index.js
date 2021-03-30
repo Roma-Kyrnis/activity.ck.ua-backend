@@ -24,6 +24,9 @@ const config = {
       REFRESH_TOKEN_LIFE: process.env.REFRESH_TOKEN_LIFE || fatal('No REFRESH_TOKEN_LIFE'),
     },
   },
+  errors: {
+    DATABASE: 'DatabaseError',
+  },
   places: {
     default: {
       LIMIT: 5,

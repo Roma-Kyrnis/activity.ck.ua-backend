@@ -1,11 +1,12 @@
 const {
   server: { JSON_ERROR_NAME: ERROR },
+  errors: { DATABASE },
 } = require('../../config');
 
 function setErrorResponse(incomingError, ctx) {
   ctx.status = incomingError.status || 500;
 
-  if (incomingError.name === 'DatabaseError') ctx.status = 400;
+  if (incomingError.name === DATABASE) ctx.status = 400;
 
   const defaultMessage = ctx.response.message;
   const errMessage =
