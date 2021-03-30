@@ -16,7 +16,7 @@ const app = new Koa();
 app.use(helmet());
 app.use(morgan(MORGAN_FORMAT));
 
-app.use(errorHandler());
+app.use(errorHandler);
 
 app.use(bodyParser());
 
