@@ -23,9 +23,14 @@ async function create(ctx) {
 
 async function getProposed(ctx) {
   const organizations = await getOrganizations(false);
-  const proposedOrganizations = organizations.map(({ id, name }) => ({ id, name }));
 
-  ctx.body = { proposedOrganizations };
+  ctx.body = { proposedOrganizations: organizations };
+}
+
+async function getApproved(ctx) {
+  const organizations = await getOrganizations(true);
+
+  ctx.body = { proposedOrganizations: organizations };
 }
 
 async function getAll(ctx) {
@@ -51,4 +56,4 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { create, getProposed, getAll, update, remove };
+module.exports = { create, getProposed, getApproved, getAll, update, remove };
