@@ -9,7 +9,7 @@ admin.initializeApp({
 });
 
 async function getCustomToken(user) {
-  return await admin.auth().createCustomToken(user.id, user);
+  return await admin.auth().createCustomToken(user.id.toString(), user);
 }
 
 module.exports = { getCustomToken };
