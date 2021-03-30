@@ -19,20 +19,18 @@ function setErrorResponse(incomingError, ctx) {
   }
 }
 
-async function handler(ctx, next) {
-  try {
-    await next();
+async function errorHandler() {
+  return async (ctx, next) => {
+    try {
+      await next();
 
-    if (ctx.status === 404) setErrorResponse({ status: 404, message: ctx.response.message }, ctx);
-  } catch (err) {
-    setErrorResponse(err, ctx);
+      if (ctx.status === 404) setErrorResponse({ status: 404, message: ctx.response.message }, ctx);
+    } catch (err) {
+      setErrorResponse(err, ctx);
 
-    ctx.app.emit('error', err, ctx);
-  }
-}
-
-function errorHandler() {
-  return handler;
+      ctx.app.emit('error', err, ctx);
+    }
+  };
 }
 
 module.exports = errorHandler;
