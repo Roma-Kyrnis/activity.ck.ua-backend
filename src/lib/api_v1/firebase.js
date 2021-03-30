@@ -1,8 +1,15 @@
-const firebase = require('firebase');
+const admin = require('firebase-admin');
 
 const {
-  firebase: { config },
+  firebase: { serviceAccount },
 } = require('../../config');
 
-firebase.initializeApp(config);
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
+async function getCustomToken(user) {
+  return await admin.auth().createCustomToken(user.id, user);
+}
+
+module.exports = { getCustomToken };
