@@ -9,4 +9,5 @@ const {
 
 module.exports = {
   development: knex,
+  production: knex,
 };

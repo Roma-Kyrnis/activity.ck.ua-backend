@@ -1,4 +1,6 @@
 /* eslint-disable no-underscore-dangle */
+const log = require('../../utils/logger')(__filename);
+
 module.exports = (client) => {
   return {
     createPlace: async (place) => {
@@ -41,11 +43,10 @@ module.exports = (client) => {
           ],
         );
 
-        console.log(`DEBUG: New place created: ${JSON.stringify(res.rows[0])}`);
+        log.debug(res.rows[0], 'New place created:');
         return res.rows[0];
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -77,8 +78,7 @@ module.exports = (client) => {
 
         return place;
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -87,7 +87,7 @@ module.exports = (client) => {
       try {
         const { categoryId, types, accessibility, dogFriendly, childFriendly } = filters;
 
-        if (!types || !categoryId === !types.length) {
+        if (!categoryId === !types) {
           throw new Error('ERROR: Invalid filters!');
         }
 
@@ -113,31 +113,30 @@ module.exports = (client) => {
           throw new Error('ERROR: No filters!');
         }
 
-        values.push(limit);
-        values.push(page * limit + 1);
-
         let queryAccessibility = '';
         if (accessibility) queryAccessibility = 'AND accessibility';
         if (dogFriendly) queryAccessibility += ' AND dog_friendly';
         if (childFriendly) queryAccessibility += ' AND child_friendly';
+
+        const {
+          rows: [{ count }],
+        } = await client.query(
+          `SELECT COUNT(*) FROM places
+            WHERE ${queryFilter} ${queryAccessibility}
+              AND moderated AND deleted_at IS NULL;`,
+          values,
+        );
+        const total = Number(count);
+
+        values.push(limit);
+        values.push((page - 1) * limit);
 
         const { rows: places } = await client.query(
           `SELECT id, name, address, phones, website, main_photo, work_time, rating
             FROM places
             WHERE ${queryFilter} ${queryAccessibility}
               AND moderated AND deleted_at IS NULL
-            ORDER BY popularity_rating DESC
-            LIMIT $${values.length - 1} OFFSET $${values.length};`,
-          values,
-        );
-
-        const {
-          rows: [count],
-        } = await client.query(
-          `SELECT COUNT(*) FROM places
-            WHERE ${queryFilter} ${queryAccessibility}
-              AND moderated AND deleted_at IS NULL
-            ORDER BY popularity_rating DESC
+            ORDER BY popularity_rating DESC, id DESC
             LIMIT $${values.length - 1} OFFSET $${values.length};`,
           values,
         );
@@ -146,13 +145,12 @@ module.exports = (client) => {
         res.places = places;
         /* res._limit = limit;
         res._page = page; */
-        res._total = count;
-        res._totalPages = Math.ceil(count / limit);
+        res._total = total;
+        res._totalPages = Math.ceil(total / limit);
 
         return res;
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -190,11 +188,10 @@ module.exports = (client) => {
           values,
         );
 
-        console.log(`DEBUG: Place updated: ${JSON.stringify(res.rows[0])}`);
+        log.debug(res.rows[0], 'Place updated:');
         return res.rows[0];
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -209,8 +206,7 @@ module.exports = (client) => {
 
         return true;
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },

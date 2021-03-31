@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.7'
 services:
   db:
     container_name: db
@@ -6,7 +6,7 @@ services:
     env_file: 
       - .env
     ports:
-      - $EXTERNAL_POSTGRES_PORT:$POSTGRES_PORT
+      - '$POSTGRES_PORT:$DOCKER_POSTGRES_PORT'
     volumes:
       - ./.data:/var/lib/postgresql/data
 
@@ -15,17 +15,22 @@ services:
     image: adminer
     restart: always
     ports:
-      - 18080:8080
+      - '18080:8080'
 
   node-app:
     image: node-app
     container_name: node
+    volumes:
+      - ./src:/usr/src/app/src
+    environment:
+     - 'NODE_ENV=development'
     build:
       context: .
       dockerfile: Dockerfile
-    env_file: .env
     depends_on:
       - db
     ports:
-      - $PORT:$PORT
+      - '3000:$PORT'
+      - '9222:9229' # bind inspector to local 9222
+    command: run debug
     restart: always

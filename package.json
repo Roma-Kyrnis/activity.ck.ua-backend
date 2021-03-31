@@ -2,9 +2,12 @@
   "name": "activity.ck.ua-backend",
   "version": "1.0.0",
   "description": "activity.ck.ua-backend",
-  "main": "src/app.js",
+  "main": "src/main.js",
   "scripts": {
-    "start": "node src/app.js",
+    "start": "node src/main.js",
+    "seeds:make": "node src/db/seeds/index.js",
+    "eslint": "./node_modules/.bin/eslint ./src/",
+    "debug": "npx node-dev@latest --inspect=0.0.0.0:9229 ./src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "knex:migrate:make": "./node_modules/.bin/knex --knexfile=./src/db/knex/knexfile.js migrate:make",
     "knex:migrate:latest": "./node_modules/.bin/knex --knexfile=./src/db/knex/knexfile.js migrate:latest",
@@ -15,6 +18,9 @@
     "type": "git",
     "url": "git+https://github.com/DmytroTy/activity.ck.ua-backend.git"
   },
+  "engines": {
+    "node": ">=14.15.0"
+  },
   "author": "Kyrnis Roman, Tyshchenko Dmytro",
   "license": "ISC",
   "bugs": {
@@ -22,9 +28,19 @@
   },
   "homepage": "https://github.com/DmytroTy/activity.ck.ua-backend#readme",
   "dependencies": {
+    "@koa/cors": "^3.1.0",
     "dotenv": "^8.2.0",
+    "faker": "^5.4.0",
+    "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.17",
-    "pg": "^8.5.1"
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
+    "koa-helmet": "^6.0.0",
+    "koa-joi-router": "^7.0.0",
+    "koa-morgan": "^1.0.1",
+    "pg": "^8.5.1",
+    "pino": "^6.11.1",
+    "pino-pretty": "^4.7.0"
   },
   "devDependencies": {
     "eslint": "^7.19.0",

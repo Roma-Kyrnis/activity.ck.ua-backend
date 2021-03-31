@@ -1,4 +1,5 @@
 const { checkError } = require('../checkError');
+const log = require('../../utils/logger')(__filename);
 
 module.exports = (client) => {
   return {
@@ -23,31 +24,26 @@ module.exports = (client) => {
           [name, phones, email, userId],
         );
 
-        console.log(`DEBUG: New organization created: ${JSON.stringify(res.rows[0])}`);
+        log.debug(res.rows[0], 'New organization created:');
         return res.rows[0];
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw checkError(err);
       }
     },
 
-    getOrganizations: async () => {
+    getOrganizations: async (isModerated) => {
       try {
-        const { rows: moderated } = await client.query(
+        if (isModerated === undefined) throw new Error('ERROR: No parameter defined');
+
+        const res = await client.query(
           `SELECT id, name FROM organizations
-            WHERE moderated;`,
+            WHERE ${isModerated ? '' : 'NOT'} moderated;`,
         );
 
-        const { rows: notModerated } = await client.query(
-          `SELECT id, name FROM organizations
-            WHERE NOT moderated;`,
-        );
-
-        return { moderated, notModerated };
+        return res.rows;
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -84,11 +80,10 @@ module.exports = (client) => {
           values,
         );
 
-        console.log(`DEBUG: Organization updated: ${JSON.stringify(res.rows[0])}`);
+        log.debug(res.rows[0], 'Organization updated:');
         return res.rows[0];
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw checkError(err);
       }
     },
@@ -106,8 +101,7 @@ module.exports = (client) => {
 
         return true;
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
