@@ -72,9 +72,6 @@ const config = {
     email: process.env.MODERATOR_EMAIL || fatal('No MODERATOR_EMAIL'),
     password: process.env.MODERATOR_PASSWORD || fatal('No MODERATOR_PASSWORD'),
   },
-  faker: {
-    userId: 1,
-  },
 };
 
 module.exports = config;

@@ -19,7 +19,7 @@ function setErrorResponse(incomingError, ctx) {
   }
 }
 
-async function errorHandler() {
+function errorHandler() {
   return async (ctx, next) => {
     try {
       await next();
