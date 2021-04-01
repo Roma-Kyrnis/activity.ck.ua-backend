@@ -17,29 +17,24 @@ module.exports = (client) => {
         const values = [];
         const id = placeId || eventId;
         let i = 0;
+        let parameters;
+
+        const AddParameter = (value) => {
+          if (value) {
+            parameters.push(`$${++i}`);
+            values.push(value);
+          } else {
+            parameters.push('NULL');
+          }
+        };
 
         for (const photo of photos) {
-          const parameters = [];
+          parameters = [];
 
-          parameters.push(`$${++i}`);
-          values.push(photo.url);
-
-          if (photo.author_name) {
-            parameters.push(`$${++i}`);
-            values.push(photo.author_name);
-          } else {
-            parameters.push('NULL');
-          }
-
-          if (photo.author_link) {
-            parameters.push(`$${++i}`);
-            values.push(photo.author_link);
-          } else {
-            parameters.push('NULL');
-          }
-
-          parameters.push(`$${++i}`);
-          values.push(id);
+          AddParameter(photo.url);
+          AddParameter(photo.author_name);
+          AddParameter(photo.author_link);
+          AddParameter(id);
 
           query.push(`(${parameters.join(', ')})`);
         }
