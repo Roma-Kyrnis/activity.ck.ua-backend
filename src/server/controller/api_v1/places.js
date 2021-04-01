@@ -31,9 +31,9 @@ async function create(ctx) {
     organization_id: organizationId,
   };
 
-  const { id: placeId } = await createPlace(dataPlace);
+  const { id } = await createPlace(dataPlace);
 
-  await addPhotos(ctx.request.body.photos, placeId);
+  await addPhotos(ctx.request.body.photos, id, 'place_id');
 
   ctx.body = { message: 'OK' };
 }
@@ -44,9 +44,10 @@ async function getOne(ctx) {
   try {
     const place = await getPlace(id);
 
-    const photos = getPhotos(id);
+    const photos = await getPhotos(id, 'place_id');
+    place.photos = photos;
 
-    ctx.body = { place, photos };
+    ctx.body = { place };
   } catch (err) {
     err.status = 400;
     err.message = `No place with id - ${id}`;
