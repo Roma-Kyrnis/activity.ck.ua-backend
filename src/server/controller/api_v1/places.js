@@ -6,6 +6,7 @@ const {
   deletePlace,
   createOrganization,
   addPhotos,
+  getPhotos,
 } = require('../../../db');
 
 const {
@@ -43,7 +44,9 @@ async function getOne(ctx) {
   try {
     const place = await getPlace(id);
 
-    ctx.body = { place };
+    const photos = getPhotos(id);
+
+    ctx.body = { place, photos };
   } catch (err) {
     err.status = 400;
     err.message = `No place with id - ${id}`;
