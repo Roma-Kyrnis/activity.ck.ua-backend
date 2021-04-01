@@ -5,6 +5,7 @@ const {
   updatePlace,
   deletePlace,
   createOrganization,
+  addPhotos,
 } = require('../../../db');
 
 const {
@@ -12,12 +13,6 @@ const {
     default: { LIMIT, PAGE },
   },
 } = require('../../../config');
-
-async function savePhotos(placeId, photos) {
-  console.log({ photos, placeId });
-  const ids = [1, 2, 3];
-  return ids;
-}
 
 async function create(ctx) {
   let organizationId = ctx.request.body.organization_id;
@@ -37,7 +32,7 @@ async function create(ctx) {
 
   const { id: placeId } = await createPlace(dataPlace);
 
-  await savePhotos(placeId, ctx.request.body.photos);
+  await addPhotos(ctx.request.body.photos, placeId);
 
   ctx.body = { message: 'OK' };
 }
