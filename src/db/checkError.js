@@ -20,11 +20,15 @@ function checkError(err) {
   }
 
   if (err.constraint === 'organizations_email_unk') {
-    return new DatabaseError('ERROR: A organization with the same email is already registered!');
+    return new DatabaseError('ERROR: An organization with the same email is already registered!');
   }
 
   if (err.constraint === 'organizations_name_unk') {
-    return new DatabaseError('ERROR: A organization with the same name is already registered!');
+    return new DatabaseError('ERROR: An organization with the same name is already registered!');
+  }
+
+  if (err.constraint === 'places_fk0') {
+    return new DatabaseError('ERROR: An organization with this ID does not exist!');
   }
 
   return err;
