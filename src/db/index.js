@@ -89,5 +89,5 @@ module.exports = {
 
   addPhotos: async (photos, id, nameId) => funcWrapper(dbWrapper().addPhotos)(photos, id, nameId),
   getPhotos: async (id, nameId) => funcWrapper(dbWrapper().getPhotos)(id, nameId),
-  deletePhoto: async (id) => funcWrapper(dbWrapper().deletePhoto)(id),
+  deletePhotos: async (ids) => funcWrapper(dbWrapper().deletePhotos)(ids),
 };
