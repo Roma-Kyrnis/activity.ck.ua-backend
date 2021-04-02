@@ -2,6 +2,7 @@ const { Pool } = require('pg');
 const users = require('./users');
 const organizations = require('./organizations');
 const places = require('./places');
+const photos = require('./photos');
 const log = require('../../utils/logger')(__filename);
 
 const name = 'pg';
@@ -24,6 +25,7 @@ module.exports = (config) => {
     deleteOrganization,
   } = organizations(client);
   const { createPlace, getPlace, getPlaces, updatePlace, deletePlace } = places(client);
+  const { addPhotos, getPhotos, deletePhoto } = photos(client);
 
   return {
     testConnection: async () => {
@@ -59,5 +61,9 @@ module.exports = (config) => {
     getPlaces,
     updatePlace,
     deletePlace,
+
+    addPhotos,
+    getPhotos,
+    deletePhoto,
   };
 };
