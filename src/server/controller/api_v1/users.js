@@ -1,11 +1,16 @@
 const {
+  getUser: getUserDB,
   getPlace,
+  getPlaces: getPlacesDB,
   getEvent,
   getUsersVisitedPlaces,
   getUsersFavoritesPlaces,
   getUsersPlaces,
   getUsersEvents,
   getUsersScheduledEvents,
+  getUsersOrganizations,
+  addReview: addUsersReview,
+  getUsersReviews,
 } = require('../../../db');
 
 const {
@@ -24,6 +29,14 @@ function getUserIdAndPageInfo(ctx) {
   page = parseInt(page || PAGE, 10);
 
   return { userId, limit, page };
+}
+
+async function getUser(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+
+  const user = await getUserDB(userId);
+
+  ctx.body = { user };
 }
 
 async function mainPage(ctx) {
@@ -62,6 +75,18 @@ async function mainPage(ctx) {
   response.scheduled_events = await getSectionInfo(getUsersScheduledEvents, EVENT_ID);
 
   ctx.body = response;
+}
+
+async function research(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+
+  // const { category_id } = ctx.request.query;
+
+  // const visitedPlaces = await getUsersVisitedPlaces(userId);
+
+  // const places = await getUsersVisitedPlaces();
+
+  ctx.body = { message: 'OK' };
 }
 
 async function getVisitedPlaces(ctx) {
@@ -104,11 +129,39 @@ async function getScheduledEvents(ctx) {
   ctx.body = { scheduled_events: scheduledEvents };
 }
 
+async function getOrganizations(ctx) {
+  const { userId, limit, page } = getUserIdAndPageInfo(ctx);
+
+  const organizations = await getUsersOrganizations(userId, limit, page);
+
+  ctx.body = { organizations };
+}
+
+async function addReview(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+
+  await addUsersReview({ ...ctx.request.body, user_id: userId });
+
+  ctx.body = { message: 'OK' };
+}
+
+async function getReviews(ctx) {
+  const { userId, limit, page } = getUserIdAndPageInfo(ctx);
+
+  const reviews = await getUsersReviews(userId, limit, page);
+
+  ctx.body = { reviews };
+}
+
 module.exports = {
+  getUser,
   mainPage,
   getVisitedPlaces,
   getFavoritesPlaces,
   getPlaces,
   getEvents,
   getScheduledEvents,
+  getOrganizations,
+  addReview,
+  getReviews,
 };
