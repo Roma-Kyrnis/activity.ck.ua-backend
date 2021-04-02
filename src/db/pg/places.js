@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const log = require('../../utils/logger')(__filename);
+const { checkError } = require('../checkError');
 
 module.exports = (client) => {
   return {
@@ -46,7 +47,7 @@ module.exports = (client) => {
         return res.rows[0];
       } catch (err) {
         log.error(err.message || err);
-        throw err;
+        throw checkError(err);
       }
     },
 
@@ -179,7 +180,7 @@ module.exports = (client) => {
         return res.rows[0];
       } catch (err) {
         log.error(err.message || err);
-        throw err;
+        throw checkError(err);
       }
     },
 
