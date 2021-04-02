@@ -1,7 +1,6 @@
 const {
   getUser: getUserDB,
   getPlace,
-  getPlaces: getPlacesDB,
   getEvent,
   getUsersVisitedPlaces,
   getUsersFavoritesPlaces,
@@ -11,6 +10,7 @@ const {
   getUsersOrganizations,
   addReview: addUsersReview,
   getUsersReviews,
+  getUsersResearch,
 } = require('../../../db');
 
 const {
@@ -39,7 +39,7 @@ async function getUser(ctx) {
   ctx.body = { user };
 }
 
-async function mainPage(ctx) {
+async function activity(ctx) {
   const { id: userId } = ctx.state.authPayload;
 
   const getSectionInfo = async (sectionFunction, sectionIdKey) => {
@@ -77,16 +77,14 @@ async function mainPage(ctx) {
   ctx.body = response;
 }
 
-async function research(ctx) {
+async function getResearch(ctx) {
   const { id: userId } = ctx.state.authPayload;
 
-  // const { category_id } = ctx.request.query;
+  const { category_id: categoryId } = ctx.request.query;
 
-  // const visitedPlaces = await getUsersVisitedPlaces(userId);
+  const research = await getUsersResearch(userId, categoryId);
 
-  // const places = await getUsersVisitedPlaces();
-
-  ctx.body = { message: 'OK' };
+  ctx.body = { research };
 }
 
 async function getVisitedPlaces(ctx) {
@@ -155,8 +153,8 @@ async function getReviews(ctx) {
 
 module.exports = {
   getUser,
-  mainPage,
-  research,
+  activity,
+  getResearch,
   getVisitedPlaces,
   getFavoritesPlaces,
   getPlaces,

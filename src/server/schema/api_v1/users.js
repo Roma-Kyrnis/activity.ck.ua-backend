@@ -8,7 +8,7 @@ const getUser = {
   }).unknown(),
 };
 
-const mainPage = {
+const activity = {
   header: Joi.object({
     authorization: Joi.string()
       .pattern(/^[a-zA-Z]+ .+$/)
@@ -16,7 +16,7 @@ const mainPage = {
   }).unknown(),
 };
 
-const research = {
+const getResearch = {
   header: Joi.object({
     authorization: Joi.string()
       .pattern(/^[a-zA-Z]+ .+$/)
@@ -134,8 +134,8 @@ const getReviews = {
 
 module.exports = {
   getUser,
-  mainPage,
-  research,
+  activity,
+  getResearch,
   getVisitedPlaces,
   getFavoritesPlaces,
   getPlaces,

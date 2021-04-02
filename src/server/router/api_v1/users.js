@@ -21,17 +21,17 @@ router.prefix(USERS);
 
 router.get('/', { validate: validator.getUser }, access(['user', 'organizer']), users.getUser);
 router.get(
-  '/main',
-  { validate: validator.mainPage },
+  '/activity',
+  { validate: validator.activity },
   access(['user', 'organizer']),
-  users.mainPage,
+  users.activity,
 );
 
 router.get(
   '/research',
-  { validate: validator.research },
+  { validate: validator.getResearch },
   access(['user', 'organizer']),
-  users.research,
+  users.getResearch,
 );
 
 router.get(
