@@ -19,6 +19,7 @@ services:
 
   node-app:
     image: node-app
+    container_name: node
     build:
       context: .
       dockerfile: Dockerfile

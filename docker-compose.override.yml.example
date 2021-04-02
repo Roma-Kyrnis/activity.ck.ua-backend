@@ -19,7 +19,7 @@ services:
 
   node-app:
     image: node-app
-    container_name: demo
+    container_name: node
     volumes:
       - ./src:/usr/src/app/src
     environment:

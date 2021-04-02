@@ -1,24 +1,3 @@
-<!-- # activity.ck.ua-backend
-
-# 1 create .env file
-cp .env.example .env
-
-# 2 replace parameters with real
-nano .env
-
-# 3 install dependencies
-npm i -ci
-
-# 4 start docker-compose
-docker-compose up -d
-
-# 5 start migrations
-npm run knex:migrate:latest 
-
-# 6 run
-npm start -->
-
-
 # Docker-compose. Start server in container
 
 ## 1. Create .env file
@@ -37,17 +16,12 @@ sudo docker-compose up --build
 ```
 
 ## 4. Migrations
-### 1. Find container_id with image name "node-app"
+### 1. Start migration with found container_id
 ```bash
-sudo docker ps
+sudo docker exec -it node npm run knex:migrate:latest
 ```
 
-### 2. Start migration with found container_id
+### 2. Plant seeds
 ```bash
-sudo docker exec -it [CONTAINER_ID] npm run knex:migrate:latest
-```
-
-### 3. Plant seeds
-```bash
-sudo docker exec -it [CONTAINER_ID] npm run seeds:make
+sudo docker exec -it node npm run seeds:make
 ```
