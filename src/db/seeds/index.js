@@ -8,6 +8,7 @@ const {
   updateOrganization,
   createPlace,
   updatePlace,
+  addPhotos,
 } = require('../index');
 const { faker } = require('../../lib/api_v1');
 const {
@@ -69,7 +70,8 @@ async function initPlaces(params) {
     organizationId = organization.id;
   }
 
-  for await (const i of new Array(count)) {
+  // eslint-disable-next-line no-empty-pattern
+  for await (const {} of new Array(count)) {
     try {
       const place = await createPlace({
         ...faker.place(),
@@ -77,12 +79,15 @@ async function initPlaces(params) {
         organization_id: organizationId,
       });
       await updatePlace({ id: place.id, moderated: true });
+
+      const photos = faker.photos();
+      await addPhotos(photos, place.id, 'place_id');
+
+      log.info(place, `Places created`);
     } catch (err) {
       log.error(`Cannot create place: ${err.message}`);
     }
   }
-
-  log.info(`${count} places created`);
 }
 
 async function start() {
