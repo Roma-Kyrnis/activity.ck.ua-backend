@@ -1,4 +1,6 @@
 /* eslint-disable no-underscore-dangle */
+const log = require('../../utils/logger')(__filename);
+
 module.exports = (client) => {
   return {
     createPlace: async (place) => {
@@ -7,7 +9,6 @@ module.exports = (client) => {
           throw new Error('ERROR: No place defined');
         }
 
-        // place.phones = `{${place.phones.map((p) => `"${p}"`).join(', ')}}`;
         if (!place.website) place.website = null;
         if (!place.type_id) place.type_id = null;
 
@@ -41,25 +42,21 @@ module.exports = (client) => {
           ],
         );
 
-        console.log(`DEBUG: New place created: ${JSON.stringify(res.rows[0])}`);
+        log.debug(res.rows[0], 'New place created:');
         return res.rows[0];
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
 
-    // + events & reviews
     getPlace: async (id) => {
       try {
         if (!id) {
           throw new Error('ERROR: No place id defined');
         }
 
-        const {
-          rows: [place],
-        } = await client.query(
+        const res = await client.query(
           `SELECT id, name, address, phones, website, description, accessibility,
               dog_friendly, child_friendly, work_time, rating,
               organization_id FROM places
@@ -67,18 +64,9 @@ module.exports = (client) => {
           [id],
         );
 
-        const { rows: photos } = await client.query(
-          `SELECT id, url, author_name, author_link FROM photos
-            WHERE place_id = $1;`,
-          [id],
-        );
-
-        place.photos = photos;
-
-        return place;
+        return res.rows[0];
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -113,31 +101,30 @@ module.exports = (client) => {
           throw new Error('ERROR: No filters!');
         }
 
-        values.push(limit);
-        values.push(page * limit + 1);
-
         let queryAccessibility = '';
         if (accessibility) queryAccessibility = 'AND accessibility';
         if (dogFriendly) queryAccessibility += ' AND dog_friendly';
         if (childFriendly) queryAccessibility += ' AND child_friendly';
+
+        const {
+          rows: [{ count }],
+        } = await client.query(
+          `SELECT COUNT(*) FROM places
+            WHERE ${queryFilter} ${queryAccessibility}
+              AND moderated AND deleted_at IS NULL;`,
+          values,
+        );
+        const total = Number(count);
+
+        values.push(limit);
+        values.push((page - 1) * limit);
 
         const { rows: places } = await client.query(
           `SELECT id, name, address, phones, website, main_photo, work_time, rating
             FROM places
             WHERE ${queryFilter} ${queryAccessibility}
               AND moderated AND deleted_at IS NULL
-            ORDER BY popularity_rating DESC
-            LIMIT $${values.length - 1} OFFSET $${values.length};`,
-          values,
-        );
-
-        const {
-          rows: [count],
-        } = await client.query(
-          `SELECT COUNT(*) FROM places
-            WHERE ${queryFilter} ${queryAccessibility}
-              AND moderated AND deleted_at IS NULL
-            ORDER BY popularity_rating DESC
+            ORDER BY popularity_rating DESC, id DESC
             LIMIT $${values.length - 1} OFFSET $${values.length};`,
           values,
         );
@@ -146,13 +133,12 @@ module.exports = (client) => {
         res.places = places;
         /* res._limit = limit;
         res._page = page; */
-        res._total = count || 0;
-        res._totalPages = Math.ceil(count ? count / limit : 0);
+        res._total = total;
+        res._totalPages = Math.ceil(total / limit);
 
         return res;
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -167,7 +153,6 @@ module.exports = (client) => {
           throw new Error('ERROR: Nothing to update');
         }
 
-        // if (place.phones) place.phones = `{${place.phones.map((p) => `"${p}"`).join(', ')}}`;
         place.updated_at = new Date();
 
         const query = [];
@@ -190,11 +175,10 @@ module.exports = (client) => {
           values,
         );
 
-        console.log(`DEBUG: Place updated: ${JSON.stringify(res.rows[0])}`);
+        log.debug(res.rows[0], 'Place updated:');
         return res.rows[0];
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -209,8 +193,7 @@ module.exports = (client) => {
 
         return true;
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },

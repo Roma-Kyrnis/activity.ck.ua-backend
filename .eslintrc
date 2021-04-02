@@ -11,13 +11,15 @@
   ],
   "root": true,
   "rules": {
-    "no-console":"off",
+    "no-console":"warn",
     "prettier/prettier": "error",
     "no-param-reassign": [
       "error",
       {
         "props": false
       }
-    ]
+    ],
+    "no-return-await": "off",
+    "no-restricted-syntax": "off"
   }
 }

@@ -1,7 +1,9 @@
 const {
   db: { config, defaultType },
 } = require('../config');
-const { fatal } = require('../utils');
+const fatal = require('../utils/fatalError')(__filename);
+
+const log = require('../utils/logger')(__filename);
 
 const db = {};
 let type = defaultType;
@@ -9,7 +11,7 @@ let type = defaultType;
 const funcWrapper = (func) =>
   typeof func === 'function'
     ? func
-    : fatal(`FATAL: Cannot find ${func.name} function for current DB wrapper`);
+    : fatal(`Cannot find ${func.name} function for current DB wrapper`);
 
 const init = async () => {
   try {
@@ -19,12 +21,13 @@ const init = async () => {
       const wrapper = require(`./${k}`)(v);
       // eslint-disable-next-line no-await-in-loop
       await wrapper.testConnection();
-      console.log(`INFO: DB wrapper for ${k} initiated`);
+      log.info(`DB wrapper for ${k} initiated`);
       db[k] = wrapper;
     }
   } catch (err) {
-    // logger
-    fatal(`FATAL: ${err.message || err}`);
+    const error = err.message || err;
+    log.error(error);
+    fatal(error);
   }
 };
 
@@ -33,17 +36,17 @@ const end = async () => {
   for (const [k, v] of Object.entries(db)) {
     // eslint-disable-next-line no-await-in-loop
     await v.close();
-    console.log(`INFO: DB wrapper for ${k} was closed`);
+    log.info(`DB wrapper for ${k} was closed`);
   }
 };
 
 const setType = (t) => {
   if (!t || !db[t]) {
-    console.log('WARNING: Cannot find provided DB type!');
+    log.warn('Cannot find provided DB type!');
     return false;
   }
   type = t;
-  console.log(`INFO: The DB type has been changed to ${t}`);
+  log.info(`The DB type has been changed to ${t}`);
   return true;
 };
 
@@ -63,15 +66,16 @@ module.exports = {
   close: async () => funcWrapper(dbWrapper().close)(),
 
   createUser: async (user) => funcWrapper(dbWrapper().createUser)(user),
-  getUser: async (email) => funcWrapper(dbWrapper().getUser)(email),
+  getUser: async (id) => funcWrapper(dbWrapper().getUser)(id),
   checkUser: async (email) => funcWrapper(dbWrapper().checkUser)(email),
   getUserCredentials: async (email) => funcWrapper(dbWrapper().getUserCredentials)(email),
+  getUserToken: async (id) => funcWrapper(dbWrapper().getUserToken)(id),
   updateUser: async (user) => funcWrapper(dbWrapper().updateUser)(user),
   deleteUser: async (id) => funcWrapper(dbWrapper().deleteUser)(id),
 
   createOrganization: async (organization) =>
     funcWrapper(dbWrapper().createOrganization)(organization),
-  getOrganizations: async () => funcWrapper(dbWrapper().getOrganizations)(),
+  getOrganizations: async (isModerated) => funcWrapper(dbWrapper().getOrganizations)(isModerated),
   updateOrganization: async (organization) =>
     funcWrapper(dbWrapper().updateOrganization)(organization),
   deleteOrganization: async (id) => funcWrapper(dbWrapper().deleteOrganization)(id),
@@ -82,4 +86,8 @@ module.exports = {
     funcWrapper(dbWrapper().getPlaces)(filters, limit, page),
   updatePlace: async (place) => funcWrapper(dbWrapper().updatePlace)(place),
   deletePlace: async (id) => funcWrapper(dbWrapper().deletePlace)(id),
+
+  addPhotos: async (photos, id, nameId) => funcWrapper(dbWrapper().addPhotos)(photos, id, nameId),
+  getPhotos: async (id, nameId) => funcWrapper(dbWrapper().getPhotos)(id, nameId),
+  deletePhotos: async (ids) => funcWrapper(dbWrapper().deletePhotos)(ids),
 };

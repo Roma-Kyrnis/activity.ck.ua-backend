@@ -2,10 +2,22 @@ const { Pool } = require('pg');
 const users = require('./users');
 const organizations = require('./organizations');
 const places = require('./places');
+const photos = require('./photos');
+const log = require('../../utils/logger')(__filename);
+
+const name = 'pg';
 
 module.exports = (config) => {
   const client = new Pool(config);
-  const { createUser, getUser, getUserCredentials, updateUser, deleteUser } = users(client);
+  const {
+    createUser,
+    getUser,
+    checkUser,
+    getUserCredentials,
+    getUserToken,
+    updateUser,
+    deleteUser,
+  } = users(client);
   const {
     createOrganization,
     getOrganizations,
@@ -13,26 +25,29 @@ module.exports = (config) => {
     deleteOrganization,
   } = organizations(client);
   const { createPlace, getPlace, getPlaces, updatePlace, deletePlace } = places(client);
+  const { addPhotos, getPhotos, deletePhotos } = photos(client);
 
   return {
     testConnection: async () => {
       try {
-        console.log(`hello from pg testConnection`);
+        log.info(`Hello from ${name} testConnection`);
         await client.query('SELECT NOW();');
       } catch (err) {
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
 
     close: async () => {
-      console.log(`INFO: Closing pg DB wrapper`);
+      log.info(`Closing ${name} DB wrapper`);
       client.end();
     },
 
     createUser,
     getUser,
+    checkUser,
     getUserCredentials,
+    getUserToken,
     updateUser,
     deleteUser,
 
@@ -46,5 +61,9 @@ module.exports = (config) => {
     getPlaces,
     updatePlace,
     deletePlace,
+
+    addPhotos,
+    getPhotos,
+    deletePhotos,
   };
 };

@@ -1,4 +1,5 @@
 const { checkError } = require('../checkError');
+const log = require('../../utils/logger')(__filename);
 
 module.exports = (client) => {
   return {
@@ -23,31 +24,29 @@ module.exports = (client) => {
           [name, avatar, email, passwordHash || null, timestamp, timestamp],
         );
 
-        console.log(`DEBUG: New user created: ${JSON.stringify(res.rows[0])}`);
+        log.debug(res.rows[0], 'New user created:');
         return res.rows[0];
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw checkError(err);
       }
     },
 
-    getUser: async (email) => {
+    getUser: async (id) => {
       try {
-        if (!email) {
-          throw new Error('ERROR: No user email defined');
+        if (!id) {
+          throw new Error('ERROR: No user id defined');
         }
 
         const res = await client.query(
           `SELECT id, name, avatar, email, role, created_at, updated_at FROM users
-            WHERE email = $1 AND deleted_at IS NULL;`,
-          [email],
+            WHERE id = $1 AND deleted_at IS NULL;`,
+          [id],
         );
 
         return res.rows[0];
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -62,8 +61,7 @@ module.exports = (client) => {
 
         return res.rows[0];
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -75,15 +73,33 @@ module.exports = (client) => {
         }
 
         const res = await client.query(
-          `SELECT id, email, password_hash, role, refresh_token FROM users
+          `SELECT id, email, password_hash, role FROM users
             WHERE email = $1 AND deleted_at IS NULL;`,
           [email],
         );
 
         return res.rows[0];
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
+        throw err;
+      }
+    },
+
+    getUserToken: async (id) => {
+      try {
+        if (!id) {
+          throw new Error('ERROR: No user id defined');
+        }
+
+        const res = await client.query(
+          `SELECT id, role, refresh_token FROM users
+            WHERE id = $1 AND deleted_at IS NULL;`,
+          [id],
+        );
+
+        return res.rows[0];
+      } catch (err) {
+        log.error(err.message || err);
         throw err;
       }
     },
@@ -118,11 +134,10 @@ module.exports = (client) => {
           values,
         );
 
-        console.log(`DEBUG: User updated: ${JSON.stringify(res.rows[0])}`);
+        log.debug(res.rows[0], 'User updated:');
         return res.rows[0];
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw checkError(err);
       }
     },
@@ -137,8 +152,7 @@ module.exports = (client) => {
 
         return true;
       } catch (err) {
-        // logger
-        console.error(err.message || err);
+        log.error(err.message || err);
         throw err;
       }
     },
