@@ -74,7 +74,7 @@ const config = {
     password: process.env.MODERATOR_PASSWORD || fatal('No MODERATOR_PASSWORD'),
   },
   users: {
-    ITEMS_IN_SECTION: 2,
+    default: { PAGE: 1, LIMIT: 5, ITEMS_IN_SECTION: 2 },
     section: {
       PLACE_ID: 'place_id',
       EVENT_ID: 'event_id',
