@@ -5,7 +5,7 @@ module.exports = (client) => {
   return {
     addPhotos: async (photos, id, nameId) => {
       try {
-        if (!Object.keys(photos).length) {
+        if (!photos.length) {
           throw new Error('ERROR: No photos defined');
         }
 
@@ -80,13 +80,18 @@ module.exports = (client) => {
       }
     },
 
-    deletePhoto: async (id) => {
+    deletePhotos: async (ids) => {
       try {
-        if (!id) {
-          throw new Error('ERROR: No photo id defined');
+        if (!ids.length) {
+          throw new Error('ERROR: No photos defined!');
         }
 
-        await client.query('DELETE FROM photos WHERE id = $1;', [id]);
+        const query = [];
+        for (const [i] of ids.entries()) {
+          query.push(`$${i + 1}`);
+        }
+
+        await client.query(`DELETE FROM photos WHERE id IN (${query.join(', ')})`, ids);
 
         return true;
       } catch (err) {

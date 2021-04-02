@@ -25,7 +25,7 @@ module.exports = (config) => {
     deleteOrganization,
   } = organizations(client);
   const { createPlace, getPlace, getPlaces, updatePlace, deletePlace } = places(client);
-  const { addPhotos, getPhotos, deletePhoto } = photos(client);
+  const { addPhotos, getPhotos, deletePhotos } = photos(client);
 
   return {
     testConnection: async () => {
@@ -64,6 +64,6 @@ module.exports = (config) => {
 
     addPhotos,
     getPhotos,
-    deletePhoto,
+    deletePhotos,
   };
 };
