@@ -116,6 +116,7 @@ const addReview = {
       .pattern(/^[1-9]\d*$/)
       .required(),
   }),
+  type: 'json',
 };
 
 const getReviews = {

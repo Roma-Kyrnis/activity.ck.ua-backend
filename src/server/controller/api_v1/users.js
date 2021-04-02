@@ -156,6 +156,7 @@ async function getReviews(ctx) {
 module.exports = {
   getUser,
   mainPage,
+  research,
   getVisitedPlaces,
   getFavoritesPlaces,
   getPlaces,

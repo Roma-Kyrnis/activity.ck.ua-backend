@@ -80,7 +80,7 @@ router.post(
   '/review',
   { validate: validator.addReview },
   access(['user', 'organizer']),
-  users.addReviews,
+  users.addReview,
 );
 router.get(
   '/reviews',
