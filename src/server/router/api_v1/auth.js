@@ -6,7 +6,9 @@ const {
 const {
   apiV1: { auth: validator },
 } = require('../../schema');
-const { checkTokens } = require('../../middleware');
+const {
+  checkTokens: { refresh },
+} = require('../../middleware');
 const {
   server: {
     prefix: { AUTH },
@@ -19,7 +21,7 @@ router.prefix(AUTH);
 
 router.post('/registration', { validate: validator.registration }, auth.registration);
 router.post('/login', { validate: validator.login }, auth.login);
-router.get('/refresh', { validate: validator.refresh }, checkTokens.refresh(), auth.refresh);
-router.get('/logout', { validate: validator.logout }, checkTokens.refresh(), auth.logout);
+router.get('/refresh', { validate: validator.refresh }, refresh(), auth.refresh);
+router.get('/logout', { validate: validator.logout }, refresh(), auth.logout);
 
 module.exports = router;

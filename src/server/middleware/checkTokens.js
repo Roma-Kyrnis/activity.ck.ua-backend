@@ -19,17 +19,29 @@ function getAuthToken() {
 }
 
 function checkAccessToken(roles = []) {
+  const isAccess = (role) => {
+    const isModerator = role === MODERATOR;
+    if (isModerator) {
+      return true;
+    }
+
+    const isClientRolePermissible = roles.find((clientRole) => clientRole === role);
+    if (isClientRolePermissible) {
+      return true;
+    }
+
+    return false;
+  };
+
   return async (ctx, next) => {
     try {
       // const data = await verifyAccessToken(ctx.state.token);
 
-      // ctx.assert(
-      //   roles.find((role) => role === data.role) || data.role === MODERATOR,
-      //   401,
-      //   `Access denied for ${data.role}`,
-      // );
+      // ctx.assert(isAccess(data.role), 401, `Access denied for ${data.role}`);
 
       // ctx.state.authPayload = data;
+
+      // ------- Temporary: ------- Because authorization does not work on frontend
       ctx.state.authPayload = {
         id: DEFAULT_USER_ID,
         role: MODERATOR,
