@@ -148,4 +148,78 @@ const remove = {
   }),
 };
 
-module.exports = { create, getOne, getApproved, update, remove };
+const addReview = {
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
+  params: Joi.object({
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+  body: Joi.object({
+    rating: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    review_text: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+};
+
+const getReviews = {
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
+  params: Joi.object({
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+  query: Joi.object({
+    _page: Joi.string().pattern(/^[1-9]\d*$/),
+    _limit: Joi.string().pattern(/^[1-9]\d*$/),
+  }),
+};
+
+const addAttend = {
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
+  params: Joi.object({
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+};
+
+const addFavorite = {
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
+  params: Joi.object({
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+};
+
+module.exports = {
+  create,
+  getOne,
+  getApproved,
+  update,
+  remove,
+  addReview,
+  getReviews,
+  addAttend,
+  addFavorite,
+};

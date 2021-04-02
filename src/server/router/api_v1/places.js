@@ -25,4 +25,26 @@ router.get('/', { validate: validator.getApproved }, places.getApproved);
 router.put('/:id', { validate: validator.update }, places.update);
 router.delete('/:id', { validate: validator.remove }, places.remove);
 
+router.post(
+  '/:id/reviews/',
+  { validate: validator.addReview },
+  access(['user', 'organizer']),
+  places.addReview,
+);
+router.get('/:id/reviews/', { validate: validator.getReviews }, places.getReviews);
+
+router.post(
+  '/:id/attends/',
+  { validate: validator.addAttend },
+  access(['user', 'organizer']),
+  places.addAttend,
+);
+
+router.post(
+  '/:id/favorites/',
+  { validate: validator.addFavorite },
+  access(['user', 'organizer']),
+  places.addFavorite,
+);
+
 module.exports = router;

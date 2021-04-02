@@ -5,6 +5,10 @@ const {
   updatePlace,
   deletePlace,
   createOrganization,
+  addReview: addPlacesReview,
+  getPlacesReviews,
+  addAttend: addPlacesAttend,
+  addFavorites: addPlacesFavorites,
 } = require('../../../db');
 
 const {
@@ -57,10 +61,10 @@ async function getOne(ctx) {
 }
 
 async function getApproved(ctx) {
-  // eslint-disable-next-line no-underscore-dangle
-  const limit = parseInt(ctx.request.query._limit || LIMIT, 10);
-  // eslint-disable-next-line no-underscore-dangle
-  const page = parseInt(ctx.request.query._page || PAGE, 10);
+  let { _limit: limit, _page: page } = ctx.request.query;
+
+  limit = parseInt(limit || LIMIT, 10);
+  page = parseInt(page || PAGE, 10);
 
   const {
     type_id: types,
@@ -98,4 +102,54 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { create, getOne, getApproved, update, remove };
+async function addReview(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+
+  const placeId = parseInt(ctx.request.params.id, 10);
+  await addPlacesReview({ ...ctx.request.body, user_id: userId, place_id: placeId });
+
+  ctx.body = { message: 'OK' };
+}
+
+async function getReviews(ctx) {
+  const placeId = parseInt(ctx.request.params.id, 10);
+
+  let { _limit: limit, _page: page } = ctx.request.query;
+
+  limit = parseInt(limit || LIMIT, 10);
+  page = parseInt(page || PAGE, 10);
+
+  const reviews = await getPlacesReviews(placeId, limit, page);
+
+  ctx.body = { reviews };
+}
+
+async function addAttend(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+
+  const placeId = parseInt(ctx.request.params.id, 10);
+  await addPlacesAttend({ user_id: userId, place_id: placeId });
+
+  ctx.body = { message: 'OK' };
+}
+
+async function addFavorite(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+
+  const placeId = parseInt(ctx.request.params.id, 10);
+  await addPlacesFavorites({ user_id: userId, place_id: placeId });
+
+  ctx.body = { message: 'OK' };
+}
+
+module.exports = {
+  create,
+  getOne,
+  getApproved,
+  update,
+  remove,
+  addReview,
+  getReviews,
+  addAttend,
+  addFavorite,
+};
