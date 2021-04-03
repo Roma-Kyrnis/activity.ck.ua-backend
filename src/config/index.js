@@ -27,12 +27,11 @@ const config = {
   errors: {
     DATABASE: 'DatabaseError',
   },
-  places: {
-    default: {
-      LIMIT: 5,
-      PAGE: 1,
-    },
+  PLACES: {
+    LIMIT: 5,
+    PAGE: 1,
   },
+  REVIEWS: { LIMiT: 2, PAGE: 1 },
   roles: {
     USER: 'user',
     ORGANIZER: 'organizer',

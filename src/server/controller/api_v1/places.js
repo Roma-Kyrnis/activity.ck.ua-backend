@@ -11,11 +11,7 @@ const {
   addFavorites: addPlacesFavorites,
 } = require('../../../db');
 
-const {
-  places: {
-    default: { LIMIT, PAGE },
-  },
-} = require('../../../config');
+const { PLACES, REVIEWS } = require('../../../config');
 
 async function savePhotos(placeId, photos) {
   console.log({ photos, placeId });
@@ -50,9 +46,15 @@ async function getOne(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
 
   try {
-    const place = await getPlace(id);
+    const response = {};
 
-    ctx.body = { place };
+    const place = await getPlace(id);
+    response.place = place;
+
+    // const reviews = await getPlacesReviews(id, REVIEWS.LIMIT, REVIEWS.PAGE);
+    // response.reviews = reviews;
+
+    ctx.body = response;
   } catch (err) {
     err.status = 400;
     err.message = `No place with id - ${id}`;
@@ -63,8 +65,8 @@ async function getOne(ctx) {
 async function getApproved(ctx) {
   let { _limit: limit, _page: page } = ctx.request.query;
 
-  limit = parseInt(limit || LIMIT, 10);
-  page = parseInt(page || PAGE, 10);
+  limit = parseInt(limit || PLACES.LIMIT, 10);
+  page = parseInt(page || PLACES.PAGE, 10);
 
   const {
     type_id: types,
@@ -116,8 +118,8 @@ async function getReviews(ctx) {
 
   let { _limit: limit, _page: page } = ctx.request.query;
 
-  limit = parseInt(limit || LIMIT, 10);
-  page = parseInt(page || PAGE, 10);
+  limit = parseInt(limit || PLACES.LIMIT, 10);
+  page = parseInt(page || PLACES.PAGE, 10);
 
   const reviews = await getPlacesReviews(placeId, limit, page);
 
