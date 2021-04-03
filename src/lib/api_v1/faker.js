@@ -1,23 +1,43 @@
 const faker = require('faker');
 
+const { hash } = require('../../utils');
 const {
-  faker: {
-    CATEGORY_IDS,
-    TYPE_IDS,
-    MIN_PHOTO,
-    MAX_PHOTO,
-    user: { PASSWORDS },
-  },
   places: {
     default: { DAYS },
   },
 } = require('../../config');
 
+const PASSWORDS = ['12345678'];
+const CATEGORY_IDS = [
+  'culture',
+  'recreation',
+  'children',
+  'todo_something',
+  'history',
+  'unique_things',
+  'sleeping',
+  'inspired_city',
+  'gastronomic_adventures',
+];
+const TYPE_IDS = [
+  '',
+  'hotels',
+  'sport',
+  'water',
+  'coffee',
+  'fastfood',
+  'hostels',
+  'stadium',
+  'gym',
+];
+const MIN_PHOTO = 1;
+const MAX_PHOTO = 10;
+
 const user = () => ({
   name: faker.name.findName(),
   avatar: faker.internet.avatar(),
   email: faker.internet.email(),
-  passwordHash: faker.random.arrayElement(PASSWORDS),
+  passwordHash: hash.create(faker.random.arrayElement(PASSWORDS)),
 });
 
 const organization = () => ({
@@ -30,8 +50,8 @@ function getWorkTime() {
   const workTime = {};
 
   for (let day = 0; day <= faker.random.number({ min: 1, max: 6 }); day += 1) {
-    const startMinutes = faker.random.number({ min: 0, max: 24 });
-    const endMinutes = faker.random.number({ min: 0, max: 24 });
+    const startMinutes = faker.random.number({ min: 0, max: 60 });
+    const endMinutes = faker.random.number({ min: 0, max: 60 });
 
     workTime[DAYS[day]] = {
       start: `${faker.random.number({ min: 0, max: 24 })}:${

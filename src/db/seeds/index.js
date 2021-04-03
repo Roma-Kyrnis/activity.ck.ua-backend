@@ -11,13 +11,21 @@ const {
   addPhotos,
 } = require('../index');
 const { faker } = require('../../lib/api_v1');
-const {
-  faker: {
-    default: { MODERATOR, PLACES_SEEDS, PARAMS },
-  },
-  roles,
-} = require('../../config');
+const { roles } = require('../../config');
 const log = require('../../utils/logger')(__filename);
+
+const MODERATOR = {
+  name: 'moderator',
+  avatar: 'https://www.google.com',
+  email: 'moderator@tourism.test.com',
+  password: '12345678',
+};
+const PLACES_SEEDS = 50;
+const PARAMS = {
+  COUNT: 'count',
+  USER: 'user_id',
+  ORGANIZATION: 'organization_id',
+};
 
 async function initDefault() {
   const user = await checkUser(MODERATOR.email);
@@ -50,8 +58,8 @@ function getNumber(param) {
 }
 
 function getId(params, name) {
-  const isParam = params.find((param) => param.includes(name));
-  if (isParam) return getNumber(isParam);
+  const userParam = params.find((param) => param.includes(name));
+  if (userParam) return getNumber(userParam);
   return null;
 }
 
@@ -70,8 +78,8 @@ async function initPlaces(params) {
     organizationId = organization.id;
   }
 
-  // eslint-disable-next-line no-empty-pattern
-  for await (const {} of new Array(count)) {
+  // eslint-disable-next-line no-unused-vars
+  for await (const i of new Array(count)) {
     try {
       const place = await createPlace({
         ...faker.place(),
@@ -83,7 +91,7 @@ async function initPlaces(params) {
       const photos = faker.photos();
       await addPhotos(photos, place.id, 'place_id');
 
-      log.info(place, `Places created`);
+      log.info(`Place ${place.id} created`);
     } catch (err) {
       log.error(`Cannot create place: ${err.message}`);
     }
@@ -91,10 +99,8 @@ async function initPlaces(params) {
 }
 
 async function start() {
-  log.info(process.argv);
   const type = process.argv.slice(2, 3).toString();
   const params = process.argv.slice(3);
-  log.info(params);
 
   try {
     await init();

@@ -72,41 +72,6 @@ const config = {
       },
     },
   },
-  faker: {
-    user: {
-      PASSWORDS: ['12345678'],
-    },
-    default: {
-      MODERATOR: {
-        name: 'moderator',
-        avatar: 'https://www.google.com',
-        email: 'moderator@tourism.test.com',
-        password: '12345678',
-      },
-      PLACES_SEEDS: 50,
-      PARAMS: {
-        COUNT: 'count',
-        USER: 'user_id',
-        ORGANIZATION: 'organization_id',
-      },
-    },
-    USER_ID: 1,
-    ORGANIZATION_ID: 1,
-    CATEGORY_IDS: [
-      'culture',
-      'recreation',
-      'children',
-      'todo_something',
-      'history',
-      'unique_things',
-      'sleeping',
-      'inspired_city',
-      'gastronomic_adventures',
-    ],
-    TYPE_IDS: ['', 'hotels', 'sport', 'water', 'coffee', 'fastfood', 'hostels', 'stadium', 'gym'],
-    MIN_PHOTO: 1,
-    MAX_PHOTO: 10,
-  },
 };
 
 module.exports = config;
