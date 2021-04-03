@@ -27,12 +27,6 @@ async function getProposed(ctx) {
   ctx.body = { proposedOrganizations: organizations };
 }
 
-async function getApproved(ctx) {
-  const organizations = await getOrganizations(true);
-
-  ctx.body = { proposedOrganizations: organizations };
-}
-
 async function getAll(ctx) {
   const [approvedOrganizations, proposedOrganizations] = await Promise.all([
     getOrganizations(true),
@@ -58,4 +52,4 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { create, getProposed, getApproved, getAll, update, remove };
+module.exports = { create, getProposed, getAll, update, remove };

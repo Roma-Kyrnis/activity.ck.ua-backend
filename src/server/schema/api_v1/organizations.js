@@ -17,8 +17,6 @@ const create = {
 
 const getProposed = {};
 
-const getApproved = {};
-
 const getAll = {};
 
 const update = {
@@ -48,4 +46,4 @@ const remove = {
   }),
 };
 
-module.exports = { create, getProposed, getApproved, getAll, update, remove };
+module.exports = { create, getProposed, getAll, update, remove };
