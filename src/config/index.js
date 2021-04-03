@@ -72,9 +72,11 @@ const config = {
     email: process.env.MODERATOR_EMAIL || fatal('No MODERATOR_EMAIL'),
     password: process.env.MODERATOR_PASSWORD || fatal('No MODERATOR_PASSWORD'),
   },
-  users: {
-    default: { PAGE: 1, LIMIT: 5, ITEMS_IN_SECTION: 2 },
-    section: {
+  USERS: {
+    PAGE: 1,
+    LIMIT: 5,
+    ITEMS_IN_SECTION: 2,
+    SECTION: {
       PLACE_ID: 'place_id',
       EVENT_ID: 'event_id',
     },

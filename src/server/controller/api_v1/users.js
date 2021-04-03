@@ -14,9 +14,11 @@ const {
 } = require('../../../db');
 
 const {
-  users: {
-    default: { ITEMS_IN_SECTION, PAGE, LIMIT },
-    section: { EVENT_ID, PLACE_ID },
+  USERS: {
+    ITEMS_IN_SECTION,
+    PAGE,
+    LIMIT,
+    SECTION: { EVENT_ID, PLACE_ID },
   },
 } = require('../../../config');
 
