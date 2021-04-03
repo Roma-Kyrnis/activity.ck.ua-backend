@@ -19,13 +19,13 @@ const router = new Router();
 
 router.prefix(USERS);
 
-router.get('/', { validate: validator.getUser }, access(['user', 'organizer']), users.getUser);
 router.get(
   '/activity',
   { validate: validator.activity },
   access(['user', 'organizer']),
   users.activity,
 );
+router.get('/', { validate: validator.getUser }, access(['user', 'organizer']), users.getUser);
 
 router.get(
   '/research',
