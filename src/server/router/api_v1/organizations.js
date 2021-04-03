@@ -25,8 +25,6 @@ router.post(
   access(['user', 'organizer']),
   organizations.create,
 );
-
-router.post('/', { validate: validator.create }, access(), organizations.create);
 router.get('/proposed', { validate: validator.getProposed }, organizations.getProposed);
 router.get('/approved', { validate: validator.getApproved }, organizations.getApproved);
 router.get('/', { validate: validator.getAll }, organizations.getAll);
