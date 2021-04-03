@@ -7,11 +7,12 @@ const {
   createOrganization,
   addPhotos,
   getPhotos,
+  getEvents: getEventsDB,
 } = require('../../../db');
 
 const {
   places: {
-    default: { LIMIT, PAGE },
+    default: { LIMIT, PAGE, EVENTS },
   },
 } = require('../../../config');
 
@@ -47,12 +48,39 @@ async function getOne(ctx) {
     const photos = await getPhotos(id, 'place_id');
     place.photos = photos;
 
+    // const events = await getEvents({ place_id: id }, EVENTS.LIMIT, EVENTS.PAGE);
+
+    // ctx.body = { place, events };
     ctx.body = { place };
   } catch (err) {
     err.status = 400;
     err.message = `No place with id - ${id}`;
     ctx.app.emit('error', err, ctx);
   }
+}
+
+async function getEvents(ctx) {
+  const id = parseInt(ctx.request.params.id, 10);
+
+  let { _limit: limit, _page: page } = ctx.request.query;
+  limit = parseInt(limit, 10) || EVENTS.LIMIT;
+  page = parseInt(page, 10) || EVENTS.PAGE;
+
+  const {
+    accessibility,
+    dog_friendly: dogFriendly,
+    child_friendly: childFriendly,
+  } = ctx.request.query;
+
+  const filters = {};
+
+  if (accessibility !== undefined) filters.accessibility = accessibility;
+  if (dogFriendly !== undefined) filters.dogFriendly = dogFriendly;
+  if (childFriendly !== undefined) filters.childFriendly = childFriendly;
+
+  const events = await getEventsDB({ ...filters, place_id: id }, limit, page);
+
+  ctx.body = { events };
 }
 
 async function getApproved(ctx) {
@@ -97,4 +125,4 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { create, getOne, getApproved, update, remove };
+module.exports = { create, getOne, getEvents, getApproved, update, remove };

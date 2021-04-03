@@ -20,6 +20,7 @@ const router = new Router();
 router.prefix(PLACES);
 
 router.post('/', { validate: validator.create }, access(['user', 'organizer']), places.create);
+router.get('/:id/events/', { validate: validator.getEvents }, places.getEvents);
 router.get('/:id', { validate: validator.getOne }, places.getOne);
 router.get('/', { validate: validator.getApproved }, places.getApproved);
 router.put('/:id', { validate: validator.update }, places.update);

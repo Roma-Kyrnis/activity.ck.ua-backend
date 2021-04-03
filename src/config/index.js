@@ -31,6 +31,10 @@ const config = {
     default: {
       LIMIT: 5,
       PAGE: 1,
+      EVENTS: {
+        LIMIT: 2,
+        PAGE: 1,
+      },
     },
   },
   ROLES: {
