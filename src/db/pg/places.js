@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const log = require('../../utils/logger')(__filename);
+const { checkError } = require('../checkError');
 
 module.exports = (client) => {
   return {
@@ -9,7 +10,6 @@ module.exports = (client) => {
           throw new Error('ERROR: No place defined');
         }
 
-        // place.phones = `{${place.phones.map((p) => `"${p}"`).join(', ')}}`;
         if (!place.website) place.website = null;
         if (!place.type_id) place.type_id = null;
 
@@ -47,20 +47,17 @@ module.exports = (client) => {
         return res.rows[0];
       } catch (err) {
         log.error(err.message || err);
-        throw err;
+        throw checkError(err);
       }
     },
 
-    // + events & reviews
     getPlace: async (id) => {
       try {
         if (!id) {
           throw new Error('ERROR: No place id defined');
         }
 
-        const {
-          rows: [place],
-        } = await client.query(
+        const res = await client.query(
           `SELECT id, name, address, phones, website, description, accessibility,
               dog_friendly, child_friendly, work_time, rating,
               organization_id FROM places
@@ -68,15 +65,7 @@ module.exports = (client) => {
           [id],
         );
 
-        const { rows: photos } = await client.query(
-          `SELECT id, url, author_name, author_link FROM photos
-            WHERE place_id = $1;`,
-          [id],
-        );
-
-        place.photos = photos;
-
-        return place;
+        return res.rows[0];
       } catch (err) {
         log.error(err.message || err);
         throw err;
@@ -165,7 +154,6 @@ module.exports = (client) => {
           throw new Error('ERROR: Nothing to update');
         }
 
-        // if (place.phones) place.phones = `{${place.phones.map((p) => `"${p}"`).join(', ')}}`;
         place.updated_at = new Date();
 
         const query = [];
@@ -192,7 +180,7 @@ module.exports = (client) => {
         return res.rows[0];
       } catch (err) {
         log.error(err.message || err);
-        throw err;
+        throw checkError(err);
       }
     },
 

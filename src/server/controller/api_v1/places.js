@@ -9,15 +9,11 @@ const {
   getPlacesReviews,
   addAttend: addPlacesAttend,
   addFavorites: addPlacesFavorites,
+  addPhotos,
+  getPhotos,
 } = require('../../../db');
 
 const { PLACES, REVIEWS } = require('../../../config');
-
-async function savePhotos(placeId, photos) {
-  console.log({ photos, placeId });
-  const ids = [1, 2, 3];
-  return ids;
-}
 
 async function create(ctx) {
   let organizationId = ctx.request.body.organization_id;
@@ -37,7 +33,7 @@ async function create(ctx) {
 
   const { id: placeId } = await createPlace(dataPlace);
 
-  await savePhotos(placeId, ctx.request.body.photos);
+  await addPhotos(ctx.request.body.photos, placeId, 'place_id');
 
   ctx.body = { message: 'OK' };
 }
@@ -49,12 +45,14 @@ async function getOne(ctx) {
     const response = {};
 
     const place = await getPlace(id);
-    response.place = place;
+    const photos = await getPhotos(id, 'place_id');
+
+    response.place = { ...place, photos };
 
     // const reviews = await getPlacesReviews(id, REVIEWS.LIMIT, REVIEWS.PAGE);
     // response.reviews = reviews;
 
-    ctx.body = response;
+    ctx.body = { place };
   } catch (err) {
     err.status = 400;
     err.message = `No place with id - ${id}`;
