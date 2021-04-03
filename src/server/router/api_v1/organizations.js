@@ -27,7 +27,7 @@ router.post(
 );
 router.get('/proposed', { validate: validator.getProposed }, organizations.getProposed);
 router.get('/', { validate: validator.getAll }, organizations.getAll);
-router.put('/:id', { validate: validator.update }, organizations.update);
-router.delete('/:id', { validate: validator.remove }, organizations.remove);
+router.put('/:id', { validate: validator.update }, access(), organizations.update);
+router.delete('/:id', { validate: validator.remove }, access(), organizations.remove);
 
 module.exports = router;
