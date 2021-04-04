@@ -38,7 +38,6 @@ exports.up = async (knex) => {
     table.string('name').notNullable();
     table.string('address').notNullable();
     // table.specificType('coordinates', 'POINT').notNullable();
-    // table.string('phones').nullable();
     table.specificType('phones', 'CHARACTER VARYING(13)[]').notNullable();
     table.string('website').nullable();
     table.string('main_photo').notNullable();
@@ -94,7 +93,8 @@ exports.up = async (knex) => {
 
   await knex.schema.createTable('events', (table) => {
     table.increments('id');
-    table.specificType('passing_time', 'INTERVAL').notNullable();
+    table.timestamp('start_time').notNullable();
+    table.timestamp('end_time').notNullable();
     table.string('organizer').notNullable();
     table.integer('place_id').nullable();
     table.decimal('price').notNullable().defaultTo(0.0);
