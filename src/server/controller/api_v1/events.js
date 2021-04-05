@@ -34,7 +34,7 @@ async function getOne(ctx) {
     const event = await getEvent(id);
     const photos = await getPhotos(id, 'place_id');
 
-    ctx.body = { event: { ...event, photos } };
+    ctx.body = { event, photos };
   } catch (err) {
     err.status = 400;
     err.message = `No event with id - ${id}`;
@@ -66,6 +66,7 @@ async function getApproved(ctx) {
 
 async function update(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
+
   const event = await updateEvent({ id, ...ctx.request.body.place });
 
   ctx.assert(event, 400, `No event with id ${id}`);

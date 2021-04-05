@@ -2,35 +2,23 @@ const { Joi } = require('koa-joi-router');
 
 const create = {
   body: Joi.object({
-    organization_id: Joi.number().min(0),
     event: Joi.object({
       name: Joi.string().min(3).max(255).required(),
-      address: Joi.string().min(3).max(255).required(),
+      organizer: Joi.string().min(3),
+      start_time: Joi.date().required(),
+      end_time: Joi.date().required(),
+      price: Joi.number().min(0).default(0.0),
+      website: Joi.alternatives(Joi.allow(null), Joi.string().uri({ allowRelative: true })),
       phones: Joi.array()
         .items(Joi.string().pattern(/^\+380\d{9}$/))
         .default([]),
-      website: Joi.alternatives(Joi.allow(null), Joi.string().uri({ allowRelative: true })),
-      // work_time: Joi.object()
-      //   .min(1)
-      //   .pattern(
-      //     /^(sat|mon|tue|wed|thu|fri|sun)$/,
-      //     Joi.object({
-      //       start: Joi.string()
-      //         .pattern(/^\d{1,2}:\d{2}$/)
-      //         .required(),
-      //       end: Joi.string()
-      //         .pattern(/^\d{1,2}:\d{2}$/)
-      //         .required(),
-      //     }).required(),
-      //   )
-      //   .required(),
+      address: Joi.string().min(3).max(255).required(),
       accessibility: Joi.boolean().required(),
       dog_friendly: Joi.boolean().required(),
       child_friendly: Joi.boolean().required(),
+      program: Joi.string().required(),
       description: Joi.string().min(20).required(),
       main_photo: Joi.string().uri().required(),
-      program: Joi.string().required(),
-      price: Joi.number().min(0),
     }),
     photos: Joi.array()
       .items(
@@ -70,57 +58,41 @@ const update = {
       .required(),
   }),
   body: Joi.object({
-    organization_id: Joi.number().min(0),
     event: Joi.object({
       name: Joi.string().min(3).max(255).required(),
-      address: Joi.string().min(3).max(255).required(),
+      organizer: Joi.string().min(3),
+      start_time: Joi.date().required(),
+      end_time: Joi.date().required(),
+      price: Joi.number().min(0).default(0.0),
+      website: Joi.alternatives(Joi.allow(null), Joi.string().uri({ allowRelative: true })),
       phones: Joi.array()
         .items(Joi.string().pattern(/^\+380\d{9}$/))
         .default([]),
-      website: Joi.alternatives(Joi.allow(null), Joi.string().uri({ allowRelative: true })),
-      // work_time: Joi.object()
-      //   .min(1)
-      //   .pattern(
-      //     /^(sat|mon|tue|wed|thu|fri|sun)$/,
-      //     Joi.object({
-      //       start: Joi.string()
-      //         .pattern(/^\d{1,2}:\d{2}$/)
-      //         .required(),
-      //       end: Joi.string()
-      //         .pattern(/^\d{1,2}:\d{2}$/)
-      //         .required(),
-      //     }).required(),
-      //   )
-      //   .required(),
+      address: Joi.string().min(3).max(255).required(),
       accessibility: Joi.boolean().required(),
       dog_friendly: Joi.boolean().required(),
       child_friendly: Joi.boolean().required(),
+      program: Joi.string().required(),
       description: Joi.string().min(20).required(),
       main_photo: Joi.string().uri().required(),
-      program: Joi.string().required(),
-      price: Joi.number().min(0),
+      moderated: Joi.boolean(),
     }),
-    // photos: Joi.array().items(
-    //   Joi.object({
-    //     url: Joi.string().uri().required(),
-    //     author_name: Joi.string().min(3).max(255),
-    //     author_link: Joi.string().uri(),
-    //   }).required(),
-    // ),
   }).or(
     'event.name',
-    'event.address',
+    'event.organizer',
+    'event.start_time',
+    'event.end_time',
+    'event.price',
+    'event.website',
     'event.phones',
-    // 'event.website',
-    // 'event.work_time',
+    'event.address',
     'event.accessibility',
     'event.dog_friendly',
     'event.child_friendly',
+    'event.program',
     'event.description',
     'event.main_photo',
     'event.moderated',
-    'event.program',
-    'event.price',
   ),
   type: 'json',
 };

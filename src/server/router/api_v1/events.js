@@ -20,9 +20,14 @@ const router = new Router();
 router.prefix(EVENTS);
 
 router.post('/', { validate: validator.create }, access(['user', 'organizer']), events.create);
-router.get('/:id', { validate: validator.getOne }, places.getOne);
-router.get('/', { validate: validator.getApproved }, places.getApproved);
-router.put('/:id', { validate: validator.update }, access(), places.update);
-router.delete('/:id', { validate: validator.remove }, access(), places.remove);
+router.get('/:id', { validate: validator.getOne }, access(['user', 'organizer']), events.getOne);
+router.get(
+  '/',
+  { validate: validator.getApproved },
+  access(['user', 'organizer']),
+  events.getApproved,
+);
+router.put('/:id', { validate: validator.update }, access(), events.update);
+router.delete('/:id', { validate: validator.remove }, access(), events.remove);
 
 module.exports = router;
