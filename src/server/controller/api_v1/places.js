@@ -7,6 +7,7 @@ const {
   createOrganization,
   addPhotos,
   getPhotos,
+  getPlaceEvents,
   getEvents: getEventsDB,
 } = require('../../../db');
 
@@ -44,14 +45,10 @@ async function getOne(ctx) {
 
   try {
     const place = await getPlace(id);
-
     const photos = await getPhotos(id, 'place_id');
-    place.photos = photos;
+    const events = await getPlaceEvents(id);
 
-    // const events = await getEvents({ place_id: id }, EVENTS.LIMIT, EVENTS.PAGE);
-
-    // ctx.body = { place, events };
-    ctx.body = { place };
+    ctx.body = { place, photos, events };
   } catch (err) {
     err.status = 400;
     err.message = `No place with id - ${id}`;
