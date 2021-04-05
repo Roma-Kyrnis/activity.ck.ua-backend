@@ -5,6 +5,8 @@ const { EVENTS } = require('../../../config');
 const create = {
   body: Joi.object({
     event: Joi.object({
+      place_id: Joi.number().min(1),
+
       name: Joi.string().min(3).max(255).required(),
       organizer: Joi.string().min(3),
       start_time: Joi.date().required(),
@@ -66,25 +68,28 @@ const update = {
   }),
   body: Joi.object({
     event: Joi.object({
-      name: Joi.string().min(3).max(255).required(),
+      place_id: Joi.number().min(1),
+
+      name: Joi.string().min(3).max(255),
       organizer: Joi.string().min(3),
-      start_time: Joi.date().required(),
-      end_time: Joi.date().required(),
+      start_time: Joi.date(),
+      end_time: Joi.date(),
       price: Joi.number().min(0).default(0.0),
       website: Joi.alternatives(Joi.allow(null), Joi.string().uri({ allowRelative: true })),
       phones: Joi.array()
         .items(Joi.string().pattern(/^\+380\d{9}$/))
         .default([]),
-      address: Joi.string().min(3).max(255).required(),
-      accessibility: Joi.boolean().required(),
-      dog_friendly: Joi.boolean().required(),
-      child_friendly: Joi.boolean().required(),
-      program: Joi.string().required(),
-      description: Joi.string().min(20).required(),
-      main_photo: Joi.string().uri().required(),
+      address: Joi.string().min(3).max(255),
+      accessibility: Joi.boolean(),
+      dog_friendly: Joi.boolean(),
+      child_friendly: Joi.boolean(),
+      program: Joi.string(),
+      description: Joi.string().min(20),
+      main_photo: Joi.string().uri(),
       moderated: Joi.boolean(),
     }),
   }).or(
+    'event.place_id',
     'event.name',
     'event.organizer',
     'event.start_time',

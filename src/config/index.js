@@ -79,7 +79,7 @@ const config = {
   },
   EVENTS: {
     DEFAULT: {
-      START_TIME: Date.now(),
+      START_TIME: new Date().setHours(0, 0, 0, 0),
       PAGE: 1,
       LIMIT: 5,
     },
