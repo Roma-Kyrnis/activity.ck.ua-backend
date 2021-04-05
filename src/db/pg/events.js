@@ -162,7 +162,7 @@ module.exports = (client) => {
           rows: [{ count }],
         } = await client.query(
           `SELECT COUNT(*) FROM events
-            WHERE user_id = $1 AND deleted_at IS NULL;`,
+            WHERE end_time > now() AND user_id = $1 AND deleted_at IS NULL;`,
           [userId],
         );
         const total = Number(count);
@@ -171,8 +171,8 @@ module.exports = (client) => {
         const { rows: events } = await client.query(
           `SELECT id, name, main_photo, start_time
             FROM events
-            WHERE user_id = $1 AND deleted_at IS NULL
-            ORDER BY start_time DESC
+            WHERE end_time > now() AND user_id = $1 AND deleted_at IS NULL
+            ORDER BY start_time
             LIMIT $2 OFFSET $3;`,
           [userId, limit, offset],
         );
