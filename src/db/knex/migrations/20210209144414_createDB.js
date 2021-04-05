@@ -84,12 +84,12 @@ exports.up = async (knex) => {
     table.primary(['place_id', 'user_id'], 'visited_places_pkey');
   });
 
-  await knex.schema.createTable('favorites_places', (table) => {
+  await knex.schema.createTable('favorite_places', (table) => {
     table.integer('place_id').notNullable();
     table.integer('user_id').notNullable();
-    table.foreign('place_id', 'favorites_places_fk0').references('places.id');
-    table.foreign('user_id', 'favorites_places_fk1').references('users.id');
-    table.primary(['place_id', 'user_id'], 'favorites_places_pkey');
+    table.foreign('place_id', 'favorite_places_fk0').references('places.id');
+    table.foreign('user_id', 'favorite_places_fk1').references('users.id');
+    table.primary(['place_id', 'user_id'], 'favorite_places_pkey');
   });
 
   await knex.schema.createTable('events', (table) => {
@@ -104,12 +104,12 @@ exports.up = async (knex) => {
     table.inherits('general_info');
   });
 
-  await knex.schema.createTable('chosen_events', (table) => {
+  await knex.schema.createTable('scheduled_events', (table) => {
     table.integer('event_id').notNullable();
     table.integer('user_id').notNullable();
-    table.foreign('event_id', 'chosen_events_fk0').references('events.id');
-    table.foreign('user_id', 'chosen_events_fk1').references('users.id');
-    table.primary(['event_id', 'user_id'], 'chosen_events_pkey');
+    table.foreign('event_id', 'scheduled_events_fk0').references('events.id');
+    table.foreign('user_id', 'scheduled_events_fk1').references('users.id');
+    table.primary(['event_id', 'user_id'], 'scheduled_events_pkey');
   });
 
   await knex.schema.createTable('photos', (table) => {
@@ -127,9 +127,9 @@ exports.up = async (knex) => {
 
 exports.down = async (knex) => {
   await knex.schema.dropTable('photos');
-  await knex.schema.dropTable('chosen_events');
+  await knex.schema.dropTable('scheduled_events');
   await knex.schema.dropTable('events');
-  await knex.schema.dropTable('favorites_places');
+  await knex.schema.dropTable('favorite_places');
   await knex.schema.dropTable('visited_places');
   await knex.schema.dropTable('reviews');
   await knex.schema.dropTable('places');
