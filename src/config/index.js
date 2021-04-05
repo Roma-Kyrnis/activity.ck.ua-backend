@@ -5,6 +5,7 @@ const fatal = require('../utils/fatalError')(__filename);
 const config = {
   content: {
     EVENTS_PERIOD: '2 week',
+    PLACE_PAGE_EVENTS: 5,
   },
 
   server: {

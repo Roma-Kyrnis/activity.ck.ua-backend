@@ -33,6 +33,7 @@ module.exports = (config) => {
     getEvents,
     getCurrentEvents,
     getUserEvents,
+    getPlaceEvents,
     updateEvent,
     deleteEvent,
   } = events(client);
@@ -81,6 +82,7 @@ module.exports = (config) => {
     getEvents,
     getCurrentEvents,
     getUserEvents,
+    getPlaceEvents,
     updateEvent,
     deleteEvent,
   };

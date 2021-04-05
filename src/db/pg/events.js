@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const log = require('../../utils/logger')(__filename);
 const {
-  content: { EVENTS_PERIOD },
+  content: { EVENTS_PERIOD, PLACE_PAGE_EVENTS },
 } = require('../../config');
 const { checkError } = require('../checkError');
 const { queryAccessibility } = require('./queryBuilder');
@@ -175,6 +175,43 @@ module.exports = (client) => {
             ORDER BY start_time DESC
             LIMIT $2 OFFSET $3;`,
           [userId, limit, offset],
+        );
+
+        const res = {};
+        res.events = events;
+        res._total = total;
+        res._totalPages = Math.ceil(total / limit);
+
+        return res;
+      } catch (err) {
+        log.error(err.message || err);
+        throw err;
+      }
+    },
+
+    getPlaceEvents: async (placeId, limit = PLACE_PAGE_EVENTS, page = 1) => {
+      try {
+        if (!placeId) {
+          throw new Error('ERROR: No placeId defined');
+        }
+
+        const {
+          rows: [{ count }],
+        } = await client.query(
+          `SELECT COUNT(*) FROM events
+            WHERE end_time > now() AND place_id = $1 AND deleted_at IS NULL;`,
+          [placeId],
+        );
+        const total = Number(count);
+
+        const offset = (page - 1) * limit;
+        const { rows: events } = await client.query(
+          `SELECT id, name, main_photo, start_time
+            FROM events
+            WHERE end_time > now() AND place_id = $1 AND deleted_at IS NULL
+            ORDER BY start_time
+            LIMIT $2 OFFSET $3;`,
+          [placeId, limit, offset],
         );
 
         const res = {};

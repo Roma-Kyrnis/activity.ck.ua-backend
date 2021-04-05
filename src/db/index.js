@@ -99,6 +99,8 @@ module.exports = {
     funcWrapper(dbWrapper().getCurrentEvents)(limit, page, filters),
   getUserEvents: async (userId, limit, page) =>
     funcWrapper(dbWrapper().getUserEvents)(userId, limit, page),
+  getPlaceEvents: async (placeId, limit, page) =>
+    funcWrapper(dbWrapper().getPlaceEvents)(placeId, limit, page),
   updateEvent: async (event) => funcWrapper(dbWrapper().updateEvent)(event),
   deleteEvent: async (id) => funcWrapper(dbWrapper().deleteEvent)(id),
 };
