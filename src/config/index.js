@@ -3,6 +3,10 @@ require('dotenv').config();
 const fatal = require('../utils/fatalError')(__filename);
 
 const config = {
+  content: {
+    EVENTS_PERIOD: '2 week',
+  },
+
   server: {
     PORT: Number(process.env.PORT) || 3012,
     HOST: process.env.HOST || 'localhost',

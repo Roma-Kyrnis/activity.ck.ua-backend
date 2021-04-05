@@ -1,6 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 const log = require('../../utils/logger')(__filename);
+const {
+  content: { EVENTS_PERIOD },
+} = require('../../config');
 const { checkError } = require('../checkError');
+const { queryAccessibility } = require('./queryBuilder');
 
 module.exports = (client) => {
   return {
@@ -80,23 +84,13 @@ module.exports = (client) => {
           throw new Error('ERROR: No start_time defined!');
         }
 
-        let queryAccessibility = '';
-
-        if (filters) {
-          const { accessibility, dogFriendly, childFriendly } = filters;
-
-          if (accessibility) queryAccessibility = 'AND accessibility';
-          if (dogFriendly) queryAccessibility += ' AND dog_friendly';
-          if (childFriendly) queryAccessibility += ' AND child_friendly';
-        }
-
         const {
           rows: [{ count }],
         } = await client.query(
           `SELECT COUNT(*) FROM events
-            WHERE start_time > $1 AND start_time < $1 + INTERVAL '2 week' AND end_time > now()
-              ${queryAccessibility} AND moderated AND deleted_at IS NULL;`,
-          [new Date(startTime)],
+            WHERE start_time > $1 AND start_time < $1 + $2 AND end_time > now()
+              ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL;`,
+          [new Date(startTime), EVENTS_PERIOD],
         );
         const total = Number(count);
 
@@ -104,11 +98,11 @@ module.exports = (client) => {
         const { rows: events } = await client.query(
           `SELECT id, name, main_photo, start_time
             FROM events
-            WHERE start_time > $1 AND start_time < $1 + INTERVAL '2 week' AND end_time > now()
-              ${queryAccessibility} AND moderated AND deleted_at IS NULL
+            WHERE start_time > $1 AND start_time < $1 + $2 AND end_time > now()
+              ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL
             ORDER BY start_time
-            LIMIT $2 OFFSET $3;`,
-          [new Date(startTime), limit, offset],
+            LIMIT $3 OFFSET $4;`,
+          [new Date(startTime), EVENTS_PERIOD, limit, offset],
         );
 
         const res = {};
@@ -125,23 +119,13 @@ module.exports = (client) => {
 
     getCurrentEvents: async (limit, page, filters) => {
       try {
-        let queryAccessibility = '';
-
-        if (filters) {
-          const { accessibility, dogFriendly, childFriendly } = filters;
-
-          if (accessibility) queryAccessibility = 'AND accessibility';
-          if (dogFriendly) queryAccessibility += ' AND dog_friendly';
-          if (childFriendly) queryAccessibility += ' AND child_friendly';
-        }
-
         const {
           rows: [{ count }],
         } = await client.query(
           // start_time > TIMESTAMP 'today'
           `SELECT COUNT(*) FROM events
             WHERE end_time > now() AND end_time < TIMESTAMP 'tomorrow' AND start_time < now()
-              ${queryAccessibility} AND moderated AND deleted_at IS NULL;`,
+              ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL;`,
         );
         const total = Number(count);
 
@@ -150,7 +134,7 @@ module.exports = (client) => {
           `SELECT id, name, main_photo, start_time
             FROM events
             WHERE end_time > now() AND end_time < TIMESTAMP 'tomorrow' AND start_time < now()
-              ${queryAccessibility} AND moderated AND deleted_at IS NULL
+              ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL
             ORDER BY start_time
             LIMIT $1 OFFSET $2;`,
           [limit, offset],
