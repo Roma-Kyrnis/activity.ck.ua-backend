@@ -1,5 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 const log = require('../../utils/logger')(__filename);
+const {
+  content: { CARD_COUNT },
+} = require('../../config');
 const { checkError } = require('../checkError');
 const { queryAccessibility } = require('./queryBuilder');
 
@@ -130,6 +133,43 @@ module.exports = (client) => {
         res.places = places;
         /* res._limit = limit;
         res._page = page; */
+        res._total = total;
+        res._totalPages = Math.ceil(total / limit);
+
+        return res;
+      } catch (err) {
+        log.error(err.message || err);
+        throw err;
+      }
+    },
+
+    getUserPlaces: async (userId, limit = CARD_COUNT, page = 1) => {
+      try {
+        if (!userId) {
+          throw new Error('ERROR: No userId defined');
+        }
+
+        const {
+          rows: [{ count }],
+        } = await client.query(
+          `SELECT COUNT(*) FROM places
+            WHERE user_id = $1 AND deleted_at IS NULL;`,
+          [userId],
+        );
+        const total = Number(count);
+
+        const offset = (page - 1) * limit;
+        const { rows: places } = await client.query(
+          `SELECT id, name, address, phones, website, main_photo, work_time, rating, organization_id
+            FROM places
+            WHERE user_id = $1 AND deleted_at IS NULL
+            ORDER BY popularity_rating DESC, id DESC
+            LIMIT $2 OFFSET $3;`,
+          [userId, limit, offset],
+        );
+
+        const res = {};
+        res.places = places;
         res._total = total;
         res._totalPages = Math.ceil(total / limit);
 
