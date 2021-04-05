@@ -19,12 +19,6 @@ const router = new Router();
 
 router.prefix(ORGANIZATIONS);
 
-router.post(
-  '/',
-  { validate: validator.create },
-  access(['user', 'organizer']),
-  organizations.create,
-);
 router.get('/proposed', { validate: validator.getProposed }, organizations.getProposed);
 router.get('/', { validate: validator.getAll }, organizations.getAll);
 router.put('/:id', { validate: validator.update }, access(), organizations.update);

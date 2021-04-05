@@ -1,25 +1,4 @@
-const {
-  createOrganization,
-  getOrganizations,
-  updateOrganization,
-  deleteOrganization,
-} = require('../../../db');
-
-async function create(ctx) {
-  const userId = ctx.state.authPayload.id;
-
-  try {
-    await createOrganization({
-      ...ctx.request.body,
-      user_id: userId,
-    });
-  } catch (err) {
-    if (err.name === 'DatabaseError') throw err;
-    throw ctx.throw(409, `User with id ${userId} does not exist`);
-  }
-
-  ctx.body = { message: 'OK' };
-}
+const { getOrganizations, updateOrganization, deleteOrganization } = require('../../../db');
 
 async function getProposed(ctx) {
   const organizations = await getOrganizations(false);
@@ -52,4 +31,4 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { create, getProposed, getAll, update, remove };
+module.exports = { getProposed, getAll, update, remove };
