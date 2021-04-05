@@ -1,5 +1,7 @@
 const { Joi } = require('koa-joi-router');
 
+const { EVENTS } = require('../../../config');
+
 const create = {
   body: Joi.object({
     event: Joi.object({
@@ -43,12 +45,17 @@ const getOne = {
 
 const getApproved = {
   query: Joi.object({
+    start_time: Joi.date().default(EVENTS.DEFAULT.START_TIME),
     accessibility: Joi.boolean().truthy('true').falsy('false'),
     dog_friendly: Joi.boolean().truthy('true').falsy('false'),
     child_friendly: Joi.boolean().truthy('true').falsy('false'),
-    _page: Joi.string().pattern(/^[1-9]\d*$/),
-    _limit: Joi.string().pattern(/^[1-9]\d*$/),
-  }).xor('category_id', 'type_id'),
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .default(EVENTS.DEFAULT.PAGE),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .default(EVENTS.DEFAULT.LIMIT),
+  }),
 };
 
 const update = {
@@ -105,4 +112,17 @@ const remove = {
   }),
 };
 
-module.exports = { create, getOne, getApproved, update, remove };
+const addAttend = {
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
+  params: Joi.object({
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+};
+
+module.exports = { create, getOne, getApproved, update, remove, addAttend };

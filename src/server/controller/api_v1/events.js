@@ -6,13 +6,8 @@ const {
   deleteEvent,
   addPhotos,
   getPhotos,
+  addEventAttend,
 } = require('../../../db');
-
-const {
-  places: {
-    default: { LIMIT, PAGE },
-  },
-} = require('../../../config');
 
 async function create(ctx) {
   const event = {
@@ -32,7 +27,7 @@ async function getOne(ctx) {
 
   try {
     const event = await getEvent(id);
-    const photos = await getPhotos(id, 'place_id');
+    const photos = await getPhotos(id, 'event_id');
 
     ctx.body = { event, photos };
   } catch (err) {
@@ -43,9 +38,12 @@ async function getOne(ctx) {
 }
 
 async function getApproved(ctx) {
-  let { _limit: limit, _page: page } = ctx.request.query;
-  limit = parseInt(limit, 10) || LIMIT;
-  page = parseInt(page, 10) || PAGE;
+  const { start_time: startTime } = ctx.request.query;
+
+  // eslint-disable-next-line no-underscore-dangle
+  const limit = parseInt(ctx.request.query._limit, 10);
+  // eslint-disable-next-line no-underscore-dangle
+  const page = parseInt(ctx.request.query._page, 10);
 
   const {
     accessibility,
@@ -59,7 +57,7 @@ async function getApproved(ctx) {
   if (dogFriendly !== undefined) filters.dogFriendly = dogFriendly;
   if (childFriendly !== undefined) filters.childFriendly = childFriendly;
 
-  const events = await getEvents(filters, limit, page);
+  const events = await getEvents(startTime, limit, page, filters);
 
   ctx.body = { events };
 }
@@ -67,7 +65,7 @@ async function getApproved(ctx) {
 async function update(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
 
-  const event = await updateEvent({ id, ...ctx.request.body.place });
+  const event = await updateEvent({ id, ...ctx.request.body.event });
 
   ctx.assert(event, 400, `No event with id ${id}`);
 
@@ -82,4 +80,13 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { create, getOne, getApproved, update, remove };
+async function addAttend(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+
+  const eventId = parseInt(ctx.request.params.id, 10);
+  await addEventAttend({ user_id: userId, event_id: eventId });
+
+  ctx.body = { message: 'OK' };
+}
+
+module.exports = { create, getOne, getApproved, update, remove, addAttend };

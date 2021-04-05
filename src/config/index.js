@@ -77,6 +77,13 @@ const config = {
     email: process.env.MODERATOR_EMAIL || fatal('No MODERATOR_EMAIL'),
     password: process.env.MODERATOR_PASSWORD || fatal('No MODERATOR_PASSWORD'),
   },
+  EVENTS: {
+    DEFAULT: {
+      START_TIME: Date.now(),
+      PAGE: 1,
+      LIMIT: 5,
+    },
+  },
 };
 
 module.exports = config;

@@ -30,4 +30,6 @@ router.get(
 router.put('/:id', { validate: validator.update }, access(), events.update);
 router.delete('/:id', { validate: validator.remove }, access(), events.remove);
 
+// router.post('/:id/attend', { validate: validator.addAttend }, access(['user', 'organizer']), events.addAttend);
+
 module.exports = router;
