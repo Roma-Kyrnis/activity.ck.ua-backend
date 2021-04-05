@@ -34,7 +34,8 @@ You can add extra parameters: `count`, `user_id` and `organization_id`. Where `c
 sudo docker exec -it node npm run seeds:places
 ```
 
-Example with `10` created places attach to user with id `1` and organization with id `1`
+# Example:
+Create `10` places attach to user with id `1` and organization with id `1`. If you add `user_id` and `organization_id` parameters where user and organization should already exist in database than find real ids in database and use it here.
 ```bash
 sudo docker exec -it node npm run seeds:places count=10 user_id=1 organization_id=1
 ```
