@@ -1,11 +1,5 @@
 const { getOrganizations, updateOrganization, deleteOrganization } = require('../../../db');
 
-async function getProposed(ctx) {
-  const organizations = await getOrganizations(false);
-
-  ctx.body = { proposedOrganizations: organizations };
-}
-
 async function getAll(ctx) {
   const [approvedOrganizations, proposedOrganizations] = await Promise.all([
     getOrganizations(true),
@@ -31,4 +25,4 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { getProposed, getAll, update, remove };
+module.exports = { getAll, update, remove };

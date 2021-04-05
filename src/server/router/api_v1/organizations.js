@@ -19,7 +19,6 @@ const router = new Router();
 
 router.prefix(ORGANIZATIONS);
 
-router.get('/proposed', { validate: validator.getProposed }, organizations.getProposed);
 router.get('/', { validate: validator.getAll }, organizations.getAll);
 router.put('/:id', { validate: validator.update }, access(), organizations.update);
 router.delete('/:id', { validate: validator.remove }, access(), organizations.remove);

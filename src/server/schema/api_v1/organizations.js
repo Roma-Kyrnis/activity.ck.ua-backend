@@ -1,7 +1,5 @@
 const { Joi } = require('koa-joi-router');
 
-const getProposed = {};
-
 const getAll = {};
 
 const update = {
@@ -31,4 +29,4 @@ const remove = {
   }),
 };
 
-module.exports = { getProposed, getAll, update, remove };
+module.exports = { getAll, update, remove };
