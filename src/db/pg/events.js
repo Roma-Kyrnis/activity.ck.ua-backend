@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const log = require('../../utils/logger')(__filename);
 const {
-  content: { EVENTS_PERIOD, CARD_COUNT, PLACE_PAGE_EVENTS_COUNT },
+  content: { EVENTS_PERIOD, PLACE_PAGE_EVENTS_COUNT },
 } = require('../../config');
 const { checkError } = require('../checkError');
 const { queryAccessibility } = require('./queryBuilder');
@@ -152,7 +152,7 @@ module.exports = (client) => {
       }
     },
 
-    getUserEvents: async (userId, limit = CARD_COUNT, page = 1) => {
+    getUserEvents: async (userId, limit, page) => {
       try {
         if (!userId) {
           throw new Error('ERROR: No userId defined');
