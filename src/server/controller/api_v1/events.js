@@ -36,10 +36,9 @@ async function getOne(ctx) {
 async function getApproved(ctx) {
   const { start_time: startTime } = ctx.request.query;
 
-  // eslint-disable-next-line no-underscore-dangle
-  const limit = parseInt(ctx.request.query._limit, 10);
-  // eslint-disable-next-line no-underscore-dangle
-  const page = parseInt(ctx.request.query._page, 10);
+  let { _limit: limit, _page: page } = ctx.request.query;
+  limit = parseInt(limit, 10);
+  page = parseInt(page, 10);
 
   const {
     accessibility,
@@ -55,7 +54,7 @@ async function getApproved(ctx) {
 
   const events = await getEvents(startTime, limit, page, filters);
 
-  ctx.body = { events };
+  ctx.body = { ...events };
 }
 
 async function update(ctx) {

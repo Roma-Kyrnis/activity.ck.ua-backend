@@ -46,7 +46,7 @@ async function getOne(ctx) {
   try {
     const place = await getPlace(id);
     const photos = await getPhotos(id, 'place_id');
-    const events = await getPlaceEvents(id);
+    const { events } = await getPlaceEvents(id);
 
     ctx.body = { place, photos, events };
   } catch (err) {
