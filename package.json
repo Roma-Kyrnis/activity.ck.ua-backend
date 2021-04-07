@@ -7,6 +7,7 @@
     "start": "node src/main.js",
     "seeds:default": "node src/db/seeds default",
     "seeds:places": "node src/db/seeds places",
+    "seeds:events": "node src/db/seeds events",
     "eslint": "./node_modules/.bin/eslint ./src/",
     "debug": "npx node-dev@latest --inspect=0.0.0.0:9229 ./src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",

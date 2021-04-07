@@ -20,22 +20,34 @@ sudo docker-compose up --build
 ```bash
 sudo docker exec -it node npm run knex:migrate:latest
 ```
-## Extra:
-### 3. Plant default user and organization seed
-This need to create place refer to `user_id` and `organization_id`
+---------------------------
+# Extra:
+
+## 1. Seeds
+### Create default user, organization, place(s) or event(s). You can add extra parameters: `count`. Where `count` is how many will be created. If you don't add any parameters they set by default.
+
+### Examples:
+### 1. Create new user and new organization.
 ```bash
 sudo docker exec -it node npm run seeds:default
 ```
 
-### 4. Plant places
-You can add extra parameters: `count`, `user_id` and `organization_id`. Where `count` is how many places will be create. If you don't add parameters they set by default.
-
+### 2. Create default PLACES with new user and new organization
 ```bash
 sudo docker exec -it node npm run seeds:places
 ```
 
-# Example:
-Create `10` places attach to user with id `1` and organization with id `1`. If you add `user_id` and `organization_id` parameters where user and organization should already exist in database than find real ids in database and use it here.
+### 3. Create `10` PLACES with new user and new organization
 ```bash
-sudo docker exec -it node npm run seeds:places count=10 user_id=1 organization_id=1
+sudo docker exec -it node npm run seeds:places count=10
+```
+
+### 4. Create default EVENTS with new user and new organization
+```bash
+sudo docker exec -it node npm run seeds:events
+```
+
+### 5. Create `10` EVENTS with new user and new organization
+```bash
+sudo docker exec -it node npm run seeds:events count=10
 ```

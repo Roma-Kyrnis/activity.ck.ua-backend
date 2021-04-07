@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const faker = require('faker');
 
 const { hash } = require('../../utils');
@@ -92,4 +93,40 @@ const place = () => ({
   main_photo: faker.internet.url(),
 });
 
-module.exports = { user, organization, photos, place };
+function getStartEndTimes() {
+  const start = faker.random.arrayElement([
+    faker.date.past(),
+    faker.date.recent(),
+    faker.date.future(),
+  ]);
+
+  let end = faker.random.arrayElement([
+    faker.date.past(),
+    faker.date.recent(),
+    faker.date.future(),
+  ]);
+
+  while (end <= start) {
+    end = faker.random.arrayElement([faker.date.past(), faker.date.recent(), faker.date.future()]);
+  }
+
+  return { start_time: start, end_time: end };
+}
+
+const event = () => ({
+  name: faker.company.companyName(),
+  organizer: faker.company.companyName(),
+  ...getStartEndTimes(),
+  price: parseFloat(faker.finance.amount(0.0)),
+  website: faker.internet.url(),
+  phones: faker.random.arrayElements().map(() => faker.phone.phoneNumber('+380#########')),
+  address: faker.address.streetAddress(true),
+  accessibility: faker.random.boolean(),
+  dog_friendly: faker.random.boolean(),
+  child_friendly: faker.random.boolean(),
+  program: faker.lorem.text(),
+  description: faker.lorem.text(),
+  main_photo: faker.internet.url(),
+});
+
+module.exports = { user, organization, photos, place, event };
