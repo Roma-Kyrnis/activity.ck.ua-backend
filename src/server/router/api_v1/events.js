@@ -20,6 +20,7 @@ const router = Router();
 router.prefix(EVENTS);
 
 router.post('/', { validate: validator.create }, access(['user', 'organizer']), events.create);
+router.get('/now/', { validate: validator.getNow }, access(['user', 'organizer']), events.getNow);
 router.get('/:id', { validate: validator.getOne }, access(['user', 'organizer']), events.getOne);
 router.get(
   '/',

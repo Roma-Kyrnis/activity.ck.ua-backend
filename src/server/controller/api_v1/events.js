@@ -2,12 +2,14 @@ const {
   createEvent,
   getEvent,
   getEvents,
+  getCurrentEvents,
   updateEvent,
   deleteEvent,
   addPhotos,
   getPhotos,
   addEventAttend,
 } = require('../../../db');
+const paginationAndAccessibility = require('./paginationAndAccessibility');
 
 async function create(ctx) {
   const event = {
@@ -35,24 +37,17 @@ async function getOne(ctx) {
 
 async function getApproved(ctx) {
   const { start_time: startTime } = ctx.request.query;
-
-  let { _limit: limit, _page: page } = ctx.request.query;
-  limit = parseInt(limit, 10);
-  page = parseInt(page, 10);
-
-  const {
-    accessibility,
-    dog_friendly: dogFriendly,
-    child_friendly: childFriendly,
-  } = ctx.request.query;
-
-  const filters = {};
-
-  if (accessibility !== undefined) filters.accessibility = accessibility;
-  if (dogFriendly !== undefined) filters.dogFriendly = dogFriendly;
-  if (childFriendly !== undefined) filters.childFriendly = childFriendly;
+  const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
 
   const events = await getEvents(startTime, limit, page, filters);
+
+  ctx.body = { ...events };
+}
+
+async function getNow(ctx) {
+  const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
+
+  const events = await getCurrentEvents(limit, page, filters);
 
   ctx.body = { ...events };
 }
@@ -84,4 +79,4 @@ async function addAttend(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { create, getOne, getApproved, update, remove, addAttend };
+module.exports = { create, getOne, getApproved, getNow, update, remove, addAttend };

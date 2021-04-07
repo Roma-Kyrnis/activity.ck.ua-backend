@@ -60,6 +60,17 @@ const getApproved = {
   }),
 };
 
+const getNow = {
+  query: Joi.object({
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .default(EVENTS.DEFAULT.PAGE),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .default(EVENTS.DEFAULT.LIMIT),
+  }),
+};
+
 const update = {
   params: Joi.object({
     id: Joi.string()
@@ -130,4 +141,4 @@ const addAttend = {
   }),
 };
 
-module.exports = { create, getOne, getApproved, update, remove, addAttend };
+module.exports = { create, getOne, getApproved, getNow, update, remove, addAttend };
