@@ -13,7 +13,7 @@ async function update(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
   const organization = await updateOrganization({ ...ctx.request.body, id });
 
-  ctx.assert(organization, 409, `Organization with id ${id} doesn't exist`);
+  ctx.assert(organization, 404, `Organization with id ${id} doesn't exist`);
 
   ctx.body = { message: 'OK' };
 }
