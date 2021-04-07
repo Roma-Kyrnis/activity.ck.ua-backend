@@ -11,7 +11,7 @@ const {
   },
 } = require('../../../config');
 
-const router = new Router();
+const router = Router();
 
 router.prefix(API_V1);
 

@@ -15,7 +15,7 @@ const {
   },
 } = require('../../../config');
 
-const router = new Router();
+const router = Router();
 
 router.prefix(AUTH);
 
