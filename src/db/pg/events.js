@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const log = require('../../utils/logger')(__filename);
 const {
-  content: { EVENTS_PERIOD, PLACE_PAGE_EVENTS_COUNT },
+  content: { EVENTS_PERIOD },
 } = require('../../config');
 const { checkError } = require('../checkError');
 const { queryAccessibility } = require('./queryBuilder');
@@ -189,7 +189,7 @@ module.exports = (client) => {
       }
     },
 
-    getPlaceEvents: async (placeId, limit = PLACE_PAGE_EVENTS_COUNT, page = 1) => {
+    getPlaceEvents: async (placeId, limit, page) => {
       try {
         if (!placeId) {
           throw new Error('ERROR: No placeId defined');
