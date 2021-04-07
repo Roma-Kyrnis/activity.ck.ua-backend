@@ -31,6 +31,10 @@ function checkError(err) {
     return new DatabaseError('ERROR: An organization with this ID does not exist!');
   }
 
+  if (err.constraint === 'events_fk0') {
+    return new DatabaseError('ERROR: A place with this ID does not exist!');
+  }
+
   return err;
 }
 
