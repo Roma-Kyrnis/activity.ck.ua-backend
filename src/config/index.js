@@ -32,16 +32,6 @@ const config = {
   errors: {
     DATABASE: 'DatabaseError',
   },
-  places: {
-    default: {
-      LIMIT: 5,
-      PAGE: 1,
-      EVENTS: {
-        LIMIT: 2,
-        PAGE: 1,
-      },
-    },
-  },
   ROLES: {
     USER: 'user',
     ORGANIZER: 'organizer',
@@ -81,13 +71,6 @@ const config = {
     avatar: process.env.MODERATOR_AVATAR || fatal('No MODERATOR_AVATAR'),
     email: process.env.MODERATOR_EMAIL || fatal('No MODERATOR_EMAIL'),
     password: process.env.MODERATOR_PASSWORD || fatal('No MODERATOR_PASSWORD'),
-  },
-  EVENTS: {
-    DEFAULT: {
-      START_TIME: new Date().setHours(0, 0, 0, 0),
-      PAGE: 1,
-      LIMIT: 5,
-    },
   },
 };
 

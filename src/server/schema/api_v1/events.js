@@ -1,14 +1,12 @@
 const { Joi } = require('koa-joi-router');
 
-const { EVENTS } = require('../../../config');
-
 const create = {
   body: Joi.object({
     event: Joi.object({
       place_id: Joi.number().min(1),
 
       name: Joi.string().min(3).max(255).required(),
-      organizer: Joi.string().min(3),
+      organizer: Joi.string().min(3).required(),
       start_time: Joi.date().required(),
       end_time: Joi.date().required(),
       price: Joi.number().min(0).default(0.0),
@@ -47,40 +45,40 @@ const getOne = {
 
 const getApproved = {
   query: Joi.object({
-    start_time: Joi.date().default(EVENTS.DEFAULT.START_TIME),
+    place_id: Joi.string().pattern(/^[1-9]\d*$/),
+    start_time: Joi.date(),
     accessibility: Joi.boolean().truthy('true').falsy('false'),
     dog_friendly: Joi.boolean().truthy('true').falsy('false'),
     child_friendly: Joi.boolean().truthy('true').falsy('false'),
     _page: Joi.string()
       .pattern(/^[1-9]\d*$/)
-      .default(EVENTS.DEFAULT.PAGE),
+      .required(),
     _limit: Joi.string()
       .pattern(/^[1-9]\d*$/)
-      .default(EVENTS.DEFAULT.LIMIT),
-  }),
+      .required(),
+  }).xor('place_id', 'start_time'),
 };
 
 const getNow = {
   query: Joi.object({
     _page: Joi.string()
       .pattern(/^[1-9]\d*$/)
-      .default(EVENTS.DEFAULT.PAGE),
+      .required(),
     _limit: Joi.string()
       .pattern(/^[1-9]\d*$/)
-      .default(EVENTS.DEFAULT.LIMIT),
+      .required(),
   }),
 };
 
 const update = {
   params: Joi.object({
-    id: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
+    id: Joi.string().pattern(/^[1-9]\d*$/),
+    // .required(),
   }),
   body: Joi.object({
     event: Joi.object({
+      id: Joi.number().min(1).required(),
       place_id: Joi.number().min(1),
-
       name: Joi.string().min(3).max(255),
       organizer: Joi.string().min(3),
       start_time: Joi.date(),

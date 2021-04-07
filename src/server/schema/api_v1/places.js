@@ -64,21 +64,6 @@ const getOne = {
   }),
 };
 
-const getEvents = {
-  params: Joi.object({
-    id: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-  }),
-  query: Joi.object({
-    accessibility: Joi.boolean().truthy('true').falsy('false'),
-    dog_friendly: Joi.boolean().truthy('true').falsy('false'),
-    child_friendly: Joi.boolean().truthy('true').falsy('false'),
-    _page: Joi.string().pattern(/^[1-9]\d*$/),
-    _limit: Joi.string().pattern(/^[1-9]\d*$/),
-  }),
-};
-
 const getApproved = {
   query: Joi.object({
     category_id: Joi.string(),
@@ -86,8 +71,12 @@ const getApproved = {
     accessibility: Joi.boolean().truthy('true').falsy('false'),
     dog_friendly: Joi.boolean().truthy('true').falsy('false'),
     child_friendly: Joi.boolean().truthy('true').falsy('false'),
-    _page: Joi.string().pattern(/^[1-9]\d*$/),
-    _limit: Joi.string().pattern(/^[1-9]\d*$/),
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
   }).xor('category_id', 'type_id'),
 };
 
@@ -163,4 +152,4 @@ const remove = {
   }),
 };
 
-module.exports = { create, getOne, getEvents, getApproved, update, remove };
+module.exports = { create, getOne, getApproved, update, remove };

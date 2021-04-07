@@ -152,7 +152,7 @@ module.exports = (client) => {
       }
     },
 
-    getUserEvents: async (userId, limit, page = 1) => {
+    getUserEvents: async (userId, limit, page) => {
       try {
         if (!userId) {
           throw new Error('ERROR: No userId defined');

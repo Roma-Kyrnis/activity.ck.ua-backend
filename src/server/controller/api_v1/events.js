@@ -2,6 +2,7 @@ const {
   createEvent,
   getEvent,
   getEvents,
+  getPlaceEvents,
   getCurrentEvents,
   updateEvent,
   deleteEvent,
@@ -30,18 +31,23 @@ async function getOne(ctx) {
   const event = await getEvent(id);
   const photos = await getPhotos(id, 'event_id');
 
-  ctx.assert(event, 400, `Cannot find event with id ${id}`);
+  ctx.assert(event, 404, `Cannot find event with id ${id}`);
 
   ctx.body = { event, photos };
 }
 
 async function getApproved(ctx) {
-  const { start_time: startTime } = ctx.request.query;
+  const { start_time: startTime, place_id: placeId } = ctx.request.query;
   const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
 
-  const events = await getEvents(startTime, limit, page, filters);
+  let events;
+  if (startTime) {
+    events = await getEvents(startTime, limit, page, filters);
+  } else {
+    events = await getPlaceEvents(placeId, limit, page);
+  }
 
-  ctx.body = { ...events };
+  ctx.body = events;
 }
 
 async function getNow(ctx) {
@@ -49,15 +55,15 @@ async function getNow(ctx) {
 
   const events = await getCurrentEvents(limit, page, filters);
 
-  ctx.body = { ...events };
+  ctx.body = events;
 }
 
 async function update(ctx) {
-  const id = parseInt(ctx.request.params.id, 10);
+  // const id = parseInt(ctx.request.params.id, 10);
 
-  const event = await updateEvent({ id, ...ctx.request.body.event });
+  const event = await updateEvent(ctx.request.body.event);
 
-  ctx.assert(event, 400, `No event with id ${id}`);
+  ctx.assert(event, 404, `No event with id ${ctx.request.body.event.id}`);
 
   ctx.body = { message: 'OK' };
 }
