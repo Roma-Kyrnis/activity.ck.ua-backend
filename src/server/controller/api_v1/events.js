@@ -70,7 +70,7 @@ async function update(ctx) {
 
   let event;
   if (role !== MODERATOR) {
-    const isValid = await isUserEvent(userId, ctx.request.body.event.id);
+    const isValid = await isUserEvent(userId, id);
 
     ctx.assert(isValid, 403, 'Access denied');
 
@@ -79,7 +79,7 @@ async function update(ctx) {
     event = await updateEvent({ ...ctx.request.body.event, id });
   }
 
-  ctx.assert(event, 404, `No event with id ${ctx.request.body.event.id}`);
+  ctx.assert(event, 404, `No event with id ${id}`);
 
   ctx.body = { message: 'OK' };
 }
@@ -90,7 +90,7 @@ async function remove(ctx) {
   const { id: userId, role } = ctx.state.authPayload;
 
   if (role !== MODERATOR) {
-    const isValid = await isUserEvent(userId, ctx.request.body.event.id);
+    const isValid = await isUserEvent(userId, id);
 
     ctx.assert(isValid, 403, 'Access denied');
   }
