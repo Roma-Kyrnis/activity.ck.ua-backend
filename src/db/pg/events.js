@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const log = require('../../utils/logger')(__filename);
 const {
-  content: { EVENTS_PERIOD, PLACE_PAGE_EVENTS_COUNT },
+  content: { EVENTS_PERIOD },
 } = require('../../config');
 const { checkError } = require('../checkError');
 const { queryAccessibility } = require('./queryBuilder');
@@ -152,6 +152,26 @@ module.exports = (client) => {
       }
     },
 
+    isUserEvent: async (userId, eventId) => {
+      try {
+        if (!eventId) {
+          throw new Error('ERROR: No eventId defined!');
+        }
+
+        const res = await client.query(
+          `SELECT id
+            FROM events
+            WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL;`,
+          [eventId, userId],
+        );
+
+        return res.rows[0];
+      } catch (err) {
+        log.error(err.message || err);
+        throw err;
+      }
+    },
+
     getUserEvents: async (userId, limit, page) => {
       try {
         if (!userId) {
@@ -189,7 +209,7 @@ module.exports = (client) => {
       }
     },
 
-    getPlaceEvents: async (placeId, limit = PLACE_PAGE_EVENTS_COUNT, page = 1) => {
+    getPlaceEvents: async (placeId, limit, page) => {
       try {
         if (!placeId) {
           throw new Error('ERROR: No placeId defined');
@@ -199,7 +219,7 @@ module.exports = (client) => {
           rows: [{ count }],
         } = await client.query(
           `SELECT COUNT(*) FROM events
-            WHERE end_time > now() AND place_id = $1 AND deleted_at IS NULL;`,
+            WHERE end_time > now() AND place_id = $1 AND moderated AND deleted_at IS NULL;`,
           [placeId],
         );
         const total = Number(count);
@@ -208,7 +228,7 @@ module.exports = (client) => {
         const { rows: events } = await client.query(
           `SELECT id, name, main_photo, start_time
             FROM events
-            WHERE end_time > now() AND place_id = $1 AND deleted_at IS NULL
+            WHERE end_time > now() AND place_id = $1 AND moderated AND deleted_at IS NULL
             ORDER BY start_time
             LIMIT $2 OFFSET $3;`,
           [placeId, limit, offset],

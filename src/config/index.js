@@ -5,7 +5,6 @@ const fatal = require('../utils/fatalError')(__filename);
 const config = {
   content: {
     EVENTS_PERIOD: '2 week', // This is an INTERVAL type value!
-    PLACE_PAGE_EVENTS_COUNT: 5,
   },
 
   server: {
