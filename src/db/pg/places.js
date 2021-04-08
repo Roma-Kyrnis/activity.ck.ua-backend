@@ -140,6 +140,22 @@ module.exports = (client) => {
       }
     },
 
+    isUserPlace: async (userId, placeId) => {
+      try {
+        const res = await client.query(
+          `SELECT id
+            FROM places
+            WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL;`,
+          [placeId, userId],
+        );
+
+        return res.rows[0];
+      } catch (err) {
+        log.error(err.message || err);
+        throw err;
+      }
+    },
+
     getUserPlaces: async (userId, limit, page) => {
       try {
         if (!userId) {
