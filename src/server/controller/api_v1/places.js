@@ -41,7 +41,9 @@ async function getOne(ctx) {
     const place = await getPlace(id);
     const photos = await getPhotos(id, 'place_id');
 
-    ctx.body = { place: { ...place, photos } };
+    place.photos = photos;
+
+    ctx.body = { place };
   } catch (err) {
     err.status = 404;
     err.message = `No place with id - ${id}`;

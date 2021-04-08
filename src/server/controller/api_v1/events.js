@@ -9,6 +9,7 @@ const {
   addPhotos,
   getPhotos,
   addEventAttend,
+  isUserEvent,
 } = require('../../../db');
 const paginationAndAccessibility = require('./paginationAndAccessibility');
 const {
@@ -36,7 +37,9 @@ async function getOne(ctx) {
 
   ctx.assert(event, 404, `Cannot find event with id ${id}`);
 
-  ctx.body = { event, photos };
+  event.photos = photos;
+
+  ctx.body = { event };
 }
 
 async function getApproved(ctx) {
@@ -65,13 +68,16 @@ async function update(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
   const { id: userId, role } = ctx.state.authPayload;
 
-  // if (role !== MODERATOR) {
-  //   const isUserEvent = await isUserEventDB(userId, ctx.request.body.event.id);
+  let event;
+  if (role !== MODERATOR) {
+    const isValid = await isUserEvent(userId, ctx.request.body.event.id);
 
-  //   ctx.assert(isUserEvent, 403, 'Access denied');
-  // }
+    ctx.assert(isValid, 403, 'Access denied');
 
-  const event = await updateEvent({ ...ctx.request.body.event, id });
+    event = await updateEvent({ ...ctx.request.body.event, moderated: false, id });
+  } else {
+    event = await updateEvent({ ...ctx.request.body.event, id });
+  }
 
   ctx.assert(event, 404, `No event with id ${ctx.request.body.event.id}`);
 
@@ -83,11 +89,11 @@ async function remove(ctx) {
 
   const { id: userId, role } = ctx.state.authPayload;
 
-  // if (role !== MODERATOR) {
-  //   const isUserEvent = await isUserEventDB(userId, ctx.request.body.event.id);
+  if (role !== MODERATOR) {
+    const isValid = await isUserEvent(userId, ctx.request.body.event.id);
 
-  //   ctx.assert(isUserEvent, 403, 'Access denied');
-  // }
+    ctx.assert(isValid, 403, 'Access denied');
+  }
 
   await deleteEvent(id);
 
