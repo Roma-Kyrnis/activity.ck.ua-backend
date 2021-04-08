@@ -72,8 +72,9 @@ const getNow = {
 
 const update = {
   params: Joi.object({
-    id: Joi.string().pattern(/^[1-9]\d*$/),
-    // .required(),
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
   }),
   body: Joi.object({
     event: Joi.object({

@@ -11,6 +11,9 @@ const {
   addEventAttend,
 } = require('../../../db');
 const paginationAndAccessibility = require('./paginationAndAccessibility');
+const {
+  ROLES: { MODERATOR },
+} = require('../../../config');
 
 async function create(ctx) {
   const event = {
@@ -60,6 +63,13 @@ async function getNow(ctx) {
 
 async function update(ctx) {
   // const id = parseInt(ctx.request.params.id, 10);
+  const { id: userId, role } = ctx.state.authPayload;
+
+  // if (role !== MODERATOR) {
+  //   const isUserEvent = await isUserEventDB(userId, ctx.request.body.event.id);
+
+  //   ctx.assert(isUserEvent, 403, 'Access denied');
+  // }
 
   const event = await updateEvent(ctx.request.body.event);
 
@@ -70,6 +80,14 @@ async function update(ctx) {
 
 async function remove(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
+
+  const { id: userId, role } = ctx.state.authPayload;
+
+  // if (role !== MODERATOR) {
+  //   const isUserEvent = await isUserEventDB(userId, ctx.request.body.event.id);
+
+  //   ctx.assert(isUserEvent, 403, 'Access denied');
+  // }
 
   await deleteEvent(id);
 
