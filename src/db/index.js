@@ -97,6 +97,7 @@ module.exports = {
     funcWrapper(dbWrapper().getEvents)(startTime, limit, page, filters),
   getCurrentEvents: async (limit, page, filters) =>
     funcWrapper(dbWrapper().getCurrentEvents)(limit, page, filters),
+  isUserEvent: async (userId, eventId) => funcWrapper(dbWrapper().isUserEvent)(userId, eventId),
   getUserEvents: async (userId, limit, page) =>
     funcWrapper(dbWrapper().getUserEvents)(userId, limit, page),
   getPlaceEvents: async (placeId, limit, page) =>
