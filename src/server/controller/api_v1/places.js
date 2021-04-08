@@ -9,11 +9,7 @@ const {
   getPhotos,
 } = require('../../../db');
 
-const {
-  places: {
-    default: { LIMIT, PAGE },
-  },
-} = require('../../../config');
+const paginationAndAccessibility = require('./paginationAndAccessibility');
 
 async function create(ctx) {
   let organizationId = ctx.request.body.organization_id;
@@ -43,40 +39,24 @@ async function getOne(ctx) {
 
   try {
     const place = await getPlace(id);
-
     const photos = await getPhotos(id, 'place_id');
+
     place.photos = photos;
 
     ctx.body = { place };
   } catch (err) {
-    err.status = 400;
+    err.status = 404;
     err.message = `No place with id - ${id}`;
     ctx.app.emit('error', err, ctx);
   }
 }
 
 async function getApproved(ctx) {
-  // eslint-disable-next-line no-underscore-dangle
-  const limit = parseInt(ctx.request.query._limit || LIMIT, 10);
-  // eslint-disable-next-line no-underscore-dangle
-  const page = parseInt(ctx.request.query._page || PAGE, 10);
-
-  const {
-    type_id: types,
-    category_id: categoryId,
-    accessibility,
-    dog_friendly: dogFriendly,
-    child_friendly: childFriendly,
-  } = ctx.request.query;
-
-  const filters = {};
+  const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
+  const { type_id: types, category_id: categoryId } = ctx.request.query;
 
   if (categoryId !== undefined) filters.categoryId = categoryId;
   if (types !== undefined) filters.types = types.split('-');
-
-  if (accessibility !== undefined) filters.accessibility = accessibility;
-  if (dogFriendly !== undefined) filters.dogFriendly = dogFriendly;
-  if (childFriendly !== undefined) filters.childFriendly = childFriendly;
 
   const data = await getPlaces(filters, limit, page);
 

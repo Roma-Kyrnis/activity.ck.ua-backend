@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 services:
   db:
     container_name: db
@@ -6,7 +6,7 @@ services:
     env_file: 
       - .env
     ports:
-      - '$POSTGRES_PORT:$DOCKER_POSTGRES_PORT'
+      - '$EXTERNAL_POSTGRES_PORT:$POSTGRES_PORT'
     volumes:
       - ./.data:/var/lib/postgresql/data
 
@@ -23,10 +23,11 @@ services:
     volumes:
       - ./src:/usr/src/app/src
     environment:
-     - 'NODE_ENV=development'
+      - 'NODE_ENV=development'
     build:
       context: .
       dockerfile: Dockerfile
+    env_file: .env
     depends_on:
       - db
     ports:

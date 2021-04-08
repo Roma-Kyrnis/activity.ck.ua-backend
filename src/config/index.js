@@ -15,6 +15,7 @@ const config = {
       AUTH: '/auth',
       PLACES: '/places',
       ORGANIZATIONS: '/organizations',
+      EVENTS: '/events',
     },
     NODE_ENV: process.env.NODE_ENV || 'production',
     MORGAN_FORMAT: 'dev',
@@ -30,13 +31,7 @@ const config = {
   errors: {
     DATABASE: 'DatabaseError',
   },
-  places: {
-    default: {
-      LIMIT: 5,
-      PAGE: 1,
-    },
-  },
-  roles: {
+  ROLES: {
     USER: 'user',
     ORGANIZER: 'organizer',
     MODERATOR: 'moderator',
