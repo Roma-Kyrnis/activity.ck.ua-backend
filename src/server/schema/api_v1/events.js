@@ -78,7 +78,6 @@ const update = {
   }),
   body: Joi.object({
     event: Joi.object({
-      id: Joi.number().min(1).required(),
       place_id: Joi.number().min(1),
       name: Joi.string().min(3).max(255),
       organizer: Joi.string().min(3),

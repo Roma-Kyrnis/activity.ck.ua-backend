@@ -62,7 +62,7 @@ async function getNow(ctx) {
 }
 
 async function update(ctx) {
-  // const id = parseInt(ctx.request.params.id, 10);
+  const id = parseInt(ctx.request.params.id, 10);
   const { id: userId, role } = ctx.state.authPayload;
 
   // if (role !== MODERATOR) {
@@ -71,7 +71,7 @@ async function update(ctx) {
   //   ctx.assert(isUserEvent, 403, 'Access denied');
   // }
 
-  const event = await updateEvent(ctx.request.body.event);
+  const event = await updateEvent({ ...ctx.request.body.event, id });
 
   ctx.assert(event, 404, `No event with id ${ctx.request.body.event.id}`);
 
