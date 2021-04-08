@@ -13,22 +13,13 @@ const {
   // getUsersResearch,
 } = require('../../../db');
 
-const {
-  USERS: {
-    ITEMS_IN_SECTION,
-    PAGE,
-    LIMIT,
-    SECTION: { EVENT_ID, PLACE_ID },
-  },
-} = require('../../../config');
-
 function getUserIdAndPagination(ctx) {
   const { id: userId } = ctx.state.authPayload;
 
   let { _limit: limit, _page: page } = ctx.request.query;
 
-  limit = parseInt(limit || LIMIT, 10);
-  page = parseInt(page || PAGE, 10);
+  limit = parseInt(limit, 10);
+  page = parseInt(page, 10);
 
   return { userId, limit, page };
 }
@@ -39,53 +30,6 @@ async function getUser(ctx) {
   const user = await getUserDB(userId);
 
   ctx.body = { user };
-}
-
-const getSectionInfo = async (userId, sectionFunction, sectionIdKey) => {
-  const sectionResults = await sectionFunction(userId, ITEMS_IN_SECTION, PAGE);
-
-  const fullSectionResults = [];
-
-  for await (const { [sectionIdKey]: sectionId } of sectionResults) {
-    // 1
-    // const section = await getBaseActivity(sectionId);
-
-    // 2
-    let section;
-    if (sectionIdKey === PLACE_ID) {
-      section = await getPlace(sectionId);
-    } else {
-      section = await getEvent(sectionId);
-    }
-
-    fullSectionResults.push({
-      id: sectionId,
-      name: section.name,
-      main_photo: section.main_photo,
-    });
-  }
-
-  return fullSectionResults;
-};
-
-async function activity(ctx) {
-  const { id: userId } = ctx.state.authPayload;
-
-  const activities = await Promise.all([
-    getSectionInfo(userId, getUserVisitedPlaces, PLACE_ID),
-    getSectionInfo(getUserFavoritesPlaces, PLACE_ID),
-    getSectionInfo(getUserPlaces, PLACE_ID),
-    getSectionInfo(getUserEvents, EVENT_ID),
-    getSectionInfo(getUserScheduledEvents, EVENT_ID),
-  ]);
-
-  ctx.body = {
-    visited_places: activities[0],
-    favorites_places: activities[1],
-    user_places: activities[2],
-    user_events: activities[3],
-    scheduled_events: activities[4],
-  };
 }
 
 async function getResearch(ctx) {
@@ -163,7 +107,6 @@ async function getReviews(ctx) {
 
 module.exports = {
   getUser,
-  activity,
   getResearch,
   getVisitedPlaces,
   getFavoritesPlaces,

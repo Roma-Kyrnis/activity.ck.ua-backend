@@ -8,14 +8,6 @@ const getUser = {
   }).unknown(),
 };
 
-const activity = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
-};
-
 const getResearch = {
   header: Joi.object({
     authorization: Joi.string()
@@ -34,8 +26,12 @@ const getVisitedPlaces = {
       .required(),
   }).unknown(),
   query: Joi.object({
-    _page: Joi.string().pattern(/^[1-9]\d*$/),
-    _limit: Joi.string().pattern(/^[1-9]\d*$/),
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
   }),
 };
 
@@ -46,8 +42,12 @@ const getFavoritesPlaces = {
       .required(),
   }).unknown(),
   query: Joi.object({
-    _page: Joi.string().pattern(/^[1-9]\d*$/),
-    _limit: Joi.string().pattern(/^[1-9]\d*$/),
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
   }),
 };
 
@@ -58,8 +58,12 @@ const getPlaces = {
       .required(),
   }).unknown(),
   query: Joi.object({
-    _page: Joi.string().pattern(/^[1-9]\d*$/),
-    _limit: Joi.string().pattern(/^[1-9]\d*$/),
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
   }),
 };
 
@@ -70,8 +74,12 @@ const getEvents = {
       .required(),
   }).unknown(),
   query: Joi.object({
-    _page: Joi.string().pattern(/^[1-9]\d*$/),
-    _limit: Joi.string().pattern(/^[1-9]\d*$/),
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
   }),
 };
 
@@ -82,8 +90,12 @@ const getScheduledEvents = {
       .required(),
   }).unknown(),
   query: Joi.object({
-    _page: Joi.string().pattern(/^[1-9]\d*$/),
-    _limit: Joi.string().pattern(/^[1-9]\d*$/),
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
   }),
 };
 
@@ -94,8 +106,12 @@ const getOrganizations = {
       .required(),
   }).unknown(),
   query: Joi.object({
-    _page: Joi.string().pattern(/^[1-9]\d*$/),
-    _limit: Joi.string().pattern(/^[1-9]\d*$/),
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
   }),
 };
 
@@ -127,14 +143,18 @@ const getReviews = {
   }).unknown(),
   query: Joi.object({
     place_id: Joi.string().pattern(/^[1-9]\d*$/),
-    _page: Joi.string().pattern(/^[1-9]\d*$/),
-    _limit: Joi.string().pattern(/^[1-9]\d*$/),
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required()
+      .required(),
   }),
 };
 
 module.exports = {
   getUser,
-  activity,
   getResearch,
   getVisitedPlaces,
   getFavoritesPlaces,

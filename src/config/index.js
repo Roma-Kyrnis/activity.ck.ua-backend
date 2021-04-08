@@ -17,6 +17,7 @@ const config = {
       PLACES: '/places',
       ORGANIZATIONS: '/organizations',
       USERS: '/users',
+      USERS_MYSELF: '/myself',
     },
     NODE_ENV: process.env.NODE_ENV || 'production',
     MORGAN_FORMAT: 'dev',
@@ -76,15 +77,6 @@ const config = {
     avatar: process.env.MODERATOR_AVATAR || fatal('No MODERATOR_AVATAR'),
     email: process.env.MODERATOR_EMAIL || fatal('No MODERATOR_EMAIL'),
     password: process.env.MODERATOR_PASSWORD || fatal('No MODERATOR_PASSWORD'),
-  },
-  USERS: {
-    PAGE: 1,
-    LIMIT: 5,
-    ITEMS_IN_SECTION: 2,
-    SECTION: {
-      PLACE_ID: 'place_id',
-      EVENT_ID: 'event_id',
-    },
   },
 };
 

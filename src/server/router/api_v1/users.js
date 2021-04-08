@@ -11,82 +11,82 @@ const {
 } = require('../../middleware');
 const {
   server: {
-    prefix: { USERS },
+    prefix: { USERS, USERS_MYSELF },
   },
 } = require('../../../config');
 
-const router = new Router();
+const router = Router();
 
 router.prefix(USERS);
 
-router.get(
-  '/activity',
-  { validate: validator.activity },
-  access(['user', 'organizer']),
-  users.activity,
-);
-router.get('/', { validate: validator.getUser }, access(['user', 'organizer']), users.getUser);
+router.get('/me', { validate: validator.getUser }, access(['user', 'organizer']), users.getUser);
 
-router.get(
+const myself = Router();
+
+myself.prefix(USERS_MYSELF);
+
+myself.get(
   '/research',
   { validate: validator.getResearch },
   access(['user', 'organizer']),
   users.getResearch,
 );
 
-router.get(
-  '/visitedPlaces',
+myself.get(
+  '/visited_places',
   { validate: validator.getVisitedPlaces },
   access(['user', 'organizer']),
   users.getVisitedPlaces,
 );
 
-router.get(
-  '/favoritesPlaces',
+myself.get(
+  '/favorite_places',
   { validate: validator.getFavoritesPlaces },
   access(['user', 'organizer']),
   users.getFavoritesPlaces,
 );
 
-router.get(
-  '/places',
+myself.get(
+  '/created_places',
   { validate: validator.getPlaces },
   access(['user', 'organizer']),
   users.getPlaces,
 );
 
-router.get(
-  '/events',
+myself.get(
+  '/created_events',
   { validate: validator.getEvents },
   access(['user', 'organizer']),
   users.getEvents,
 );
 
-router.get(
-  '/scheduledEvents',
+myself.get(
+  '/scheduled_events',
   { validate: validator.getScheduledEvents },
   access(['user', 'organizer']),
   users.getScheduledEvents,
 );
 
-router.get(
-  '/organizations',
+myself.get(
+  '/created_organizations',
   { validate: validator.getOrganizations },
   access(['organizer']),
   users.getOrganizations,
 );
 
-router.post(
+myself.post(
   '/review',
   { validate: validator.addReview },
   access(['user', 'organizer']),
   users.addReview,
 );
-router.get(
+myself.get(
   '/reviews',
   { validate: validator.getReviews },
   access(['user', 'organizer']),
   users.getReviews,
 );
+
+router.use(myself);
 
 module.exports = router;
