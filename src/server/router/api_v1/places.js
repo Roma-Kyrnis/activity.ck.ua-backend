@@ -13,6 +13,7 @@ const {
   server: {
     prefix: { PLACES },
   },
+  ROLES: { USER, ORGANIZER },
 } = require('../../../config');
 
 const router = Router();
@@ -28,7 +29,7 @@ router.delete('/:id', { validate: validator.remove }, access(), places.remove);
 router.post(
   '/:id/reviews/',
   { validate: validator.addReview },
-  access(['user', 'organizer']),
+  access([USER, ORGANIZER]),
   places.addReview,
 );
 router.get('/:id/reviews/', { validate: validator.getReviews }, places.getReviews);
@@ -36,14 +37,14 @@ router.get('/:id/reviews/', { validate: validator.getReviews }, places.getReview
 router.post(
   '/:id/attends/',
   { validate: validator.addAttend },
-  access(['user', 'organizer']),
+  access([USER, ORGANIZER]),
   places.addAttend,
 );
 
 router.post(
   '/:id/favorites/',
   { validate: validator.addFavorite },
-  access(['user', 'organizer']),
+  access([USER, ORGANIZER]),
   places.addFavorite,
 );
 

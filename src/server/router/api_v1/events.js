@@ -13,6 +13,7 @@ const {
   server: {
     prefix: { EVENTS },
   },
+  ROLES: { USER, ORGANIZER },
 } = require('../../../config');
 
 const router = Router();
@@ -29,7 +30,7 @@ router.delete('/:id', { validate: validator.remove }, access(['user', 'organizer
 router.post(
   '/:id/attends/',
   { validate: validator.addAttend },
-  access(['user', 'organizer']),
+  access([USER, ORGANIZER]),
   events.addAttend,
 );
 

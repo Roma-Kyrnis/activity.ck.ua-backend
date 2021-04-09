@@ -13,13 +13,14 @@ const {
   server: {
     prefix: { USERS, USERS_MYSELF },
   },
+  ROLES: { USER, ORGANIZER },
 } = require('../../../config');
 
 const router = Router();
 
 router.prefix(USERS);
 
-router.get('/me', { validate: validator.getUser }, access(['user', 'organizer']), users.getUser);
+router.get('/me', { validate: validator.getUser }, access([USER, ORGANIZER]), users.getUser);
 
 const myself = Router();
 
@@ -28,62 +29,62 @@ myself.prefix(USERS_MYSELF);
 myself.get(
   '/research',
   { validate: validator.getResearch },
-  access(['user', 'organizer']),
+  access([USER, ORGANIZER]),
   users.getResearch,
 );
 
 myself.get(
   '/visited_places',
   { validate: validator.getVisitedPlaces },
-  access(['user', 'organizer']),
+  access([USER, ORGANIZER]),
   users.getVisitedPlaces,
 );
 
 myself.get(
   '/favorite_places',
   { validate: validator.getFavoritesPlaces },
-  access(['user', 'organizer']),
+  access([USER, ORGANIZER]),
   users.getFavoritesPlaces,
 );
 
 myself.get(
   '/created_places',
   { validate: validator.getPlaces },
-  access(['user', 'organizer']),
+  access([USER, ORGANIZER]),
   users.getPlaces,
 );
 
 myself.get(
   '/created_events',
   { validate: validator.getEvents },
-  access(['user', 'organizer']),
+  access([USER, ORGANIZER]),
   users.getEvents,
 );
 
 myself.get(
   '/scheduled_events',
   { validate: validator.getScheduledEvents },
-  access(['user', 'organizer']),
+  access([USER, ORGANIZER]),
   users.getScheduledEvents,
 );
 
 myself.get(
   '/created_organizations',
   { validate: validator.getOrganizations },
-  access(['organizer']),
+  access([ORGANIZER]),
   users.getOrganizations,
 );
 
 myself.post(
   '/review',
   { validate: validator.addReview },
-  access(['user', 'organizer']),
+  access([USER, ORGANIZER]),
   users.addReview,
 );
 myself.get(
   '/reviews',
   { validate: validator.getReviews },
-  access(['user', 'organizer']),
+  access([USER, ORGANIZER]),
   users.getReviews,
 );
 
