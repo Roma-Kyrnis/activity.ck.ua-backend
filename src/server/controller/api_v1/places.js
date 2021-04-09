@@ -11,9 +11,12 @@ const {
   addFavorites: addPlacesFavorites,
   addPhotos,
   getPhotos,
+  isUserPlace,
 } = require('../../../db');
-
 const paginationAndAccessibility = require('./paginationAndAccessibility');
+const {
+  ROLES: { MODERATOR },
+} = require('../../../config');
 
 async function create(ctx) {
   let organizationId = ctx.request.body.organization_id;
@@ -69,13 +72,34 @@ async function getApproved(ctx) {
 
 async function update(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
-  await updatePlace({ id, ...ctx.request.body.place });
+  const { id: userId, role } = ctx.state.authPayload;
+
+  let place;
+  if (role !== MODERATOR) {
+    const isValid = await isUserPlace(userId, id);
+
+    ctx.assert(isValid, 403, 'Access denied');
+
+    place = await updatePlace({ ...ctx.request.body.place, moderated: false, id });
+  } else {
+    place = await updatePlace({ ...ctx.request.body.place, id });
+  }
+
+  ctx.assert(place, 404, `No place with id ${id}`);
 
   ctx.body = { message: 'OK' };
 }
 
 async function remove(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
+  const { id: userId, role } = ctx.state.authPayload;
+
+  if (role !== MODERATOR) {
+    const isValid = await isUserPlace(userId, id);
+
+    ctx.assert(isValid, 403, 'Access denied');
+  }
+
   await deletePlace(id);
 
   ctx.body = { message: 'OK' };

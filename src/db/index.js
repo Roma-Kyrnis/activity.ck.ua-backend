@@ -107,4 +107,23 @@ module.exports = {
     funcWrapper(dbWrapper().getPlaceEvents)(placeId, limit, page),
   updateEvent: async (event) => funcWrapper(dbWrapper().updateEvent)(event),
   deleteEvent: async (id) => funcWrapper(dbWrapper().deleteEvent)(id),
+
+  addFavoritePlace: async (placeId, userId) =>
+    funcWrapper(dbWrapper().addFavoritePlace)(placeId, userId),
+  addVisitedPlace: async (placeId, userId) =>
+    funcWrapper(dbWrapper().addVisitedPlace)(placeId, userId),
+  addScheduledEvent: async (eventId, userId) =>
+    funcWrapper(dbWrapper().addScheduledEvent)(eventId, userId),
+  getFavoritePlaces: async (userId, limit, page) =>
+    funcWrapper(dbWrapper().getFavoritePlaces)(userId, limit, page),
+  getVisitedPlaces: async (userId, limit, page) =>
+    funcWrapper(dbWrapper().getVisitedPlaces)(userId, limit, page),
+  getScheduledEvents: async (userId, limit, page) =>
+    funcWrapper(dbWrapper().getScheduledEvents)(userId, limit, page),
+  detachFavoritePlace: async (placeId, userId) =>
+    funcWrapper(dbWrapper().detachFavoritePlace)(placeId, userId),
+  detachVisitedPlace: async (placeId, userId) =>
+    funcWrapper(dbWrapper().detachVisitedPlace)(placeId, userId),
+  detachScheduledEvent: async (eventId, userId) =>
+    funcWrapper(dbWrapper().detachScheduledEvent)(eventId, userId),
 };

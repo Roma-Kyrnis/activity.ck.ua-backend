@@ -20,11 +20,11 @@ const router = Router();
 
 router.prefix(PLACES);
 
-router.post('/', { validate: validator.create }, access(['user', 'organizer']), places.create);
+router.post('/', { validate: validator.create }, access([USER, ORGANIZER]), places.create);
 router.get('/:id', { validate: validator.getOne }, places.getOne);
 router.get('/', { validate: validator.getApproved }, places.getApproved);
-router.put('/:id', { validate: validator.update }, access(), places.update);
-router.delete('/:id', { validate: validator.remove }, access(), places.remove);
+router.put('/:id', { validate: validator.update }, access([USER, ORGANIZER]), places.update);
+router.delete('/:id', { validate: validator.remove }, access([USER, ORGANIZER]), places.remove);
 
 router.post(
   '/:id/reviews/',
