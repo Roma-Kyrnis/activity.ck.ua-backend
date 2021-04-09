@@ -19,10 +19,10 @@ const {
 const router = Router();
 router.prefix(USERS);
 
-router.get('/me', { validate: validator.getUser }, access([USER, ORGANIZER]), users.getUser);
-
 const myself = Router();
 myself.prefix(USERS_MYSELF);
+
+myself.get('/', { validate: validator.getUser }, access([USER, ORGANIZER]), users.getUser);
 
 myself.get(
   '/visited_places',

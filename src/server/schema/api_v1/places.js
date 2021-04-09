@@ -1,6 +1,11 @@
 const { Joi } = require('koa-joi-router');
 
 const create = {
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   body: Joi.object({
     organization_id: Joi.number().min(0),
     organization: Joi.object({
@@ -81,6 +86,11 @@ const getApproved = {
 };
 
 const update = {
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -145,6 +155,11 @@ const update = {
 };
 
 const remove = {
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -153,11 +168,11 @@ const remove = {
 };
 
 const addVisited = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -166,11 +181,11 @@ const addVisited = {
 };
 
 const deleteVisited = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -179,11 +194,11 @@ const deleteVisited = {
 };
 
 const addFavorite = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -192,11 +207,11 @@ const addFavorite = {
 };
 
 const deleteFavorite = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)

@@ -1,19 +1,19 @@
 const { Joi } = require('koa-joi-router');
 
 const getUser = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
 };
 
 const getVisitedPlaces = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   query: Joi.object({
     _page: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -25,11 +25,11 @@ const getVisitedPlaces = {
 };
 
 const getFavoritePlaces = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   query: Joi.object({
     _page: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -41,11 +41,11 @@ const getFavoritePlaces = {
 };
 
 const getScheduledEvents = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   query: Joi.object({
     _page: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -57,11 +57,11 @@ const getScheduledEvents = {
 };
 
 const getPlaces = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   query: Joi.object({
     _page: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -73,11 +73,11 @@ const getPlaces = {
 };
 
 const getEvents = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   query: Joi.object({
     _page: Joi.string()
       .pattern(/^[1-9]\d*$/)
