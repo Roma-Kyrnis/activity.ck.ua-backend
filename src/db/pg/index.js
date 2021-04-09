@@ -4,6 +4,7 @@ const organizations = require('./organizations');
 const places = require('./places');
 const photos = require('./photos');
 const events = require('./events');
+const activities = require('./activities');
 const log = require('../../utils/logger')(__filename);
 
 const name = 'pg';
@@ -46,6 +47,17 @@ module.exports = (config) => {
     updateEvent,
     deleteEvent,
   } = events(client);
+  const {
+    addFavoritePlace,
+    addVisitedPlace,
+    addScheduledEvent,
+    getFavoritePlaces,
+    getVisitedPlaces,
+    getScheduledEvents,
+    detachFavoritePlace,
+    detachVisitedPlace,
+    detachScheduledEvent,
+  } = activities(client);
 
   return {
     testConnection: async () => {
@@ -97,5 +109,15 @@ module.exports = (config) => {
     getPlaceEvents,
     updateEvent,
     deleteEvent,
+
+    addFavoritePlace,
+    addVisitedPlace,
+    addScheduledEvent,
+    getFavoritePlaces,
+    getVisitedPlaces,
+    getScheduledEvents,
+    detachFavoritePlace,
+    detachVisitedPlace,
+    detachScheduledEvent,
   };
 };
