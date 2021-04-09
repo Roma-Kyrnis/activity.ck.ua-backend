@@ -1,16 +1,14 @@
 const {
   getUser: getUserDB,
-  getPlace,
-  getEvent,
   // getUserVisitedPlaces,
   // getUserFavoritesPlaces,
-  // getUserPlaces,
+  getUserPlaces,
   getUserEvents,
   // getUserScheduledEvents,
   // getUserOrganizations,
   // addReview: addUserReview,
   // getUserReviews,
-  // getUsersResearch,
+  // getUserResearch,
 } = require('../../../db');
 
 function getUserIdAndPagination(ctx) {
@@ -36,7 +34,7 @@ async function getResearch(ctx) {
   const { id: userId } = ctx.state.authPayload;
   const { category_id: categoryId } = ctx.request.query;
 
-  const research = await getUsersResearch(userId, categoryId);
+  const research = await getUserResearch(userId, categoryId);
 
   ctx.body = { research };
 }
