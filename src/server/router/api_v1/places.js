@@ -27,25 +27,37 @@ router.put('/:id', { validate: validator.update }, access([USER, ORGANIZER]), pl
 router.delete('/:id', { validate: validator.remove }, access([USER, ORGANIZER]), places.remove);
 
 router.post(
-  '/:id/reviews/',
-  { validate: validator.addReview },
+  '/:id/visited_places/',
+  { validate: validator.addVisited },
   access([USER, ORGANIZER]),
-  places.addReview,
+  places.addVisited,
 );
-router.get('/:id/reviews/', { validate: validator.getReviews }, places.getReviews);
-
-router.post(
-  '/:id/attends/',
-  { validate: validator.addAttend },
+router.delete(
+  '/:id/visited_places/',
+  { validate: validator.deleteVisited },
   access([USER, ORGANIZER]),
-  places.addAttend,
+  places.deleteVisited,
 );
 
 router.post(
-  '/:id/favorites/',
+  '/:id/favorite_places/',
   { validate: validator.addFavorite },
   access([USER, ORGANIZER]),
   places.addFavorite,
 );
+router.delete(
+  '/:id/favorite_places/',
+  { validate: validator.deleteFavorite },
+  access([USER, ORGANIZER]),
+  places.deleteFavorite,
+);
+
+// router.post(
+//   '/:id/reviews/',
+//   { validate: validator.addReview },
+//   access([USER, ORGANIZER]),
+//   places.addReview,
+// );
+// router.get('/:id/reviews/', { validate: validator.getReviews }, places.getReviews);
 
 module.exports = router;

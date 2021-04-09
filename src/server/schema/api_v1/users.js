@@ -8,17 +8,6 @@ const getUser = {
   }).unknown(),
 };
 
-const getResearch = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
-  query: Joi.object({
-    category_id: Joi.string().min(3),
-  }),
-};
-
 const getVisitedPlaces = {
   header: Joi.object({
     authorization: Joi.string()
@@ -35,7 +24,23 @@ const getVisitedPlaces = {
   }),
 };
 
-const getFavoritesPlaces = {
+const getFavoritePlaces = {
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
+  query: Joi.object({
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+};
+
+const getScheduledEvents = {
   header: Joi.object({
     authorization: Joi.string()
       .pattern(/^[a-zA-Z]+ .+$/)
@@ -83,85 +88,80 @@ const getEvents = {
   }),
 };
 
-const getScheduledEvents = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
-  query: Joi.object({
-    _page: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-    _limit: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-  }),
-};
+// const getResearch = {
+//   header: Joi.object({
+//     authorization: Joi.string()
+//       .pattern(/^[a-zA-Z]+ .+$/)
+//       .required(),
+//   }).unknown(),
+//   query: Joi.object({
+//     category_id: Joi.string().min(3),
+//   }),
+// };
 
-const getOrganizations = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
-  query: Joi.object({
-    _page: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-    _limit: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-  }),
-};
+// const getOrganizations = {
+//   header: Joi.object({
+//     authorization: Joi.string()
+//       .pattern(/^[a-zA-Z]+ .+$/)
+//       .required(),
+//   }).unknown(),
+//   query: Joi.object({
+//     _page: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required(),
+//     _limit: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required(),
+//   }),
+// };
 
-const addReview = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
-  body: Joi.object({
-    place_id: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-    rating: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-    review_text: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-  }),
-  type: 'json',
-};
+// const addReview = {
+//   header: Joi.object({
+//     authorization: Joi.string()
+//       .pattern(/^[a-zA-Z]+ .+$/)
+//       .required(),
+//   }).unknown(),
+//   body: Joi.object({
+//     place_id: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required(),
+//     rating: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required(),
+//     review_text: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required(),
+//   }),
+//   type: 'json',
+// };
 
-const getReviews = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
-  query: Joi.object({
-    place_id: Joi.string().pattern(/^[1-9]\d*$/),
-    _page: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-    _limit: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required()
-      .required(),
-  }),
-};
+// const getReviews = {
+//   header: Joi.object({
+//     authorization: Joi.string()
+//       .pattern(/^[a-zA-Z]+ .+$/)
+//       .required(),
+//   }).unknown(),
+//   query: Joi.object({
+//     place_id: Joi.string().pattern(/^[1-9]\d*$/),
+//     _page: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required(),
+//     _limit: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required()
+//       .required(),
+//   }),
+// };
 
 module.exports = {
   getUser,
-  getResearch,
   getVisitedPlaces,
-  getFavoritesPlaces,
+  getFavoritePlaces,
+  getScheduledEvents,
   getPlaces,
   getEvents,
-  getScheduledEvents,
-  getOrganizations,
-  addReview,
-  getReviews,
+  // getOrganizations,
+  // getResearch,
+  // addReview,
+  // getReviews,
 };

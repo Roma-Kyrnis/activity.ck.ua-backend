@@ -28,10 +28,16 @@ router.put('/:id', { validate: validator.update }, access([USER, ORGANIZER]), ev
 router.delete('/:id', { validate: validator.remove }, access([USER, ORGANIZER]), events.remove);
 
 router.post(
-  '/:id/attends/',
-  { validate: validator.addAttend },
+  '/:id/scheduled_events/',
+  { validate: validator.addScheduled },
   access([USER, ORGANIZER]),
-  events.addAttend,
+  events.addScheduled,
+);
+router.delete(
+  '/:id/scheduled_events/',
+  { validate: validator.deleteScheduled },
+  access([USER, ORGANIZER]),
+  events.deleteScheduled,
 );
 
 module.exports = router;

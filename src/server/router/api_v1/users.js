@@ -17,21 +17,12 @@ const {
 } = require('../../../config');
 
 const router = Router();
-
 router.prefix(USERS);
 
 router.get('/me', { validate: validator.getUser }, access([USER, ORGANIZER]), users.getUser);
 
 const myself = Router();
-
 myself.prefix(USERS_MYSELF);
-
-myself.get(
-  '/research',
-  { validate: validator.getResearch },
-  access([USER, ORGANIZER]),
-  users.getResearch,
-);
 
 myself.get(
   '/visited_places',
@@ -42,9 +33,16 @@ myself.get(
 
 myself.get(
   '/favorite_places',
-  { validate: validator.getFavoritesPlaces },
+  { validate: validator.getFavoritePlaces },
   access([USER, ORGANIZER]),
-  users.getFavoritesPlaces,
+  users.getFavoritePlaces,
+);
+
+myself.get(
+  '/scheduled_events',
+  { validate: validator.getScheduledEvents },
+  access([USER, ORGANIZER]),
+  users.getScheduledEvents,
 );
 
 myself.get(
@@ -61,32 +59,32 @@ myself.get(
   users.getEvents,
 );
 
-myself.get(
-  '/scheduled_events',
-  { validate: validator.getScheduledEvents },
-  access([USER, ORGANIZER]),
-  users.getScheduledEvents,
-);
+// myself.get(
+//   '/research',
+//   { validate: validator.getResearch },
+//   access([USER, ORGANIZER]),
+//   users.getResearch,
+// );
 
-myself.get(
-  '/created_organizations',
-  { validate: validator.getOrganizations },
-  access([ORGANIZER]),
-  users.getOrganizations,
-);
+// myself.get(
+//   '/created_organizations',
+//   { validate: validator.getOrganizations },
+//   access([ORGANIZER]),
+//   users.getOrganizations,
+// );
 
-myself.post(
-  '/review',
-  { validate: validator.addReview },
-  access([USER, ORGANIZER]),
-  users.addReview,
-);
-myself.get(
-  '/reviews',
-  { validate: validator.getReviews },
-  access([USER, ORGANIZER]),
-  users.getReviews,
-);
+// myself.post(
+//   '/review',
+//   { validate: validator.addReview },
+//   access([USER, ORGANIZER]),
+//   users.addReview,
+// );
+// myself.get(
+//   '/reviews',
+//   { validate: validator.getReviews },
+//   access([USER, ORGANIZER]),
+//   users.getReviews,
+// );
 
 router.use(myself);
 

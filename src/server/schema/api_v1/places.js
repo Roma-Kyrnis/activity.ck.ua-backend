@@ -152,7 +152,7 @@ const remove = {
   }),
 };
 
-const addReview = {
+const addVisited = {
   header: Joi.object({
     authorization: Joi.string()
       .pattern(/^[a-zA-Z]+ .+$/)
@@ -163,35 +163,9 @@ const addReview = {
       .pattern(/^[1-9]\d*$/)
       .required(),
   }),
-  body: Joi.object({
-    rating: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-    review_text: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-  }),
-  type: 'json',
 };
 
-const getReviews = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
-  params: Joi.object({
-    id: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-  }),
-  query: Joi.object({
-    _page: Joi.string().pattern(/^[1-9]\d*$/),
-    _limit: Joi.string().pattern(/^[1-9]\d*$/),
-  }),
-};
-
-const addAttend = {
+const deleteVisited = {
   header: Joi.object({
     authorization: Joi.string()
       .pattern(/^[a-zA-Z]+ .+$/)
@@ -217,14 +191,68 @@ const addFavorite = {
   }),
 };
 
+const deleteFavorite = {
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
+  params: Joi.object({
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+};
+
+// const addReview = {
+//   header: Joi.object({
+//     authorization: Joi.string()
+//       .pattern(/^[a-zA-Z]+ .+$/)
+//       .required(),
+//   }).unknown(),
+//   params: Joi.object({
+//     id: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required(),
+//   }),
+//   body: Joi.object({
+//     rating: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required(),
+//     review_text: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required(),
+//   }),
+//   type: 'json',
+// };
+
+// const getReviews = {
+//   header: Joi.object({
+//     authorization: Joi.string()
+//       .pattern(/^[a-zA-Z]+ .+$/)
+//       .required(),
+//   }).unknown(),
+//   params: Joi.object({
+//     id: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required(),
+//   }),
+//   query: Joi.object({
+//     _page: Joi.string().pattern(/^[1-9]\d*$/),
+//     _limit: Joi.string().pattern(/^[1-9]\d*$/),
+//   }),
+// };
+
 module.exports = {
   create,
   getOne,
   getApproved,
   update,
   remove,
-  addReview,
-  getReviews,
-  addAttend,
+  addVisited,
+  deleteVisited,
   addFavorite,
+  deleteFavorite,
+  // addReview,
+  // getReviews,
 };

@@ -126,7 +126,7 @@ const remove = {
   }),
 };
 
-const addAttend = {
+const addScheduled = {
   header: Joi.object({
     authorization: Joi.string()
       .pattern(/^[a-zA-Z]+ .+$/)
@@ -139,4 +139,26 @@ const addAttend = {
   }),
 };
 
-module.exports = { create, getOne, getApproved, getNow, update, remove, addAttend };
+const deleteScheduled = {
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
+  params: Joi.object({
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+};
+
+module.exports = {
+  create,
+  getOne,
+  getApproved,
+  getNow,
+  update,
+  remove,
+  addScheduled,
+  deleteScheduled,
+};

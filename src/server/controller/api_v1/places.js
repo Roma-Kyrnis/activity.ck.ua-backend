@@ -5,13 +5,15 @@ const {
   updatePlace,
   deletePlace,
   createOrganization,
-  addReview: addPlacesReview,
-  getPlacesReviews,
-  addAttend: addPlacesAttend,
-  addFavorites: addPlacesFavorites,
   addPhotos,
   getPhotos,
   isUserPlace,
+  detachFavoritePlace,
+  addFavoritePlace,
+  addVisitedPlace,
+  detachVisitedPlace,
+  // addReview: addPlacesReview,
+  // getPlacesReviews,
 } = require('../../../db');
 const paginationAndAccessibility = require('./paginationAndAccessibility');
 const {
@@ -44,18 +46,15 @@ async function create(ctx) {
 async function getOne(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
 
-  try {
-    const place = await getPlace(id);
-    const photos = await getPhotos(id, 'place_id');
+  const place = await getPlace(id);
 
-    place.photos = photos;
+  ctx.assert(place, 404, `No place with id - ${id}`);
 
-    ctx.body = { place };
-  } catch (err) {
-    err.status = 404;
-    err.message = `No place with id - ${id}`;
-    ctx.app.emit('error', err, ctx);
-  }
+  const photos = await getPhotos(id, 'place_id');
+
+  place.photos = photos;
+
+  ctx.body = { place };
 }
 
 async function getApproved(ctx) {
@@ -105,45 +104,63 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-async function addReview(ctx) {
+async function addVisited(ctx) {
   const { id: userId } = ctx.state.authPayload;
   const placeId = parseInt(ctx.request.params.id, 10);
 
-  await addPlacesReview({ ...ctx.request.body, user_id: userId, place_id: placeId });
+  await addVisitedPlace(placeId, userId);
 
   ctx.body = { message: 'OK' };
 }
 
-async function getReviews(ctx) {
-  const placeId = parseInt(ctx.request.params.id, 10);
-
-  let { _limit: limit, _page: page } = ctx.request.query;
-
-  limit = parseInt(limit, 10);
-  page = parseInt(page, 10);
-
-  const reviews = await getPlacesReviews(placeId, limit, page);
-
-  ctx.body = { reviews };
-}
-
-async function addAttend(ctx) {
+async function deleteVisited(ctx) {
   const { id: userId } = ctx.state.authPayload;
-
   const placeId = parseInt(ctx.request.params.id, 10);
-  await addPlacesAttend({ user_id: userId, place_id: placeId });
+
+  await detachVisitedPlace(placeId, userId);
 
   ctx.body = { message: 'OK' };
 }
 
 async function addFavorite(ctx) {
   const { id: userId } = ctx.state.authPayload;
-
   const placeId = parseInt(ctx.request.params.id, 10);
-  await addPlacesFavorites({ user_id: userId, place_id: placeId });
+
+  await addFavoritePlace(placeId, userId);
 
   ctx.body = { message: 'OK' };
 }
+
+async function deleteFavorite(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+  const placeId = parseInt(ctx.request.params.id, 10);
+
+  await detachFavoritePlace(placeId, userId);
+
+  ctx.body = { message: 'OK' };
+}
+
+// async function addReview(ctx) {
+//   const { id: userId } = ctx.state.authPayload;
+//   const placeId = parseInt(ctx.request.params.id, 10);
+
+//   await addPlacesReview({ ...ctx.request.body, user_id: userId, place_id: placeId });
+
+//   ctx.body = { message: 'OK' };
+// }
+
+// async function getReviews(ctx) {
+//   const placeId = parseInt(ctx.request.params.id, 10);
+
+//   let { _limit: limit, _page: page } = ctx.request.query;
+
+//   limit = parseInt(limit, 10);
+//   page = parseInt(page, 10);
+
+//   const reviews = await getPlacesReviews(placeId, limit, page);
+
+//   ctx.body = { reviews };
+// }
 
 module.exports = {
   create,
@@ -151,8 +168,10 @@ module.exports = {
   getApproved,
   update,
   remove,
-  addReview,
-  getReviews,
-  addAttend,
+  addVisited,
+  deleteVisited,
   addFavorite,
+  deleteFavorite,
+  // addReview,
+  // getReviews,
 };

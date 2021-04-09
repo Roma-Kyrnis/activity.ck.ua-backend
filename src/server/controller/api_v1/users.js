@@ -1,10 +1,10 @@
 const {
   getUser: getUserDB,
-  // getUserVisitedPlaces,
-  // getUserFavoritesPlaces,
+  getVisitedPlaces: getVisitedPlacesDB,
+  getFavoritePlaces: getFavoritePlacesDB,
   getUserPlaces,
   getUserEvents,
-  // getUserScheduledEvents,
+  getScheduledEvents: getScheduledEventsDB,
   // getUserOrganizations,
   // addReview: addUserReview,
   // getUserReviews,
@@ -30,27 +30,18 @@ async function getUser(ctx) {
   ctx.body = { user };
 }
 
-async function getResearch(ctx) {
-  const { id: userId } = ctx.state.authPayload;
-  const { category_id: categoryId } = ctx.request.query;
-
-  const research = await getUserResearch(userId, categoryId);
-
-  ctx.body = { research };
-}
-
 async function getVisitedPlaces(ctx) {
   const { userId, limit, page } = getUserIdAndPagination(ctx);
 
-  const visitedPlaces = await getUserVisitedPlaces(userId, limit, page);
+  const visitedPlaces = await getVisitedPlacesDB(userId, limit, page);
 
   ctx.body = { visited_places: visitedPlaces };
 }
 
-async function getFavoritesPlaces(ctx) {
+async function getFavoritePlaces(ctx) {
   const { userId, limit, page } = getUserIdAndPagination(ctx);
 
-  const favoritesPlaces = await getUserFavoritesPlaces(userId, limit, page);
+  const favoritesPlaces = await getFavoritePlacesDB(userId, limit, page);
 
   ctx.body = { favorites_places: favoritesPlaces };
 }
@@ -74,44 +65,53 @@ async function getEvents(ctx) {
 async function getScheduledEvents(ctx) {
   const { userId, limit, page } = getUserIdAndPagination(ctx);
 
-  const scheduledEvents = await getUserScheduledEvents(userId, limit, page);
+  const scheduledEvents = await getScheduledEventsDB(userId, limit, page);
 
   ctx.body = { scheduled_events: scheduledEvents };
 }
 
-async function getOrganizations(ctx) {
-  const { userId, limit, page } = getUserIdAndPagination(ctx);
+// async function getResearch(ctx) {
+//   const { id: userId } = ctx.state.authPayload;
+//   const { category_id: categoryId } = ctx.request.query;
 
-  const organizations = await getUserOrganizations(userId, limit, page);
+//   const research = await getUserResearch(userId, categoryId);
 
-  ctx.body = { organizations };
-}
+//   ctx.body = { research };
+// }
 
-async function addReview(ctx) {
-  const { id: userId } = ctx.state.authPayload;
+// async function getOrganizations(ctx) {
+//   const { userId, limit, page } = getUserIdAndPagination(ctx);
 
-  await addUserReview({ ...ctx.request.body, user_id: userId });
+//   const organizations = await getUserOrganizations(userId, limit, page);
 
-  ctx.body = { message: 'OK' };
-}
+//   ctx.body = { organizations };
+// }
 
-async function getReviews(ctx) {
-  const { userId, limit, page } = getUserIdAndPagination(ctx);
+// async function addReview(ctx) {
+//   const { id: userId } = ctx.state.authPayload;
 
-  const reviews = await getUserReviews(userId, limit, page);
+//   await addUserReview({ ...ctx.request.body, user_id: userId });
 
-  ctx.body = { reviews };
-}
+//   ctx.body = { message: 'OK' };
+// }
+
+// async function getReviews(ctx) {
+//   const { userId, limit, page } = getUserIdAndPagination(ctx);
+
+//   const reviews = await getUserReviews(userId, limit, page);
+
+//   ctx.body = { reviews };
+// }
 
 module.exports = {
   getUser,
-  getResearch,
   getVisitedPlaces,
-  getFavoritesPlaces,
+  getFavoritePlaces,
+  getScheduledEvents,
   getPlaces,
   getEvents,
-  getScheduledEvents,
-  getOrganizations,
-  addReview,
-  getReviews,
+  // getResearch,
+  // getOrganizations,
+  // addReview,
+  // getReviews,
 };
