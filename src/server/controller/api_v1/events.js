@@ -88,7 +88,6 @@ async function update(ctx) {
 
 async function remove(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
-
   const { id: userId, role } = ctx.state.authPayload;
 
   if (role !== MODERATOR) {
@@ -104,8 +103,8 @@ async function remove(ctx) {
 
 async function addScheduled(ctx) {
   const { id: userId } = ctx.state.authPayload;
-
   const eventId = parseInt(ctx.request.params.id, 10);
+
   await addScheduledEvent(eventId, userId);
 
   ctx.body = { message: 'OK' };
@@ -113,8 +112,8 @@ async function addScheduled(ctx) {
 
 async function deleteScheduled(ctx) {
   const { id: userId } = ctx.state.authPayload;
-
   const eventId = parseInt(ctx.request.params.id, 10);
+
   await detachScheduledEvent(eventId, userId);
 
   ctx.body = { message: 'OK' };

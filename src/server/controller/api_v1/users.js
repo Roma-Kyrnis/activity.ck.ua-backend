@@ -13,7 +13,6 @@ const {
 
 function getUserIdAndPagination(ctx) {
   const { id: userId } = ctx.state.authPayload;
-
   let { _limit: limit, _page: page } = ctx.request.query;
 
   limit = parseInt(limit, 10);
