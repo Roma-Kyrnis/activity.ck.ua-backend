@@ -13,7 +13,7 @@ const {
   getPhotos,
 } = require('../../../db');
 
-const { PLACES, REVIEWS } = require('../../../config');
+const { PLACES } = require('../../../config');
 
 async function create(ctx) {
   let organizationId = ctx.request.body.organization_id;
@@ -48,9 +48,6 @@ async function getOne(ctx) {
     const photos = await getPhotos(id, 'place_id');
 
     response.place = { ...place, photos };
-
-    // const reviews = await getPlacesReviews(id, REVIEWS.LIMIT, REVIEWS.PAGE);
-    // response.reviews = reviews;
 
     ctx.body = { place };
   } catch (err) {
@@ -104,8 +101,8 @@ async function remove(ctx) {
 
 async function addReview(ctx) {
   const { id: userId } = ctx.state.authPayload;
-
   const placeId = parseInt(ctx.request.params.id, 10);
+
   await addPlacesReview({ ...ctx.request.body, user_id: userId, place_id: placeId });
 
   ctx.body = { message: 'OK' };
