@@ -25,13 +25,22 @@ module.exports = (config) => {
     updateOrganization,
     deleteOrganization,
   } = organizations(client);
-  const { createPlace, getPlace, getPlaces, updatePlace, deletePlace } = places(client);
+  const {
+    createPlace,
+    getPlace,
+    getPlaces,
+    isUserPlace,
+    getUserPlaces,
+    updatePlace,
+    deletePlace,
+  } = places(client);
   const { addPhotos, getPhotos, deletePhotos } = photos(client);
   const {
     createEvent,
     getEvent,
     getEvents,
     getCurrentEvents,
+    isUserEvent,
     getUserEvents,
     getPlaceEvents,
     updateEvent,
@@ -70,6 +79,8 @@ module.exports = (config) => {
     createPlace,
     getPlace,
     getPlaces,
+    isUserPlace,
+    getUserPlaces,
     updatePlace,
     deletePlace,
 
@@ -81,6 +92,7 @@ module.exports = (config) => {
     getEvent,
     getEvents,
     getCurrentEvents,
+    isUserEvent,
     getUserEvents,
     getPlaceEvents,
     updateEvent,

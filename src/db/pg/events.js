@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const log = require('../../utils/logger')(__filename);
 const {
-  content: { EVENTS_PERIOD, PLACE_PAGE_EVENTS_COUNT },
+  content: { EVENTS_PERIOD },
 } = require('../../config');
 const { checkError } = require('../checkError');
 const { queryAccessibility } = require('./queryBuilder');
@@ -88,7 +88,7 @@ module.exports = (client) => {
           rows: [{ count }],
         } = await client.query(
           `SELECT COUNT(*) FROM events
-            WHERE start_time > $1 AND start_time < $1 + $2 AND end_time > now()
+            WHERE start_time > $1 AND start_time < $1 + $2 AND start_time > now()
               ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL;`,
           [new Date(startTime), EVENTS_PERIOD],
         );
@@ -98,7 +98,7 @@ module.exports = (client) => {
         const { rows: events } = await client.query(
           `SELECT id, name, main_photo, start_time
             FROM events
-            WHERE start_time > $1 AND start_time < $1 + $2 AND end_time > now()
+            WHERE start_time > $1 AND start_time < $1 + $2 AND start_time > now()
               ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL
             ORDER BY start_time
             LIMIT $3 OFFSET $4;`,
@@ -124,7 +124,7 @@ module.exports = (client) => {
         } = await client.query(
           // start_time > TIMESTAMP 'today'
           `SELECT COUNT(*) FROM events
-            WHERE end_time > now() AND end_time < TIMESTAMP 'tomorrow' AND start_time < now()
+            WHERE end_time > now() AND start_time < now()
               ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL;`,
         );
         const total = Number(count);
@@ -133,7 +133,7 @@ module.exports = (client) => {
         const { rows: events } = await client.query(
           `SELECT id, name, main_photo, start_time
             FROM events
-            WHERE end_time > now() AND end_time < TIMESTAMP 'tomorrow' AND start_time < now()
+            WHERE end_time > now() AND start_time < now()
               ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL
             ORDER BY start_time
             LIMIT $1 OFFSET $2;`,
@@ -146,6 +146,26 @@ module.exports = (client) => {
         res._totalPages = Math.ceil(total / limit);
 
         return res;
+      } catch (err) {
+        log.error(err.message || err);
+        throw err;
+      }
+    },
+
+    isUserEvent: async (userId, eventId) => {
+      try {
+        if (!eventId) {
+          throw new Error('ERROR: No eventId defined!');
+        }
+
+        const res = await client.query(
+          `SELECT id
+            FROM events
+            WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL;`,
+          [eventId, userId],
+        );
+
+        return res.rows[0];
       } catch (err) {
         log.error(err.message || err);
         throw err;
@@ -189,7 +209,7 @@ module.exports = (client) => {
       }
     },
 
-    getPlaceEvents: async (placeId, limit = PLACE_PAGE_EVENTS_COUNT, page = 1) => {
+    getPlaceEvents: async (placeId, limit, page) => {
       try {
         if (!placeId) {
           throw new Error('ERROR: No placeId defined');
@@ -199,7 +219,7 @@ module.exports = (client) => {
           rows: [{ count }],
         } = await client.query(
           `SELECT COUNT(*) FROM events
-            WHERE end_time > now() AND place_id = $1 AND deleted_at IS NULL;`,
+            WHERE end_time > now() AND place_id = $1 AND moderated AND deleted_at IS NULL;`,
           [placeId],
         );
         const total = Number(count);
@@ -208,7 +228,7 @@ module.exports = (client) => {
         const { rows: events } = await client.query(
           `SELECT id, name, main_photo, start_time
             FROM events
-            WHERE end_time > now() AND place_id = $1 AND deleted_at IS NULL
+            WHERE end_time > now() AND place_id = $1 AND moderated AND deleted_at IS NULL
             ORDER BY start_time
             LIMIT $2 OFFSET $3;`,
           [placeId, limit, offset],

@@ -13,7 +13,7 @@ const {
   getPhotos,
 } = require('../../../db');
 
-const { PLACES } = require('../../../config');
+const paginationAndAccessibility = require('./paginationAndAccessibility');
 
 async function create(ctx) {
   let organizationId = ctx.request.body.organization_id;
@@ -42,43 +42,25 @@ async function getOne(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
 
   try {
-    const response = {};
-
     const place = await getPlace(id);
     const photos = await getPhotos(id, 'place_id');
 
-    response.place = { ...place, photos };
+    place.photos = photos;
 
     ctx.body = { place };
   } catch (err) {
-    err.status = 400;
+    err.status = 404;
     err.message = `No place with id - ${id}`;
     ctx.app.emit('error', err, ctx);
   }
 }
 
 async function getApproved(ctx) {
-  let { _limit: limit, _page: page } = ctx.request.query;
-
-  limit = parseInt(limit || PLACES.LIMIT, 10);
-  page = parseInt(page || PLACES.PAGE, 10);
-
-  const {
-    type_id: types,
-    category_id: categoryId,
-    accessibility,
-    dog_friendly: dogFriendly,
-    child_friendly: childFriendly,
-  } = ctx.request.query;
-
-  const filters = {};
+  const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
+  const { type_id: types, category_id: categoryId } = ctx.request.query;
 
   if (categoryId !== undefined) filters.categoryId = categoryId;
   if (types !== undefined) filters.types = types.split('-');
-
-  if (accessibility !== undefined) filters.accessibility = accessibility;
-  if (dogFriendly !== undefined) filters.dogFriendly = dogFriendly;
-  if (childFriendly !== undefined) filters.childFriendly = childFriendly;
 
   const data = await getPlaces(filters, limit, page);
 
@@ -113,8 +95,8 @@ async function getReviews(ctx) {
 
   let { _limit: limit, _page: page } = ctx.request.query;
 
-  limit = parseInt(limit || PLACES.LIMIT, 10);
-  page = parseInt(page || PLACES.PAGE, 10);
+  limit = parseInt(limit, 10);
+  page = parseInt(page, 10);
 
   const reviews = await getPlacesReviews(placeId, limit, page);
 
