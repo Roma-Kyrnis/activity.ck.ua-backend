@@ -5,7 +5,6 @@ const fatal = require('../utils/fatalError')(__filename);
 const config = {
   content: {
     EVENTS_PERIOD: '2 week', // This is an INTERVAL type value!
-    PLACE_PAGE_EVENTS_COUNT: 5,
   },
 
   server: {
@@ -16,6 +15,7 @@ const config = {
       AUTH: '/auth',
       PLACES: '/places',
       ORGANIZATIONS: '/organizations',
+      EVENTS: '/events',
     },
     NODE_ENV: process.env.NODE_ENV || 'production',
     MORGAN_FORMAT: 'dev',
@@ -32,18 +32,14 @@ const config = {
     DATABASE: 'DatabaseError',
   },
   places: {
-    default: {
-      LIMIT: 5,
-      PAGE: 1,
-      DAYS: ['sat', 'mon', 'tue', 'wed', 'thu', 'fri', 'sun'],
-    },
     schema: {
+      DAYS: ['sat', 'mon', 'tue', 'wed', 'thu', 'fri', 'sun'],
       PHONE: /^\+380\d{9}$/,
       TIME: /^\d{1,2}:\d{2}$/,
       TYPE_IDS: /^([a-zA-Z]|-)+$/,
     },
   },
-  roles: {
+  ROLES: {
     USER: 'user',
     ORGANIZER: 'organizer',
     MODERATOR: 'moderator',

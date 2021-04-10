@@ -4,7 +4,7 @@ const {
   hash,
 } = require('../../utils');
 const {
-  roles: { MODERATOR },
+  ROLES: { MODERATOR },
 } = require('../../config');
 
 const DEFAULT_USER_ID = 1; // CHANGE to truly user id from JWT token

@@ -2,8 +2,7 @@ const { Joi } = require('koa-joi-router');
 
 const {
   places: {
-    default: { DAYS },
-    schema: { PHONE, TIME, TYPE_IDS },
+    schema: { PHONE, TIME, TYPE_IDS, DAYS },
   },
 } = require('../../../config');
 
@@ -66,8 +65,12 @@ const getApproved = {
     accessibility: Joi.boolean().truthy('true').falsy('false'),
     dog_friendly: Joi.boolean().truthy('true').falsy('false'),
     child_friendly: Joi.boolean().truthy('true').falsy('false'),
-    _page: Joi.string().pattern(/^[1-9]\d*$/),
-    _limit: Joi.string().pattern(/^[1-9]\d*$/),
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
   }).xor('category_id', 'type_id'),
 };
 

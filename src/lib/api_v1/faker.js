@@ -4,7 +4,7 @@ const faker = require('faker');
 const { hash } = require('../../utils');
 const {
   places: {
-    default: { DAYS },
+    schema: { DAYS },
   },
 } = require('../../config');
 
