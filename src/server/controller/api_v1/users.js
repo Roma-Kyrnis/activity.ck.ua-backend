@@ -49,13 +49,7 @@ async function getVisitedPlaces(ctx) {
 
   const visitedPlaces = await getVisitedPlacesDB(userId, limit, page);
 
-  const response = {
-    visited_places: visitedPlaces.places,
-    ...visitedPlaces,
-  };
-  delete response.places;
-
-  ctx.body = response;
+  ctx.body = visitedPlaces;
 }
 
 async function deleteVisitedPlace(ctx) {
@@ -81,13 +75,7 @@ async function getFavoritePlaces(ctx) {
 
   const favoritesPlaces = await getFavoritePlacesDB(userId, limit, page);
 
-  const response = {
-    favorites_places: favoritesPlaces.places,
-    ...favoritesPlaces,
-  };
-  delete response.places;
-
-  ctx.body = response;
+  ctx.body = favoritesPlaces;
 }
 
 async function deleteFavoritePlace(ctx) {
@@ -113,13 +101,7 @@ async function getScheduledEvents(ctx) {
 
   const scheduledEvents = await getScheduledEventsDB(userId, limit, page);
 
-  const response = {
-    scheduled_events: scheduledEvents.events,
-    ...scheduledEvents,
-  };
-  delete response.events;
-
-  ctx.body = response;
+  ctx.body = scheduledEvents;
 }
 
 async function deleteScheduledEvent(ctx) {
