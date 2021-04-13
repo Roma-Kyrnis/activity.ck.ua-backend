@@ -15,7 +15,7 @@ const config = {
       AUTH: '/auth',
       PLACES: '/places',
       ORGANIZATIONS: '/organizations',
-      USERS: { MAIN: '/users', MYSELF: '/myself' },
+      USERS: { path: '/users', MYSELF: { path: '/myself' } },
       EVENTS: '/events',
     },
     NODE_ENV: process.env.NODE_ENV || 'production',
@@ -33,6 +33,7 @@ const config = {
     DATABASE: 'DatabaseError',
   },
   ROLES: {
+    EVERY: 'every',
     USER: 'user',
     ORGANIZER: 'organizer',
     MODERATOR: 'moderator',

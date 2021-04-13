@@ -40,9 +40,10 @@ async function create(ctx) {
 }
 
 async function getOne(ctx) {
+  const { id: userId } = ctx.state.authPayload;
   const id = parseInt(ctx.request.params.id, 10);
 
-  const place = await getPlace(id);
+  const place = await getPlace(id, userId);
 
   ctx.assert(place, 404, `No place with id - ${id}`);
 

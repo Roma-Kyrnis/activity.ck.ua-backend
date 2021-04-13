@@ -29,9 +29,10 @@ async function create(ctx) {
 }
 
 async function getOne(ctx) {
+  const { id: userId } = ctx.state.authPayload;
   const id = parseInt(ctx.request.params.id, 10);
 
-  const event = await getEvent(id);
+  const event = await getEvent(id, userId);
 
   ctx.assert(event, 404, `Cannot find event with id ${id}`);
 

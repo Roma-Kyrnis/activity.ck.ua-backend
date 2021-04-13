@@ -2,126 +2,121 @@ const Router = require('koa-joi-router');
 
 const {
   apiV1: { users },
-} = require('../../controller');
+} = require('../../../controller');
 const {
   apiV1: { users: validator },
-} = require('../../schema');
+} = require('../../../schema');
 const {
   checkTokens: { access },
-} = require('../../middleware');
+} = require('../../../middleware');
 const {
   server: {
     prefix: { USERS },
   },
   ROLES: { USER, ORGANIZER },
-} = require('../../../config');
+} = require('../../../../config');
 
 const router = Router();
-router.prefix(USERS.MAIN);
+router.prefix(USERS.MYSELF.path);
 
-const myself = Router();
-myself.prefix(USERS.MYSELF);
+router.get('/', { validate: validator.getUser }, access([USER, ORGANIZER]), users.getUser);
 
-myself.get('/', { validate: validator.getUser }, access([USER, ORGANIZER]), users.getUser);
-
-myself.post(
+router.post(
   '/visited_places/:placeId',
   { validate: validator.addVisitedPlace },
   access([USER, ORGANIZER]),
   users.addVisitedPlace,
 );
-myself.get(
+router.get(
   '/visited_places/',
   { validate: validator.getVisitedPlaces },
   access([USER, ORGANIZER]),
   users.getVisitedPlaces,
 );
-myself.delete(
+router.delete(
   '/visited_places/:placeId',
   { validate: validator.deleteVisitedPlace },
   access([USER, ORGANIZER]),
   users.deleteVisitedPlace,
 );
 
-myself.post(
+router.post(
   '/favorite_places/:placeId',
   { validate: validator.addFavoritePlace },
   access([USER, ORGANIZER]),
   users.addFavoritePlace,
 );
-myself.get(
+router.get(
   '/favorite_places/',
   { validate: validator.getFavoritePlaces },
   access([USER, ORGANIZER]),
   users.getFavoritePlaces,
 );
-myself.delete(
+router.delete(
   '/favorite_places/:placeId',
   { validate: validator.deleteFavoritePlace },
   access([USER, ORGANIZER]),
   users.deleteFavoritePlace,
 );
 
-myself.post(
+router.post(
   '/scheduled_events/:eventId',
   { validate: validator.addScheduledEvent },
   access([USER, ORGANIZER]),
   users.addScheduledEvent,
 );
-myself.get(
+router.get(
   '/scheduled_events/',
   { validate: validator.getScheduledEvents },
   access([USER, ORGANIZER]),
   users.getScheduledEvents,
 );
-myself.delete(
+router.delete(
   '/scheduled_events/:eventId',
   { validate: validator.deleteScheduledEvent },
   access([USER, ORGANIZER]),
   users.deleteScheduledEvent,
 );
 
-myself.get(
+router.get(
   '/created_places',
   { validate: validator.getPlaces },
   access([USER, ORGANIZER]),
   users.getPlaces,
 );
 
-myself.get(
+router.get(
   '/created_events',
   { validate: validator.getEvents },
   access([USER, ORGANIZER]),
   users.getEvents,
 );
 
-// myself.get(
+// router.get(
 //   '/research',
 //   { validate: validator.getResearch },
 //   access([USER, ORGANIZER]),
 //   users.getResearch,
 // );
 
-// myself.get(
+// router.get(
 //   '/created_organizations',
 //   { validate: validator.getOrganizations },
 //   access([ORGANIZER]),
 //   users.getOrganizations,
 // );
 
-// myself.post(
+// router.post(
 //   '/review',
 //   { validate: validator.addReview },
 //   access([USER, ORGANIZER]),
 //   users.addReview,
 // );
-// myself.get(
+// router.get(
 //   '/reviews',
 //   { validate: validator.getReviews },
 //   access([USER, ORGANIZER]),
 //   users.getReviews,
 // );
-
-router.use(myself);
 
 module.exports = router;
