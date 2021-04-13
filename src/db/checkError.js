@@ -28,15 +28,15 @@ function checkError(err) {
   }
 
   if (err.constraint === 'visited_places_pkey') {
-    return new DatabaseError('ERROR: A place with this ID alredy visited!');
+    return new DatabaseError('ERROR: A place with this ID already visited!');
   }
 
   if (err.constraint === 'favorite_places_pkey') {
-    return new DatabaseError('ERROR: A place with this ID alredy favorite!');
+    return new DatabaseError('ERROR: A place with this ID already favorite!');
   }
 
   if (err.constraint === 'scheduled_events_pkey') {
-    return new DatabaseError('ERROR: Event with this ID alredy scheduled!');
+    return new DatabaseError('ERROR: Event with this ID already scheduled!');
   }
 
   // very unlikely errors:
