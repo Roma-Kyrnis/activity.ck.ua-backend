@@ -57,18 +57,22 @@ module.exports = (client) => {
       }
     },
 
-    getEvent: async (id) => {
+    getEvent: async (id, userId) => {
       try {
         if (!id) {
           throw new Error('ERROR: No event id defined!');
         }
 
+        const query = `,
+          (SELECT event_id FROM scheduled_events
+            WHERE event_id = $1 AND user_id = $2) IS NOT NULL AS scheduled`;
         const res = await client.query(
           `SELECT id, name, address, phones, website, description, accessibility, dog_friendly,
               child_friendly, start_time, end_time, organizer, place_id, price, program
+              ${userId ? query : ''}
             FROM events
             WHERE id = $1 AND moderated AND deleted_at IS NULL;`,
-          [id],
+          userId ? [id, userId] : [id],
         );
 
         return res.rows[0];

@@ -27,12 +27,37 @@ function checkError(err) {
     return new DatabaseError('ERROR: An organization with the same name is already registered!');
   }
 
+  if (err.constraint === 'visited_places_pkey') {
+    return new DatabaseError('ERROR: A place with this ID already visited!');
+  }
+
+  if (err.constraint === 'favorite_places_pkey') {
+    return new DatabaseError('ERROR: A place with this ID already favorite!');
+  }
+
+  if (err.constraint === 'scheduled_events_pkey') {
+    return new DatabaseError('ERROR: Event with this ID already scheduled!');
+  }
+
+  // very unlikely errors:
   if (err.constraint === 'places_fk0') {
     return new DatabaseError('ERROR: An organization with this ID does not exist!');
   }
 
   if (err.constraint === 'events_fk0') {
     return new DatabaseError('ERROR: A place with this ID does not exist!');
+  }
+
+  if (err.constraint === 'visited_places_fk0') {
+    return new DatabaseError('ERROR: A place with this ID does not exist!');
+  }
+
+  if (err.constraint === 'favorite_places_fk0') {
+    return new DatabaseError('ERROR: A place with this ID does not exist!');
+  }
+
+  if (err.constraint === 'scheduled_events_fk0') {
+    return new DatabaseError('ERROR: Event with this ID does not exist!');
   }
 
   return err;
