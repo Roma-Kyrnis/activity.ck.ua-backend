@@ -22,6 +22,7 @@ router.prefix(EVENTS);
 
 router.post('/', { validate: validator.create }, access([USER, ORGANIZER]), events.create);
 router.get('/now/', { validate: validator.getNow }, events.getNow);
+router.get('/proposed', { validate: validator.getProposed }, events.getProposed);
 router.get('/:id', { validate: validator.getOne }, events.getOne);
 router.get('/', { validate: validator.getApproved }, events.getApproved);
 router.put('/:id', { validate: validator.update }, access([USER, ORGANIZER]), events.update);

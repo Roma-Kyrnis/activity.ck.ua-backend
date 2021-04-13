@@ -2,6 +2,7 @@ const {
   createEvent,
   getEvent,
   getEvents,
+  getProposedEvents,
   getPlaceEvents,
   getCurrentEvents,
   updateEvent,
@@ -46,22 +47,30 @@ async function getApproved(ctx) {
   const { start_time: startTime, place_id: placeId } = ctx.request.query;
   const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
 
-  let events;
+  let response;
   if (startTime) {
-    events = await getEvents(startTime, limit, page, filters);
+    response = await getEvents(startTime, limit, page, filters);
   } else {
-    events = await getPlaceEvents(placeId, limit, page);
+    response = await getPlaceEvents(placeId, limit, page);
   }
 
-  ctx.body = events;
+  ctx.body = response;
+}
+
+async function getProposed(ctx) {
+  const { limit, page } = paginationAndAccessibility(ctx.request.query);
+
+  const response = await getProposedEvents(limit, page);
+
+  ctx.body = response;
 }
 
 async function getNow(ctx) {
   const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
 
-  const events = await getCurrentEvents(limit, page, filters);
+  const response = await getCurrentEvents(limit, page, filters);
 
-  ctx.body = events;
+  ctx.body = response;
 }
 
 async function update(ctx) {
@@ -109,4 +118,4 @@ async function addAttend(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { create, getOne, getApproved, getNow, update, remove, addAttend };
+module.exports = { create, getOne, getApproved, getProposed, getNow, update, remove, addAttend };

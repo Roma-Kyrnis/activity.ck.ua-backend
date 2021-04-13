@@ -80,6 +80,17 @@ const getApproved = {
   }).xor('category_id', 'type_id'),
 };
 
+const getProposed = {
+  query: Joi.object({
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+};
+
 const update = {
   params: Joi.object({
     id: Joi.string()
@@ -152,4 +163,4 @@ const remove = {
   }),
 };
 
-module.exports = { create, getOne, getApproved, update, remove };
+module.exports = { create, getOne, getApproved, getProposed, update, remove };

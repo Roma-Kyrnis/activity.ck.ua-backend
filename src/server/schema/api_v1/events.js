@@ -59,6 +59,17 @@ const getApproved = {
   }).xor('place_id', 'start_time'),
 };
 
+const getProposed = {
+  query: Joi.object({
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+};
+
 const getNow = {
   query: Joi.object({
     _page: Joi.string()
@@ -139,4 +150,4 @@ const addAttend = {
   }),
 };
 
-module.exports = { create, getOne, getApproved, getNow, update, remove, addAttend };
+module.exports = { create, getOne, getApproved, getProposed, getNow, update, remove, addAttend };

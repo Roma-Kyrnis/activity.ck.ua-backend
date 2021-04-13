@@ -21,6 +21,7 @@ const router = Router();
 router.prefix(PLACES);
 
 router.post('/', { validate: validator.create }, access([USER, ORGANIZER]), places.create);
+router.get('/proposed/', { validate: validator.getProposed }, places.getProposed);
 router.get('/:id', { validate: validator.getOne }, places.getOne);
 router.get('/', { validate: validator.getApproved }, places.getApproved);
 router.put('/:id', { validate: validator.update }, access([USER, ORGANIZER]), places.update);

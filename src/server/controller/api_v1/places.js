@@ -2,6 +2,7 @@ const {
   createPlace,
   getPlace,
   getPlaces,
+  getProposedPlaces,
   updatePlace,
   deletePlace,
   createOrganization,
@@ -61,9 +62,17 @@ async function getApproved(ctx) {
   if (categoryId !== undefined) filters.categoryId = categoryId;
   if (types !== undefined) filters.types = types.split('-');
 
-  const data = await getPlaces(filters, limit, page);
+  const response = await getPlaces(filters, limit, page);
 
-  ctx.body = data;
+  ctx.body = response;
+}
+
+async function getProposed(ctx) {
+  const { limit, page } = paginationAndAccessibility(ctx.request.query);
+
+  const response = await getProposedPlaces(limit, page);
+
+  ctx.body = response;
 }
 
 async function update(ctx) {
@@ -101,4 +110,4 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { create, getOne, getApproved, update, remove };
+module.exports = { create, getOne, getApproved, getProposed, update, remove };
