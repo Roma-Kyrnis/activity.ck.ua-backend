@@ -1,10 +1,16 @@
 const {
   getUser: getUserDB,
+  addVisitedPlace: addVisitedPlaceDB,
   getVisitedPlaces: getVisitedPlacesDB,
+  detachVisitedPlace: detachVisitedPlaceDB,
+  addFavoritePlace: addFavoritePlaceDB,
   getFavoritePlaces: getFavoritePlacesDB,
+  detachFavoritePlace: detachFavoritePlaceDB,
+  addScheduledEvent: addScheduledEventDB,
+  getScheduledEvents: getScheduledEventsDB,
+  detachScheduledEvent: detachScheduledEventDB,
   getUserPlaces,
   getUserEvents,
-  getScheduledEvents: getScheduledEventsDB,
   // getUserOrganizations,
   // addReview: addUserReview,
   // getUserReviews,
@@ -29,12 +35,45 @@ async function getUser(ctx) {
   ctx.body = { user };
 }
 
+async function addVisitedPlace(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+  const placeId = parseInt(ctx.request.params.placeId, 10);
+
+  await addVisitedPlaceDB(placeId, userId);
+
+  ctx.body = { message: 'OK' };
+}
+
 async function getVisitedPlaces(ctx) {
   const { userId, limit, page } = getUserIdAndPagination(ctx);
 
   const visitedPlaces = await getVisitedPlacesDB(userId, limit, page);
 
-  ctx.body = { visited_places: visitedPlaces };
+  const response = {
+    visited_places: visitedPlaces.places,
+    ...visitedPlaces,
+  };
+  delete response.places;
+
+  ctx.body = response;
+}
+
+async function deleteVisitedPlace(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+  const placeId = parseInt(ctx.request.params.placeId, 10);
+
+  await detachVisitedPlaceDB(placeId, userId);
+
+  ctx.body = { message: 'OK' };
+}
+
+async function addFavoritePlace(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+  const placeId = parseInt(ctx.request.params.placeId, 10);
+
+  await addFavoritePlaceDB(placeId, userId);
+
+  ctx.body = { message: 'OK' };
 }
 
 async function getFavoritePlaces(ctx) {
@@ -42,23 +81,31 @@ async function getFavoritePlaces(ctx) {
 
   const favoritesPlaces = await getFavoritePlacesDB(userId, limit, page);
 
-  ctx.body = { favorites_places: favoritesPlaces };
+  const response = {
+    favorites_places: favoritesPlaces.places,
+    ...favoritesPlaces,
+  };
+  delete response.places;
+
+  ctx.body = response;
 }
 
-async function getPlaces(ctx) {
-  const { userId, limit, page } = getUserIdAndPagination(ctx);
+async function deleteFavoritePlace(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+  const placeId = parseInt(ctx.request.params.placeId, 10);
 
-  const places = await getUserPlaces(userId, limit, page);
+  await detachFavoritePlaceDB(placeId, userId);
 
-  ctx.body = { places };
+  ctx.body = { message: 'OK' };
 }
 
-async function getEvents(ctx) {
-  const { userId, limit, page } = getUserIdAndPagination(ctx);
+async function addScheduledEvent(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+  const eventId = parseInt(ctx.request.params.eventId, 10);
 
-  const events = await getUserEvents(userId, limit, page);
+  await addScheduledEventDB(eventId, userId);
 
-  ctx.body = { events };
+  ctx.body = { message: 'OK' };
 }
 
 async function getScheduledEvents(ctx) {
@@ -66,7 +113,38 @@ async function getScheduledEvents(ctx) {
 
   const scheduledEvents = await getScheduledEventsDB(userId, limit, page);
 
-  ctx.body = { scheduled_events: scheduledEvents };
+  const response = {
+    scheduled_events: scheduledEvents.events,
+    ...scheduledEvents,
+  };
+  delete response.events;
+
+  ctx.body = response;
+}
+
+async function deleteScheduledEvent(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+  const eventId = parseInt(ctx.request.params.eventId, 10);
+
+  await detachScheduledEventDB(eventId, userId);
+
+  ctx.body = { message: 'OK' };
+}
+
+async function getPlaces(ctx) {
+  const { userId, limit, page } = getUserIdAndPagination(ctx);
+
+  const response = await getUserPlaces(userId, limit, page);
+
+  ctx.body = response;
+}
+
+async function getEvents(ctx) {
+  const { userId, limit, page } = getUserIdAndPagination(ctx);
+
+  const response = await getUserEvents(userId, limit, page);
+
+  ctx.body = response;
 }
 
 // async function getResearch(ctx) {
@@ -104,9 +182,15 @@ async function getScheduledEvents(ctx) {
 
 module.exports = {
   getUser,
+  addVisitedPlace,
   getVisitedPlaces,
+  deleteVisitedPlace,
+  addFavoritePlace,
   getFavoritePlaces,
+  deleteFavoritePlace,
+  addScheduledEvent,
   getScheduledEvents,
+  deleteScheduledEvent,
   getPlaces,
   getEvents,
   // getResearch,

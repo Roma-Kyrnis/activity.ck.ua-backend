@@ -11,38 +11,74 @@ const {
 } = require('../../middleware');
 const {
   server: {
-    prefix: { USERS, USERS_MYSELF },
+    prefix: { USERS },
   },
   ROLES: { USER, ORGANIZER },
 } = require('../../../config');
 
 const router = Router();
-router.prefix(USERS);
+router.prefix(USERS.MAIN);
 
 const myself = Router();
-myself.prefix(USERS_MYSELF);
+myself.prefix(USERS.MYSELF);
 
 myself.get('/', { validate: validator.getUser }, access([USER, ORGANIZER]), users.getUser);
 
+myself.post(
+  '/visited_places/:placeId',
+  { validate: validator.addVisitedPlace },
+  access([USER, ORGANIZER]),
+  users.addVisitedPlace,
+);
 myself.get(
-  '/visited_places',
+  '/visited_places/',
   { validate: validator.getVisitedPlaces },
   access([USER, ORGANIZER]),
   users.getVisitedPlaces,
 );
+myself.delete(
+  '/visited_places/:placeId',
+  { validate: validator.deleteVisitedPlace },
+  access([USER, ORGANIZER]),
+  users.deleteVisitedPlace,
+);
 
+myself.post(
+  '/favorite_places/:placeId',
+  { validate: validator.addFavoritePlace },
+  access([USER, ORGANIZER]),
+  users.addFavoritePlace,
+);
 myself.get(
-  '/favorite_places',
+  '/favorite_places/',
   { validate: validator.getFavoritePlaces },
   access([USER, ORGANIZER]),
   users.getFavoritePlaces,
 );
+myself.delete(
+  '/favorite_places/:placeId',
+  { validate: validator.deleteFavoritePlace },
+  access([USER, ORGANIZER]),
+  users.deleteFavoritePlace,
+);
 
+myself.post(
+  '/scheduled_events/:eventId',
+  { validate: validator.addScheduledEvent },
+  access([USER, ORGANIZER]),
+  users.addScheduledEvent,
+);
 myself.get(
-  '/scheduled_events',
+  '/scheduled_events/',
   { validate: validator.getScheduledEvents },
   access([USER, ORGANIZER]),
   users.getScheduledEvents,
+);
+myself.delete(
+  '/scheduled_events/:eventId',
+  { validate: validator.deleteScheduledEvent },
+  access([USER, ORGANIZER]),
+  users.deleteScheduledEvent,
 );
 
 myself.get(

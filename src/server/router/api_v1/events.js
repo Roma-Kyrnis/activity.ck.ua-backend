@@ -27,17 +27,4 @@ router.get('/', { validate: validator.getApproved }, events.getApproved);
 router.put('/:id', { validate: validator.update }, access([USER, ORGANIZER]), events.update);
 router.delete('/:id', { validate: validator.remove }, access([USER, ORGANIZER]), events.remove);
 
-router.post(
-  '/:id/scheduled_events/',
-  { validate: validator.addScheduled },
-  access([USER, ORGANIZER]),
-  events.addScheduled,
-);
-router.delete(
-  '/:id/scheduled_events/',
-  { validate: validator.deleteScheduled },
-  access([USER, ORGANIZER]),
-  events.deleteScheduled,
-);
-
 module.exports = router;

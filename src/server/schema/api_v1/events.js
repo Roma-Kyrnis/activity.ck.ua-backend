@@ -141,32 +141,6 @@ const remove = {
   }),
 };
 
-const addScheduled = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
-  params: Joi.object({
-    id: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-  }),
-};
-
-const deleteScheduled = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
-  params: Joi.object({
-    id: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-  }),
-};
-
 module.exports = {
   create,
   getOne,
@@ -174,6 +148,4 @@ module.exports = {
   getNow,
   update,
   remove,
-  addScheduled,
-  deleteScheduled,
 };

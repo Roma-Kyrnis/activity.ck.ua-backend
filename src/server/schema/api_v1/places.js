@@ -167,58 +167,6 @@ const remove = {
   }),
 };
 
-const addVisited = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
-  params: Joi.object({
-    id: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-  }),
-};
-
-const deleteVisited = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
-  params: Joi.object({
-    id: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-  }),
-};
-
-const addFavorite = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
-  params: Joi.object({
-    id: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-  }),
-};
-
-const deleteFavorite = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
-  params: Joi.object({
-    id: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-  }),
-};
-
 // const addReview = {
 //   header: Joi.object({
 //     authorization: Joi.string()
@@ -264,10 +212,6 @@ module.exports = {
   getApproved,
   update,
   remove,
-  addVisited,
-  deleteVisited,
-  addFavorite,
-  deleteFavorite,
   // addReview,
   // getReviews,
 };

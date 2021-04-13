@@ -9,8 +9,6 @@ const {
   addPhotos,
   getPhotos,
   isUserEvent,
-  addScheduledEvent,
-  detachScheduledEvent,
 } = require('../../../db');
 const paginationAndAccessibility = require('./paginationAndAccessibility');
 const {
@@ -101,24 +99,6 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-async function addScheduled(ctx) {
-  const { id: userId } = ctx.state.authPayload;
-  const eventId = parseInt(ctx.request.params.id, 10);
-
-  await addScheduledEvent(eventId, userId);
-
-  ctx.body = { message: 'OK' };
-}
-
-async function deleteScheduled(ctx) {
-  const { id: userId } = ctx.state.authPayload;
-  const eventId = parseInt(ctx.request.params.id, 10);
-
-  await detachScheduledEvent(eventId, userId);
-
-  ctx.body = { message: 'OK' };
-}
-
 module.exports = {
   create,
   getOne,
@@ -126,6 +106,4 @@ module.exports = {
   getNow,
   update,
   remove,
-  addScheduled,
-  deleteScheduled,
 };

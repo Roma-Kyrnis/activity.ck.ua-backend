@@ -8,10 +8,6 @@ const {
   addPhotos,
   getPhotos,
   isUserPlace,
-  detachFavoritePlace,
-  addFavoritePlace,
-  addVisitedPlace,
-  detachVisitedPlace,
   // addReview: addPlacesReview,
   // getPlacesReviews,
 } = require('../../../db');
@@ -104,42 +100,6 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-async function addVisited(ctx) {
-  const { id: userId } = ctx.state.authPayload;
-  const placeId = parseInt(ctx.request.params.id, 10);
-
-  await addVisitedPlace(placeId, userId);
-
-  ctx.body = { message: 'OK' };
-}
-
-async function deleteVisited(ctx) {
-  const { id: userId } = ctx.state.authPayload;
-  const placeId = parseInt(ctx.request.params.id, 10);
-
-  await detachVisitedPlace(placeId, userId);
-
-  ctx.body = { message: 'OK' };
-}
-
-async function addFavorite(ctx) {
-  const { id: userId } = ctx.state.authPayload;
-  const placeId = parseInt(ctx.request.params.id, 10);
-
-  await addFavoritePlace(placeId, userId);
-
-  ctx.body = { message: 'OK' };
-}
-
-async function deleteFavorite(ctx) {
-  const { id: userId } = ctx.state.authPayload;
-  const placeId = parseInt(ctx.request.params.id, 10);
-
-  await detachFavoritePlace(placeId, userId);
-
-  ctx.body = { message: 'OK' };
-}
-
 // async function addReview(ctx) {
 //   const { id: userId } = ctx.state.authPayload;
 //   const placeId = parseInt(ctx.request.params.id, 10);
@@ -168,10 +128,6 @@ module.exports = {
   getApproved,
   update,
   remove,
-  addVisited,
-  deleteVisited,
-  addFavorite,
-  deleteFavorite,
   // addReview,
   // getReviews,
 };

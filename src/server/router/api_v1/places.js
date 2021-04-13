@@ -26,32 +26,6 @@ router.get('/', { validate: validator.getApproved }, places.getApproved);
 router.put('/:id', { validate: validator.update }, access([USER, ORGANIZER]), places.update);
 router.delete('/:id', { validate: validator.remove }, access([USER, ORGANIZER]), places.remove);
 
-router.post(
-  '/:id/visited_places/',
-  { validate: validator.addVisited },
-  access([USER, ORGANIZER]),
-  places.addVisited,
-);
-router.delete(
-  '/:id/visited_places/',
-  { validate: validator.deleteVisited },
-  access([USER, ORGANIZER]),
-  places.deleteVisited,
-);
-
-router.post(
-  '/:id/favorite_places/',
-  { validate: validator.addFavorite },
-  access([USER, ORGANIZER]),
-  places.addFavorite,
-);
-router.delete(
-  '/:id/favorite_places/',
-  { validate: validator.deleteFavorite },
-  access([USER, ORGANIZER]),
-  places.deleteFavorite,
-);
-
 // router.post(
 //   '/:id/reviews/',
 //   { validate: validator.addReview },
