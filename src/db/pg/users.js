@@ -39,7 +39,7 @@ module.exports = (client) => {
         }
 
         const res = await client.query(
-          `SELECT id, name, avatar, email, role, created_at, updated_at FROM users
+          `SELECT id, name, avatar FROM users
             WHERE id = $1 AND deleted_at IS NULL;`,
           [id],
         );
@@ -92,7 +92,7 @@ module.exports = (client) => {
         }
 
         const res = await client.query(
-          `SELECT id, role, refresh_token FROM users
+          `SELECT refresh_token FROM users
             WHERE id = $1 AND deleted_at IS NULL;`,
           [id],
         );
