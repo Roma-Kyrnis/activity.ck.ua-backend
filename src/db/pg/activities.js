@@ -67,7 +67,7 @@ module.exports = (client) => {
 
         const offset = (page - 1) * limit;
         const { rows: places } = await client.query(
-          `SELECT id, name, address, phones, website, main_photo, work_time, rating, organization_id
+          `SELECT id, name, address, phones, website, main_photo, work_time, rating, category_id
             FROM places
             JOIN favorite_places AS f ON f.place_id = places.id
             WHERE f.user_id = $1 AND deleted_at IS NULL
@@ -103,7 +103,7 @@ module.exports = (client) => {
 
         const offset = (page - 1) * limit;
         const { rows: places } = await client.query(
-          `SELECT id, name, address, phones, website, main_photo, work_time, rating, organization_id
+          `SELECT id, name, address, phones, website, main_photo, work_time, rating, category_id
             FROM places
             JOIN visited_places AS v ON v.place_id = places.id
             WHERE v.user_id = $1 AND deleted_at IS NULL
