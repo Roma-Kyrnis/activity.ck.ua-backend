@@ -4,40 +4,48 @@ const {
   hash,
 } = require('../../utils');
 const {
-  ROLES: { MODERATOR },
+  ROLES: { EVERY, MODERATOR },
 } = require('../../config');
 
 const DEFAULT_USER_ID = 1; // CHANGE to truly user id from JWT token
 
-function getAuthToken() {
-  return (ctx, next) => {
-    const token = ctx.headers.authorization.split(' ')[1];
-    ctx.state.token = token;
-
-    return next();
-  };
-}
-
-function checkAccessToken(roles = []) {
-  const isAccess = (role) => {
+function checkRole(roles) {
+  return (role) => {
     const isModerator = role === MODERATOR;
     if (isModerator) {
-      return true;
+      return role;
     }
 
     const isClientRolePermissible = roles.find((clientRole) => clientRole === role);
     if (isClientRolePermissible) {
-      return true;
+      return role;
     }
 
     return false;
   };
+}
+
+function getToken(ctx) {
+  const { authorization } = ctx.headers;
+  if (authorization) {
+    return authorization.split(' ')[1];
+  }
+  return false;
+}
+
+function access(roles = []) {
+  const isAccess = checkRole(roles);
 
   return async (ctx, next) => {
     try {
-      // const data = await verifyAccessToken(ctx.state.token);
+      // let data = {};
 
-      // ctx.assert(isAccess(data.role), 401, `Access denied for ${data.role}`);
+      // const token = getToken(ctx);
+
+      // if (token || !isAccess(EVERY)) {
+      //   data = await verifyAccessToken(token);
+      //   ctx.assert(isAccess(data.role), 401, `Access denied for ${data.role}`);
+      // }
 
       // ctx.state.authPayload = data;
 
@@ -54,10 +62,10 @@ function checkAccessToken(roles = []) {
   };
 }
 
-function checkRefreshToken() {
+function refresh() {
   return async (ctx, next) => {
     try {
-      const { token: incomingToken } = ctx.state;
+      const incomingToken = getToken(ctx);
       const data = await verifyRefreshToken(incomingToken);
 
       const { refresh_token: refreshToken } = await getUserToken(data.id);
@@ -75,15 +83,6 @@ function checkRefreshToken() {
       return ctx.throw(403, err);
     }
   };
-}
-
-function access(roles) {
-  // return [getAuthToken(), checkAccessToken(roles)];
-  return [checkAccessToken(roles)];
-}
-
-function refresh() {
-  return [getAuthToken(), checkRefreshToken()];
 }
 
 module.exports = { access, refresh };

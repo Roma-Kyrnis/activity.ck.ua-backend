@@ -8,7 +8,6 @@ const {
   deleteEvent,
   addPhotos,
   getPhotos,
-  addEventAttend,
   isUserEvent,
 } = require('../../../db');
 const paginationAndAccessibility = require('./paginationAndAccessibility');
@@ -30,12 +29,14 @@ async function create(ctx) {
 }
 
 async function getOne(ctx) {
+  const { id: userId } = ctx.state.authPayload;
   const id = parseInt(ctx.request.params.id, 10);
 
-  const event = await getEvent(id);
-  const photos = await getPhotos(id, 'event_id');
+  const event = await getEvent(id, userId);
 
   ctx.assert(event, 404, `Cannot find event with id ${id}`);
+
+  const photos = await getPhotos(id, 'event_id');
 
   event.photos = photos;
 
@@ -86,7 +87,6 @@ async function update(ctx) {
 
 async function remove(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
-
   const { id: userId, role } = ctx.state.authPayload;
 
   if (role !== MODERATOR) {
@@ -100,13 +100,11 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-async function addAttend(ctx) {
-  const { id: userId } = ctx.state.authPayload;
-
-  const eventId = parseInt(ctx.request.params.id, 10);
-  await addEventAttend({ user_id: userId, event_id: eventId });
-
-  ctx.body = { message: 'OK' };
-}
-
-module.exports = { create, getOne, getApproved, getNow, update, remove, addAttend };
+module.exports = {
+  create,
+  getOne,
+  getApproved,
+  getNow,
+  update,
+  remove,
+};

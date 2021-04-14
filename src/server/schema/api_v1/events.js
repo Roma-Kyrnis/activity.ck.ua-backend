@@ -1,6 +1,11 @@
 const { Joi } = require('koa-joi-router');
 
 const create = {
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   body: Joi.object({
     event: Joi.object({
       place_id: Joi.number().min(1),
@@ -71,6 +76,11 @@ const getNow = {
 };
 
 const update = {
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -119,6 +129,11 @@ const update = {
 };
 
 const remove = {
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -126,17 +141,11 @@ const remove = {
   }),
 };
 
-const addAttend = {
-  header: Joi.object({
-    authorization: Joi.string()
-      .pattern(/^[a-zA-Z]+ .+$/)
-      .required(),
-  }).unknown(),
-  params: Joi.object({
-    id: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
-  }),
+module.exports = {
+  create,
+  getOne,
+  getApproved,
+  getNow,
+  update,
+  remove,
 };
-
-module.exports = { create, getOne, getApproved, getNow, update, remove, addAttend };
