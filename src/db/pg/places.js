@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const log = require('../../utils/logger')(__filename);
 const { checkError } = require('../checkError');
+const { queryAccessibility } = require('./queryBuilder');
 
 module.exports = (client) => {
   return {
@@ -51,18 +52,24 @@ module.exports = (client) => {
       }
     },
 
-    getPlace: async (id) => {
+    getPlace: async (id, userId) => {
       try {
         if (!id) {
           throw new Error('ERROR: No place id defined');
         }
 
+        const query = `,
+          (SELECT place_id FROM favorite_places
+            WHERE place_id = $1 AND user_id = $2) IS NOT NULL AS favorite,
+          (SELECT place_id FROM visited_places
+            WHERE place_id = $1 AND user_id = $2) IS NOT NULL AS visited`;
         const res = await client.query(
           `SELECT id, name, address, phones, website, description, accessibility,
-              dog_friendly, child_friendly, work_time, rating,
-              organization_id FROM places
+              dog_friendly, child_friendly, work_time, rating, organization_id
+              ${userId ? query : ''}
+            FROM places
             WHERE id = $1 AND moderated AND deleted_at IS NULL;`,
-          [id],
+          userId ? [id, userId] : [id],
         );
 
         return res.rows[0];
@@ -74,7 +81,7 @@ module.exports = (client) => {
 
     getPlaces: async (filters, limit, page) => {
       try {
-        const { categoryId, types, accessibility, dogFriendly, childFriendly } = filters;
+        const { categoryId, types } = filters;
 
         if (!categoryId === !types) {
           throw new Error('ERROR: Invalid filters!');
@@ -102,16 +109,11 @@ module.exports = (client) => {
           throw new Error('ERROR: No filters!');
         }
 
-        let queryAccessibility = '';
-        if (accessibility) queryAccessibility = 'AND accessibility';
-        if (dogFriendly) queryAccessibility += ' AND dog_friendly';
-        if (childFriendly) queryAccessibility += ' AND child_friendly';
-
         const {
           rows: [{ count }],
         } = await client.query(
           `SELECT COUNT(*) FROM places
-            WHERE ${queryFilter} ${queryAccessibility}
+            WHERE ${queryFilter} ${queryAccessibility(filters)}
               AND moderated AND deleted_at IS NULL;`,
           values,
         );
@@ -123,7 +125,7 @@ module.exports = (client) => {
         const { rows: places } = await client.query(
           `SELECT id, name, address, phones, website, main_photo, work_time, rating
             FROM places
-            WHERE ${queryFilter} ${queryAccessibility}
+            WHERE ${queryFilter} ${queryAccessibility(filters)}
               AND moderated AND deleted_at IS NULL
             ORDER BY popularity_rating DESC, id DESC
             LIMIT $${values.length - 1} OFFSET $${values.length};`,
@@ -134,6 +136,59 @@ module.exports = (client) => {
         res.places = places;
         /* res._limit = limit;
         res._page = page; */
+        res._total = total;
+        res._totalPages = Math.ceil(total / limit);
+
+        return res;
+      } catch (err) {
+        log.error(err.message || err);
+        throw err;
+      }
+    },
+
+    isUserPlace: async (userId, placeId) => {
+      try {
+        const res = await client.query(
+          `SELECT id
+            FROM places
+            WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL;`,
+          [placeId, userId],
+        );
+
+        return res.rows[0];
+      } catch (err) {
+        log.error(err.message || err);
+        throw err;
+      }
+    },
+
+    getUserPlaces: async (userId, limit, page) => {
+      try {
+        if (!userId) {
+          throw new Error('ERROR: No userId defined');
+        }
+
+        const {
+          rows: [{ count }],
+        } = await client.query(
+          `SELECT COUNT(*) FROM places
+            WHERE user_id = $1 AND deleted_at IS NULL;`,
+          [userId],
+        );
+        const total = Number(count);
+
+        const offset = (page - 1) * limit;
+        const { rows: places } = await client.query(
+          `SELECT id, name, address, phones, website, main_photo, work_time, rating, category_id
+            FROM places
+            WHERE user_id = $1 AND deleted_at IS NULL
+            ORDER BY popularity_rating DESC, id DESC
+            LIMIT $2 OFFSET $3;`,
+          [userId, limit, offset],
+        );
+
+        const res = {};
+        res.places = places;
         res._total = total;
         res._totalPages = Math.ceil(total / limit);
 

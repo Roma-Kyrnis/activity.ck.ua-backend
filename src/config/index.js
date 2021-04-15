@@ -3,6 +3,10 @@ require('dotenv').config();
 const fatal = require('../utils/fatalError')(__filename);
 
 const config = {
+  content: {
+    EVENTS_PERIOD: '2 week', // This is an INTERVAL type value!
+  },
+
   server: {
     PORT: Number(process.env.PORT) || 3012,
     HOST: process.env.HOST || 'localhost',
@@ -12,6 +16,8 @@ const config = {
       PLACES: '/places',
       ORGANIZATIONS: '/organizations',
       STORAGE: '/storage',
+      USERS: { path: '/users', MYSELF: { path: '/myself' } },
+      EVENTS: '/events',
     },
     NODE_ENV: process.env.NODE_ENV || 'production',
     MORGAN_FORMAT: 'dev',
@@ -27,13 +33,8 @@ const config = {
   errors: {
     DATABASE: 'DatabaseError',
   },
-  places: {
-    default: {
-      LIMIT: 5,
-      PAGE: 1,
-    },
-  },
-  roles: {
+  ROLES: {
+    EVERY: 'every',
     USER: 'user',
     ORGANIZER: 'organizer',
     MODERATOR: 'moderator',

@@ -1,6 +1,11 @@
 const { Joi } = require('koa-joi-router');
 
 const create = {
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   body: Joi.object({
     organization_id: Joi.number().min(0),
     organization: Joi.object({
@@ -71,12 +76,21 @@ const getApproved = {
     accessibility: Joi.boolean().truthy('true').falsy('false'),
     dog_friendly: Joi.boolean().truthy('true').falsy('false'),
     child_friendly: Joi.boolean().truthy('true').falsy('false'),
-    _page: Joi.string().pattern(/^[1-9]\d*$/),
-    _limit: Joi.string().pattern(/^[1-9]\d*$/),
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
   }).xor('category_id', 'type_id'),
 };
 
 const update = {
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -141,6 +155,11 @@ const update = {
 };
 
 const remove = {
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -148,4 +167,51 @@ const remove = {
   }),
 };
 
-module.exports = { create, getOne, getApproved, update, remove };
+// const addReview = {
+//   header: Joi.object({
+//     authorization: Joi.string()
+//       .pattern(/^[a-zA-Z]+ .+$/)
+//       .required(),
+//   }).unknown(),
+//   params: Joi.object({
+//     id: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required(),
+//   }),
+//   body: Joi.object({
+//     rating: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required(),
+//     review_text: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required(),
+//   }),
+//   type: 'json',
+// };
+
+// const getReviews = {
+//   header: Joi.object({
+//     authorization: Joi.string()
+//       .pattern(/^[a-zA-Z]+ .+$/)
+//       .required(),
+//   }).unknown(),
+//   params: Joi.object({
+//     id: Joi.string()
+//       .pattern(/^[1-9]\d*$/)
+//       .required(),
+//   }),
+//   query: Joi.object({
+//     _page: Joi.string().pattern(/^[1-9]\d*$/),
+//     _limit: Joi.string().pattern(/^[1-9]\d*$/),
+//   }),
+// };
+
+module.exports = {
+  create,
+  getOne,
+  getApproved,
+  update,
+  remove,
+  // addReview,
+  // getReviews,
+};

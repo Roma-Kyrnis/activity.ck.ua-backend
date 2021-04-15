@@ -7,19 +7,20 @@ const {
   apiV1: { organizations: validator },
 } = require('../../schema');
 const {
+  checkTokens: { access },
+} = require('../../middleware');
+const {
   server: {
     prefix: { ORGANIZATIONS },
   },
 } = require('../../../config');
 
-const router = new Router();
+const router = Router();
 
 router.prefix(ORGANIZATIONS);
 
-// router.post('/', { validate: validator.create }, places.create);
-// router.get('/:id', { validate: validator.getOne }, places.getOne);
 router.get('/', { validate: validator.getAll }, organizations.getAll);
-// router.put('/:id', { validate: validator.update }, places.update);
-// router.delete('/:id', { validate: validator.remove }, places.remove);
+router.put('/:id', { validate: validator.update }, access(), organizations.update);
+router.delete('/:id', { validate: validator.remove }, access(), organizations.remove);
 
 module.exports = router;

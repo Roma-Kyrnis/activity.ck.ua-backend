@@ -7,12 +7,13 @@ const {
   createOrganization,
   addPhotos,
   getPhotos,
+  isUserPlace,
+  // addReview: addPlacesReview,
+  // getPlacesReviews,
 } = require('../../../db');
-
+const paginationAndAccessibility = require('./paginationAndAccessibility');
 const {
-  places: {
-    default: { LIMIT, PAGE },
-  },
+  ROLES: { MODERATOR },
 } = require('../../../config');
 
 async function create(ctx) {
@@ -31,52 +32,34 @@ async function create(ctx) {
     organization_id: organizationId,
   };
 
-  const { id } = await createPlace(dataPlace);
+  const { id: placeId } = await createPlace(dataPlace);
 
-  await addPhotos(ctx.request.body.photos, id, 'place_id');
+  await addPhotos(ctx.request.body.photos, placeId, 'place_id');
 
   ctx.body = { message: 'OK' };
 }
 
 async function getOne(ctx) {
+  const { id: userId } = ctx.state.authPayload;
   const id = parseInt(ctx.request.params.id, 10);
 
-  try {
-    const place = await getPlace(id);
+  const place = await getPlace(id, userId);
 
-    const photos = await getPhotos(id, 'place_id');
-    place.photos = photos;
+  ctx.assert(place, 404, `No place with id - ${id}`);
 
-    ctx.body = { place };
-  } catch (err) {
-    err.status = 400;
-    err.message = `No place with id - ${id}`;
-    ctx.app.emit('error', err, ctx);
-  }
+  const photos = await getPhotos(id, 'place_id');
+
+  place.photos = photos;
+
+  ctx.body = { place };
 }
 
 async function getApproved(ctx) {
-  // eslint-disable-next-line no-underscore-dangle
-  const limit = parseInt(ctx.request.query._limit || LIMIT, 10);
-  // eslint-disable-next-line no-underscore-dangle
-  const page = parseInt(ctx.request.query._page || PAGE, 10);
-
-  const {
-    type_id: types,
-    category_id: categoryId,
-    accessibility,
-    dog_friendly: dogFriendly,
-    child_friendly: childFriendly,
-  } = ctx.request.query;
-
-  const filters = {};
+  const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
+  const { type_id: types, category_id: categoryId } = ctx.request.query;
 
   if (categoryId !== undefined) filters.categoryId = categoryId;
   if (types !== undefined) filters.types = types.split('-');
-
-  if (accessibility !== undefined) filters.accessibility = accessibility;
-  if (dogFriendly !== undefined) filters.dogFriendly = dogFriendly;
-  if (childFriendly !== undefined) filters.childFriendly = childFriendly;
 
   const data = await getPlaces(filters, limit, page);
 
@@ -85,16 +68,67 @@ async function getApproved(ctx) {
 
 async function update(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
-  await updatePlace({ id, ...ctx.request.body.place });
+  const { id: userId, role } = ctx.state.authPayload;
+
+  let place;
+  if (role !== MODERATOR) {
+    const isValid = await isUserPlace(userId, id);
+
+    ctx.assert(isValid, 403, 'Access denied');
+
+    place = await updatePlace({ ...ctx.request.body.place, moderated: false, id });
+  } else {
+    place = await updatePlace({ ...ctx.request.body.place, id });
+  }
+
+  ctx.assert(place, 404, `No place with id ${id}`);
 
   ctx.body = { message: 'OK' };
 }
 
 async function remove(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
+  const { id: userId, role } = ctx.state.authPayload;
+
+  if (role !== MODERATOR) {
+    const isValid = await isUserPlace(userId, id);
+
+    ctx.assert(isValid, 403, 'Access denied');
+  }
+
   await deletePlace(id);
 
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { create, getOne, getApproved, update, remove };
+// async function addReview(ctx) {
+//   const { id: userId } = ctx.state.authPayload;
+//   const placeId = parseInt(ctx.request.params.id, 10);
+
+//   await addPlacesReview({ ...ctx.request.body, user_id: userId, place_id: placeId });
+
+//   ctx.body = { message: 'OK' };
+// }
+
+// async function getReviews(ctx) {
+//   const placeId = parseInt(ctx.request.params.id, 10);
+
+//   let { _limit: limit, _page: page } = ctx.request.query;
+
+//   limit = parseInt(limit, 10);
+//   page = parseInt(page, 10);
+
+//   const reviews = await getPlacesReviews(placeId, limit, page);
+
+//   ctx.body = { reviews };
+// }
+
+module.exports = {
+  create,
+  getOne,
+  getApproved,
+  update,
+  remove,
+  // addReview,
+  // getReviews,
+};

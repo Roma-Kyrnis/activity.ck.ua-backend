@@ -4,40 +4,41 @@ const {
   hash,
 } = require('../../utils');
 const {
-  roles: { MODERATOR },
+  ROLES: { EVERY, MODERATOR },
 } = require('../../config');
 
 const DEFAULT_USER_ID = 1; // CHANGE to truly user id from JWT token
 
-function getAuthToken() {
-  return (ctx, next) => {
-    const token = ctx.headers.authorization.split(' ')[1];
-    ctx.state.token = token;
+function isRolePermissible(roles, role) {
+  const isModerator = role === MODERATOR;
+  const isPermissible = roles.find((accessibleRole) => accessibleRole === role);
 
-    return next();
-  };
+  if (isModerator || isPermissible) {
+    return true;
+  }
+
+  return false;
 }
 
-function checkAccessToken(roles = []) {
-  const isAccess = (role) => {
-    const isModerator = role === MODERATOR;
-    if (isModerator) {
-      return true;
-    }
+function getToken(ctx) {
+  const { authorization } = ctx.headers;
+  if (authorization) {
+    return authorization.split(' ')[1];
+  }
+  return false;
+}
 
-    const isClientRolePermissible = roles.find((clientRole) => clientRole === role);
-    if (isClientRolePermissible) {
-      return true;
-    }
-
-    return false;
-  };
-
+function access(roles = []) {
   return async (ctx, next) => {
     try {
-      // const data = await verifyAccessToken(ctx.state.token);
+      // let data = { role: EVERY };
 
-      // ctx.assert(isAccess(data.role), 401, `Access denied for ${data.role}`);
+      // const token = getToken(ctx);
+      // if (token) {
+      //   data = await verifyAccessToken(token);
+      // }
+
+      // ctx.assert(isRolePermissible(roles, data.role), 401, `Access denied`);
 
       // ctx.state.authPayload = data;
 
@@ -54,36 +55,25 @@ function checkAccessToken(roles = []) {
   };
 }
 
-function checkRefreshToken() {
+function refresh() {
   return async (ctx, next) => {
     try {
-      const { token: incomingToken } = ctx.state;
-      const data = await verifyRefreshToken(incomingToken);
+      const token = getToken(ctx);
+      const payload = await verifyRefreshToken(token);
 
-      const { refresh_token: refreshToken } = await getUserToken(data.id);
+      const { refresh_token: userToken } = await getUserToken(payload.id);
+      ctx.assert(userToken, 401, 'Incorrect user`s token');
 
-      ctx.assert(refreshToken, 401, 'Incorrect user`s token');
-
-      const incomingTokenHashed = hash.create(incomingToken);
-      const isUserToken = hash.compare(incomingTokenHashed, refreshToken);
+      const isUserToken = hash.compare(hash.create(token), userToken);
       ctx.assert(isUserToken, 401, 'Token deprecated');
 
-      ctx.state.authPayload = data;
+      ctx.state.authPayload = payload;
 
       return next();
     } catch (err) {
       return ctx.throw(403, err);
     }
   };
-}
-
-function access(roles) {
-  // return [getAuthToken(), checkAccessToken(roles)];
-  return [checkAccessToken(roles)];
-}
-
-function refresh() {
-  return [getAuthToken(), checkRefreshToken()];
 }
 
 module.exports = { access, refresh };

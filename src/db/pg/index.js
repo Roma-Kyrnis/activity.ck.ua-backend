@@ -3,6 +3,8 @@ const users = require('./users');
 const organizations = require('./organizations');
 const places = require('./places');
 const photos = require('./photos');
+const events = require('./events');
+const activities = require('./activities');
 const log = require('../../utils/logger')(__filename);
 
 const name = 'pg';
@@ -24,8 +26,38 @@ module.exports = (config) => {
     updateOrganization,
     deleteOrganization,
   } = organizations(client);
-  const { createPlace, getPlace, getPlaces, updatePlace, deletePlace } = places(client);
+  const {
+    createPlace,
+    getPlace,
+    getPlaces,
+    isUserPlace,
+    getUserPlaces,
+    updatePlace,
+    deletePlace,
+  } = places(client);
   const { addPhotos, getPhotos, deletePhotos } = photos(client);
+  const {
+    createEvent,
+    getEvent,
+    getEvents,
+    getCurrentEvents,
+    isUserEvent,
+    getUserEvents,
+    getPlaceEvents,
+    updateEvent,
+    deleteEvent,
+  } = events(client);
+  const {
+    addFavoritePlace,
+    addVisitedPlace,
+    addScheduledEvent,
+    getFavoritePlaces,
+    getVisitedPlaces,
+    getScheduledEvents,
+    detachFavoritePlace,
+    detachVisitedPlace,
+    detachScheduledEvent,
+  } = activities(client);
 
   return {
     testConnection: async () => {
@@ -59,11 +91,33 @@ module.exports = (config) => {
     createPlace,
     getPlace,
     getPlaces,
+    isUserPlace,
+    getUserPlaces,
     updatePlace,
     deletePlace,
 
     addPhotos,
     getPhotos,
     deletePhotos,
+
+    createEvent,
+    getEvent,
+    getEvents,
+    getCurrentEvents,
+    isUserEvent,
+    getUserEvents,
+    getPlaceEvents,
+    updateEvent,
+    deleteEvent,
+
+    addFavoritePlace,
+    addVisitedPlace,
+    addScheduledEvent,
+    getFavoritePlaces,
+    getVisitedPlaces,
+    getScheduledEvents,
+    detachFavoritePlace,
+    detachVisitedPlace,
+    detachScheduledEvent,
   };
 };
