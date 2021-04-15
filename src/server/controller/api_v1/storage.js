@@ -1,12 +1,9 @@
 const { firebase } = require('../../../lib/api_v1');
 
 async function getCustomToken(ctx) {
-  const user = {
-    id: ctx.state.authPayload.id,
-    role: ctx.state.authPayload.role,
-  };
+  const { id, role } = ctx.state.authPayload;
 
-  const token = await firebase.getCustomToken(user);
+  const token = await firebase.getCustomToken(id, role);
 
   ctx.body = { token };
 }

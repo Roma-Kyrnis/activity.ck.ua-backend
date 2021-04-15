@@ -8,8 +8,8 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-async function getCustomToken(user) {
-  return await admin.auth().createCustomToken(user.id.toString(), user);
+async function getCustomToken(id, role) {
+  return await admin.auth().createCustomToken(id.toString(), { id, role });
 }
 
 module.exports = { getCustomToken };
