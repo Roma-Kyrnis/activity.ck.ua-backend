@@ -9,20 +9,15 @@ const {
 
 const DEFAULT_USER_ID = 1; // CHANGE to truly user id from JWT token
 
-function checkRole(roles) {
-  return (role) => {
-    const isModerator = role === MODERATOR;
-    if (isModerator) {
-      return role;
-    }
+function isRolePermissible(roles, role) {
+  const isModerator = role === MODERATOR;
+  const isPermissible = roles.find((accessibleRole) => accessibleRole === role);
 
-    const isClientRolePermissible = roles.find((clientRole) => clientRole === role);
-    if (isClientRolePermissible) {
-      return role;
-    }
+  if (isModerator || isPermissible) {
+    return true;
+  }
 
-    return false;
-  };
+  return false;
 }
 
 function getToken(ctx) {
@@ -34,18 +29,16 @@ function getToken(ctx) {
 }
 
 function access(roles = []) {
-  const isAccess = checkRole(roles);
-
   return async (ctx, next) => {
     try {
-      // let data = {};
+      // let data = { role: EVERY };
 
       // const token = getToken(ctx);
-
-      // if (token || !isAccess(EVERY)) {
+      // if (token) {
       //   data = await verifyAccessToken(token);
-      //   ctx.assert(isAccess(data.role), 401, `Access denied for ${data.role}`);
       // }
+
+      // ctx.assert(isRolePermissible(roles, data.role), 401, `Access denied`);
 
       // ctx.state.authPayload = data;
 
@@ -65,18 +58,16 @@ function access(roles = []) {
 function refresh() {
   return async (ctx, next) => {
     try {
-      const incomingToken = getToken(ctx);
-      const data = await verifyRefreshToken(incomingToken);
+      const token = getToken(ctx);
+      const payload = await verifyRefreshToken(token);
 
-      const { refresh_token: refreshToken } = await getUserToken(data.id);
+      const { refresh_token: userToken } = await getUserToken(payload.id);
+      ctx.assert(userToken, 401, 'Incorrect user`s token');
 
-      ctx.assert(refreshToken, 401, 'Incorrect user`s token');
-
-      const incomingTokenHashed = hash.create(incomingToken);
-      const isUserToken = hash.compare(incomingTokenHashed, refreshToken);
+      const isUserToken = hash.compare(hash.create(token), userToken);
       ctx.assert(isUserToken, 401, 'Token deprecated');
 
-      ctx.state.authPayload = data;
+      ctx.state.authPayload = payload;
 
       return next();
     } catch (err) {
