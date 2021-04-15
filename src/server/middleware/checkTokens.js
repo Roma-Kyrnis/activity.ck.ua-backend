@@ -9,17 +9,15 @@ const {
 
 const DEFAULT_USER_ID = 1; // CHANGE to truly user id from JWT token
 
-function checkRole(roles) {
-  return (role) => {
-    const isModerator = role === MODERATOR;
-    const isPermissible = roles.find((accessibleRole) => accessibleRole === role);
+function isRolePermissible(roles, role) {
+  const isModerator = role === MODERATOR;
+  const isPermissible = roles.find((accessibleRole) => accessibleRole === role);
 
-    if (isModerator || isPermissible) {
-      return true;
-    }
+  if (isModerator || isPermissible) {
+    return true;
+  }
 
-    return false;
-  };
+  return false;
 }
 
 function getToken(ctx) {
@@ -31,8 +29,6 @@ function getToken(ctx) {
 }
 
 function access(roles = []) {
-  const hasAccess = checkRole(roles);
-
   return async (ctx, next) => {
     try {
       // let data = { role: EVERY };
@@ -42,7 +38,7 @@ function access(roles = []) {
       //   data = await verifyAccessToken(token);
       // }
 
-      // ctx.assert(hasAccess(data.role), 401, `Access denied`);
+      // ctx.assert(isRolePermissible(roles, data.role), 401, `Access denied`);
 
       // ctx.state.authPayload = data;
 
