@@ -2,6 +2,7 @@ const { Pool } = require('pg');
 const users = require('./users');
 const organizations = require('./organizations');
 const places = require('./places');
+const reviews = require('./reviews');
 const photos = require('./photos');
 const events = require('./events');
 const activities = require('./activities');
@@ -35,6 +36,7 @@ module.exports = (config) => {
     updatePlace,
     deletePlace,
   } = places(client);
+  const { createReview, getReviews, updateReview, deleteReview } = reviews(client);
   const { addPhotos, getPhotos, deletePhotos } = photos(client);
   const {
     createEvent,
@@ -95,6 +97,11 @@ module.exports = (config) => {
     getUserPlaces,
     updatePlace,
     deletePlace,
+
+    createReview,
+    getReviews,
+    updateReview,
+    deleteReview,
 
     addPhotos,
     getPhotos,
