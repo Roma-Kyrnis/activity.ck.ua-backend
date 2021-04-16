@@ -41,10 +41,11 @@ module.exports = (client) => {
 
         const offset = (page - 1) * limit;
         const { rows: reviews } = await client.query(
-          `SELECT user_id, rating, comment, created_at
-            FROM reviews
+          `SELECT r.rating, r.comment, r.created_at, u.name AS user_name, u.avatar AS user_avatar
+            FROM reviews AS r
+            JOIN users AS u ON u.id = r.user_id
             WHERE place_id =$1
-            ORDER BY created_at DESC
+            ORDER BY r.created_at DESC
             LIMIT $2 OFFSET $3;`,
           [placeId, limit, offset],
         );
