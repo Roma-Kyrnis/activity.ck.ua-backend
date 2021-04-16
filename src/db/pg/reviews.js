@@ -17,6 +17,18 @@ module.exports = (client) => {
           [placeId, userId, rating, comment],
         );
 
+        // place ratings calculation:
+        await client.query(
+          `WITH average AS (SELECT AVG(rating) FROM reviews WHERE place_id =$1)
+            UPDATE places
+            SET rating = (SELECT avg FROM average),
+              popularity_rating = (SELECT avg FROM average)
+                + log(1 + (SELECT COUNT(*) FROM reviews WHERE place_id =$1))
+                + log(1 + (SELECT COUNT(*) FROM visited_places WHERE place_id =$1))
+            WHERE id = $1;`,
+          [placeId],
+        );
+
         log.debug(res.rows[0], 'New review created:');
         return res.rows[0];
       } catch (err) {
