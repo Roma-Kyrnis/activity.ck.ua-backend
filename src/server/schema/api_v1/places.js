@@ -1,5 +1,9 @@
 const { Joi } = require('koa-joi-router');
 
+const {
+  REVIEW: { RATING },
+} = require('../../../config');
+
 const create = {
   // header: Joi.object({
   //   authorization: Joi.string()
@@ -179,10 +183,8 @@ const addReview = {
       .required(),
   }),
   body: Joi.object({
-    rating: Joi.string()
-      .pattern(/^[1-9]\d*.\d+$/)
-      .required(),
-    comment: Joi.string().required(),
+    rating: Joi.number().integer().min(RATING.MIN).max(RATING.MAX).required(),
+    comment: Joi.alternatives(Joi.allow(null), Joi.string()).required(),
   }),
   type: 'json',
 };
@@ -199,8 +201,12 @@ const getReviews = {
       .required(),
   }),
   query: Joi.object({
-    _page: Joi.string().pattern(/^[1-9]\d*$/),
-    _limit: Joi.string().pattern(/^[1-9]\d*$/),
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
   }),
 };
 
@@ -216,8 +222,8 @@ const getReviews = {
 //       .required(),
 //   }),
 //   body: Joi.object({
-//     rating: Joi.string().pattern(/^[1-9]\d*.\d+$/),
-//     comment: Joi.string(),
+//     rating: Joi.number().required(),
+//     comment: Joi.alternatives(Joi.allow(null), Joi.string()).required(),
 //   }),
 //   type: 'json',
 // };

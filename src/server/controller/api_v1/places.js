@@ -10,8 +10,8 @@ const {
   isUserPlace,
   createReview,
   getReviews: getReviewsDB,
-  updateReview: updateReviewDB,
-  deleteReview: deleteReviewDB,
+  // updateReview: updateReviewDB,
+  // deleteReview: deleteReviewDB,
 } = require('../../../db');
 const paginationAndAccessibility = require('./paginationAndAccessibility');
 const {
