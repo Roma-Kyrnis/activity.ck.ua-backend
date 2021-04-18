@@ -167,42 +167,71 @@ const remove = {
   }),
 };
 
-// const addReview = {
-//   header: Joi.object({
-//     authorization: Joi.string()
-//       .pattern(/^[a-zA-Z]+ .+$/)
-//       .required(),
-//   }).unknown(),
+const addReview = {
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
+  params: Joi.object({
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+  body: Joi.object({
+    rating: Joi.string()
+      .pattern(/^[1-9]\d*.\d+$/)
+      .required(),
+    comment: Joi.string().required(),
+  }),
+  type: 'json',
+};
+
+const getReviews = {
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
+  params: Joi.object({
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+  query: Joi.object({
+    _page: Joi.string().pattern(/^[1-9]\d*$/),
+    _limit: Joi.string().pattern(/^[1-9]\d*$/),
+  }),
+};
+
+// const updateReview = {
+//   // header: Joi.object({
+//   //   authorization: Joi.string()
+//   //     .pattern(/^[a-zA-Z]+ .+$/)
+//   //     .required(),
+//   // }).unknown(),
 //   params: Joi.object({
-//     id: Joi.string()
+//     reviewId: Joi.string()
 //       .pattern(/^[1-9]\d*$/)
 //       .required(),
 //   }),
 //   body: Joi.object({
-//     rating: Joi.string()
-//       .pattern(/^[1-9]\d*$/)
-//       .required(),
-//     review_text: Joi.string()
-//       .pattern(/^[1-9]\d*$/)
-//       .required(),
+//     rating: Joi.string().pattern(/^[1-9]\d*.\d+$/),
+//     comment: Joi.string(),
 //   }),
 //   type: 'json',
 // };
 
-// const getReviews = {
-//   header: Joi.object({
-//     authorization: Joi.string()
-//       .pattern(/^[a-zA-Z]+ .+$/)
-//       .required(),
-//   }).unknown(),
+// const deleteReview = {
+//   // header: Joi.object({
+//   //   authorization: Joi.string()
+//   //     .pattern(/^[a-zA-Z]+ .+$/)
+//   //     .required(),
+//   // }).unknown(),
 //   params: Joi.object({
-//     id: Joi.string()
+//     reviewId: Joi.string()
 //       .pattern(/^[1-9]\d*$/)
 //       .required(),
-//   }),
-//   query: Joi.object({
-//     _page: Joi.string().pattern(/^[1-9]\d*$/),
-//     _limit: Joi.string().pattern(/^[1-9]\d*$/),
 //   }),
 // };
 
@@ -212,6 +241,8 @@ module.exports = {
   getApproved,
   update,
   remove,
-  // addReview,
-  // getReviews,
+  addReview,
+  getReviews,
+  // updateReview,
+  // deleteReview,
 };

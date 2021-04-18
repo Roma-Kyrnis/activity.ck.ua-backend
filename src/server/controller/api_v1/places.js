@@ -8,8 +8,10 @@ const {
   addPhotos,
   getPhotos,
   isUserPlace,
-  // addReview: addPlacesReview,
-  // getPlacesReviews,
+  createReview,
+  getReviews: getReviewsDB,
+  updateReview: updateReviewDB,
+  deleteReview: deleteReviewDB,
 } = require('../../../db');
 const paginationAndAccessibility = require('./paginationAndAccessibility');
 const {
@@ -101,26 +103,43 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-// async function addReview(ctx) {
-//   const { id: userId } = ctx.state.authPayload;
-//   const placeId = parseInt(ctx.request.params.id, 10);
+async function addReview(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+  const placeId = parseInt(ctx.request.params.id, 10);
 
-//   await addPlacesReview({ ...ctx.request.body, user_id: userId, place_id: placeId });
+  await createReview({ ...ctx.request.body, user_id: userId, place_id: placeId });
+
+  ctx.body = { message: 'OK' };
+}
+
+async function getReviews(ctx) {
+  const placeId = parseInt(ctx.request.params.id, 10);
+
+  let { _limit: limit, _page: page } = ctx.request.query;
+  limit = parseInt(limit, 10);
+  page = parseInt(page, 10);
+
+  const reviews = await getReviewsDB(placeId, limit, page);
+
+  ctx.body = { reviews };
+}
+
+// async function updateReview(ctx) {
+//   const { id: userId } = ctx.state.authPayload;
+//   const reviewId = parseInt(ctx.request.params.reviewId, 10);
+
+//   await updateReview({ ...ctx.request.body, id: reviewId });
 
 //   ctx.body = { message: 'OK' };
 // }
 
-// async function getReviews(ctx) {
-//   const placeId = parseInt(ctx.request.params.id, 10);
+// async function deleteReview(ctx) {
+//   const { id: userId } = ctx.state.authPayload;
+//   const reviewId = parseInt(ctx.request.params.reviewId, 10);
 
-//   let { _limit: limit, _page: page } = ctx.request.query;
+//   await createReview({ ...ctx.request.body, user_id: userId, id: reviewId });
 
-//   limit = parseInt(limit, 10);
-//   page = parseInt(page, 10);
-
-//   const reviews = await getPlacesReviews(placeId, limit, page);
-
-//   ctx.body = { reviews };
+//   ctx.body = { message: 'OK' };
 // }
 
 module.exports = {
@@ -129,6 +148,8 @@ module.exports = {
   getApproved,
   update,
   remove,
-  // addReview,
-  // getReviews,
+  addReview,
+  getReviews,
+  // updateReview,
+  // deleteReview,
 };
