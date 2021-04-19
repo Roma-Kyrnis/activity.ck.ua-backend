@@ -120,6 +120,7 @@ module.exports = {
     funcWrapper(dbWrapper().addVisitedPlace)(placeId, userId),
   addScheduledEvent: async (eventId, userId) =>
     funcWrapper(dbWrapper().addScheduledEvent)(eventId, userId),
+  getExplore: async (userId, categoryId) => funcWrapper(dbWrapper().getExplore)(userId, categoryId),
   getFavoritePlaces: async (userId, limit, page) =>
     funcWrapper(dbWrapper().getFavoritePlaces)(userId, limit, page),
   getVisitedPlaces: async (userId, limit, page) =>
