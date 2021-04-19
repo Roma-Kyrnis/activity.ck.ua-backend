@@ -52,6 +52,30 @@ module.exports = (client) => {
       }
     },
 
+    getExplore: async (userId, categoryId) => {
+      try {
+        const res = await client.query(
+          `SELECT ceil(
+            (SELECT COUNT(*)
+              FROM places
+              JOIN visited_places AS v ON v.place_id = places.id
+              WHERE v.user_id = $1 AND deleted_at IS NULL)
+            /
+            (SELECT COUNT(*)
+              FROM places
+              WHERE ${categoryId ? 'category_id = $2 AND' : ''} moderated AND deleted_at IS NULL)
+            * 100)
+            AS explore;`,
+          categoryId ? [userId, categoryId] : [userId],
+        );
+
+        return res.rows[0];
+      } catch (err) {
+        log.error(err.message || err);
+        throw err;
+      }
+    },
+
     getFavoritePlaces: async (userId, limit, page) => {
       try {
         const {
