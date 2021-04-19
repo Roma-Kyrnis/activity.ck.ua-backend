@@ -8,7 +8,8 @@ exports.up = async (knex) => {
     table.decimal('popularity_rating', 5, 3).notNullable().defaultTo(1.0).alter();
   });
 
-  await knex.schema.table('reviews', (table) => {
+  await knex.schema.alterTable('reviews', (table) => {
+    table.text('review_text').nullable().alter();
     table.renameColumn('review_text', 'comment');
     table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
   });
@@ -23,7 +24,8 @@ exports.down = async (knex) => {
     table.string('url').notNullable().alter();
   });
 
-  await knex.schema.table('reviews', (table) => {
+  await knex.schema.alterTable('reviews', (table) => {
+    table.text('comment').notNullable().alter();
     table.renameColumn('comment', 'review_text');
     table.dropColumn('created_at');
   });
