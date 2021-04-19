@@ -10,8 +10,8 @@ const {
   isUserPlace,
   createReview,
   getReviews: getReviewsDB,
-  // updateReview: updateReviewDB,
-  // deleteReview: deleteReviewDB,
+  updateReview: updateReviewDB,
+  deleteReview: deleteReviewDB,
 } = require('../../../db');
 const paginationAndAccessibility = require('./paginationAndAccessibility');
 const {
@@ -124,23 +124,21 @@ async function getReviews(ctx) {
   ctx.body = { reviews };
 }
 
-// async function updateReview(ctx) {
-//   const { id: userId } = ctx.state.authPayload;
-//   const reviewId = parseInt(ctx.request.params.reviewId, 10);
+async function updateReview(ctx) {
+  const reviewId = parseInt(ctx.request.params.reviewId, 10);
 
-//   await updateReview({ ...ctx.request.body, id: reviewId });
+  await updateReviewDB({ ...ctx.request.body, id: reviewId });
 
-//   ctx.body = { message: 'OK' };
-// }
+  ctx.body = { message: 'OK' };
+}
 
-// async function deleteReview(ctx) {
-//   const { id: userId } = ctx.state.authPayload;
-//   const reviewId = parseInt(ctx.request.params.reviewId, 10);
+async function deleteReview(ctx) {
+  const reviewId = parseInt(ctx.request.params.reviewId, 10);
 
-//   await createReview({ ...ctx.request.body, user_id: userId, id: reviewId });
+  await deleteReviewDB({ ...ctx.request.body, id: reviewId });
 
-//   ctx.body = { message: 'OK' };
-// }
+  ctx.body = { message: 'OK' };
+}
 
 module.exports = {
   create,
@@ -150,6 +148,6 @@ module.exports = {
   remove,
   addReview,
   getReviews,
-  // updateReview,
-  // deleteReview,
+  updateReview,
+  deleteReview,
 };

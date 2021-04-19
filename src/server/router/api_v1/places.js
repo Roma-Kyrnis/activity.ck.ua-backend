@@ -33,17 +33,17 @@ router.post(
   places.addReview,
 );
 router.get('/:id/reviews/', { validate: validator.getReviews }, places.getReviews);
-// router.put(
-//   '/reviews/:reviewId',
-//   { validate: validator.updateReview },
-//   access([USER, ORGANIZER]),
-//   places.updateReview,
-// );
-// router.delete(
-//   '/reviews/:reviewId',
-//   { validate: validator.deleteReview },
-//   access([USER, ORGANIZER]),
-//   places.deleteReview,
-// );
+router.put(
+  '/reviews/:reviewId',
+  { validate: validator.updateReview },
+  access(),
+  places.updateReview,
+);
+router.delete(
+  '/reviews/:reviewId',
+  { validate: validator.deleteReview },
+  access(),
+  places.deleteReview,
+);
 
 module.exports = router;
