@@ -62,7 +62,9 @@ module.exports = (client) => {
           (SELECT place_id FROM favorite_places
             WHERE place_id = $1 AND user_id = $2) IS NOT NULL AS favorite,
           (SELECT place_id FROM visited_places
-            WHERE place_id = $1 AND user_id = $2) IS NOT NULL AS visited`;
+            WHERE place_id = $1 AND user_id = $2) IS NOT NULL AS visited,
+          (SELECT place_id FROM reviews
+            WHERE place_id = $1 AND user_id = $2) IS NOT NULL AS reviewed`;
         const res = await client.query(
           `SELECT id, name, address, phones, website, description, accessibility,
               dog_friendly, child_friendly, work_time, rating, organization_id
