@@ -119,9 +119,9 @@ async function getReviews(ctx) {
   limit = parseInt(limit, 10);
   page = parseInt(page, 10);
 
-  const reviews = await getReviewsDB(placeId, limit, page);
+  const response = await getReviewsDB(placeId, limit, page);
 
-  ctx.body = { reviews };
+  ctx.body = response;
 }
 
 async function updateReview(ctx) {
@@ -135,7 +135,7 @@ async function updateReview(ctx) {
 async function deleteReview(ctx) {
   const reviewId = parseInt(ctx.request.params.reviewId, 10);
 
-  await deleteReviewDB({ ...ctx.request.body, id: reviewId });
+  await deleteReviewDB(reviewId);
 
   ctx.body = { message: 'OK' };
 }

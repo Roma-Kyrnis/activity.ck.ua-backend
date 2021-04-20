@@ -190,11 +190,6 @@ const upsertReview = {
 };
 
 const getReviews = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
