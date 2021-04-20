@@ -125,17 +125,19 @@ async function getReviews(ctx) {
 }
 
 async function updateReview(ctx) {
-  const reviewId = parseInt(ctx.request.params.reviewId, 10);
+  const placeId = parseInt(ctx.request.params.id, 10);
+  const userId = parseInt(ctx.request.params.userId, 10);
 
-  await updateReviewDB({ ...ctx.request.body, id: reviewId });
+  await updateReviewDB({ ...ctx.request.body, place_id: placeId, user_id: userId });
 
   ctx.body = { message: 'OK' };
 }
 
 async function deleteReview(ctx) {
-  const reviewId = parseInt(ctx.request.params.reviewId, 10);
+  const placeId = parseInt(ctx.request.params.id, 10);
+  const userId = parseInt(ctx.request.params.userId, 10);
 
-  await deleteReviewDB(reviewId);
+  await deleteReviewDB(placeId, userId);
 
   ctx.body = { message: 'OK' };
 }

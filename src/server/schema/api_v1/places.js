@@ -212,14 +212,17 @@ const updateReview = {
   //     .required(),
   // }).unknown(),
   params: Joi.object({
-    reviewId: Joi.string()
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    userId: Joi.string()
       .pattern(/^[1-9]\d*$/)
       .required(),
   }),
   body: Joi.object({
-    rating: Joi.number().required(),
-    comment: Joi.alternatives(Joi.allow(null), Joi.string()).required(),
-  }),
+    rating: Joi.number().integer().min(RATING.MIN).max(RATING.MAX).required(),
+    comment: Joi.alternatives(Joi.allow(null), Joi.string()),
+  }).or('rating', 'comment'),
   type: 'json',
 };
 
@@ -230,7 +233,10 @@ const deleteReview = {
   //     .required(),
   // }).unknown(),
   params: Joi.object({
-    reviewId: Joi.string()
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    userId: Joi.string()
       .pattern(/^[1-9]\d*$/)
       .required(),
   }),

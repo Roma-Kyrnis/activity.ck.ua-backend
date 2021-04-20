@@ -34,13 +34,13 @@ router.post(
 );
 router.get('/:id/reviews/', { validate: validator.getReviews }, places.getReviews);
 router.put(
-  '/reviews/:reviewId',
+  '/:id/reviews/:userId',
   { validate: validator.updateReview },
   access(),
   places.updateReview,
 );
 router.delete(
-  '/reviews/:reviewId',
+  '/:id/reviews/:userId',
   { validate: validator.deleteReview },
   access(),
   places.deleteReview,
