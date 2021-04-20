@@ -1,15 +1,10 @@
-const { google } = require('googleapis');
-
 const { createUser, updateUser, getUserCredentials, checkUser } = require('../../../db');
 const { hash, authorizationTokens } = require('../../../utils');
+const {
+  googleapis: { oAuth2Client },
+} = require('../../../lib/api_v1');
 const config = require('../../../config');
 const log = require('../../../utils/logger')(__filename);
-
-const oAuth2Client = new google.auth.OAuth2({
-  clientId: config.auth.CLIENT_ID,
-  clientSecret: config.auth.CLIENT_SECRET,
-  redirectUri: config.auth.REDIRECT_URL,
-});
 
 function getPasswordHash(email, password) {
   return hash.create(`${email}${password}`);
