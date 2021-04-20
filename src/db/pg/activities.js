@@ -56,6 +56,7 @@ module.exports = (client) => {
       try {
         const res = await client.query(
           `SELECT ceil(
+            100 *
             (SELECT COUNT(*)
               FROM places
               JOIN visited_places AS v ON v.place_id = places.id
@@ -63,8 +64,7 @@ module.exports = (client) => {
             /
             (SELECT COUNT(*)
               FROM places
-              WHERE ${categoryId ? 'category_id = $2 AND' : ''} moderated AND deleted_at IS NULL)
-            * 100)
+              WHERE ${categoryId ? 'category_id = $2 AND' : ''} moderated AND deleted_at IS NULL))
             AS explore;`,
           categoryId ? [userId, categoryId] : [userId],
         );
