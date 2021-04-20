@@ -94,7 +94,7 @@ module.exports = {
   getReviews: async (placeId, limit, page) =>
     funcWrapper(dbWrapper().getReviews)(placeId, limit, page),
   updateReview: async (review) => funcWrapper(dbWrapper().updateReview)(review),
-  deleteReview: async (id) => funcWrapper(dbWrapper().deleteReview)(id),
+  deleteReview: async (placeId, userId) => funcWrapper(dbWrapper().deleteReview)(placeId, userId),
 
   addPhotos: async (photos, id, nameId) => funcWrapper(dbWrapper().addPhotos)(photos, id, nameId),
   getPhotos: async (id, nameId) => funcWrapper(dbWrapper().getPhotos)(id, nameId),

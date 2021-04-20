@@ -76,10 +76,10 @@ module.exports = (client) => {
       }
     },
 
-    updateReview: async ({ id, ...review }) => {
+    updateReview: async ({ place_id: placeId, user_id: userId, ...review }) => {
       try {
-        if (!id) {
-          throw new Error('ERROR: No review id defined');
+        if (!placeId || !userId) {
+          throw new Error('ERROR: No placeId or userId defined');
         }
 
         if (!Object.keys(review).length) {
@@ -95,11 +95,11 @@ module.exports = (client) => {
           values.push(v);
         }
 
-        values.push(id);
+        values.push(placeId, userId);
 
         const res = await client.query(
           `UPDATE reviews SET ${query.join(', ')}
-            WHERE id = $${values.length}
+            WHERE place_id = $${values.length - 1} AND user_id = $${values.length}
             RETURNING place_id, user_id, rating, comment, created_at;`,
           values,
         );
@@ -112,13 +112,16 @@ module.exports = (client) => {
       }
     },
 
-    deleteReview: async (id) => {
+    deleteReview: async (placeId, userId) => {
       try {
-        if (!id) {
-          throw new Error('ERROR: No review id defined');
+        if (!placeId || !userId) {
+          throw new Error('ERROR: No placeId or userId defined');
         }
 
-        await client.query('DELETE FROM reviews WHERE id = $1;', [id]);
+        await client.query('DELETE FROM reviews WHERE place_id = $1 AND user_id = $2;', [
+          placeId,
+          userId,
+        ]);
 
         return true;
       } catch (err) {
