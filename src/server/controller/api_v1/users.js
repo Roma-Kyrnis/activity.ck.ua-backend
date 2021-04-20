@@ -11,10 +11,7 @@ const {
   detachScheduledEvent: detachScheduledEventDB,
   getUserPlaces,
   getUserEvents,
-  // getUserOrganizations,
-  // addReview: addUserReview,
-  // getUserReviews,
-  // getUserResearch,
+  getExplore: getExploreDB,
 } = require('../../../db');
 
 function getUserIdAndPagination(ctx) {
@@ -129,38 +126,14 @@ async function getEvents(ctx) {
   ctx.body = response;
 }
 
-// async function getResearch(ctx) {
-//   const { id: userId } = ctx.state.authPayload;
-//   const { category_id: categoryId } = ctx.request.query;
+async function getExplore(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+  const { category_id: categoryId } = ctx.request.query;
 
-//   const research = await getUserResearch(userId, categoryId);
+  const response = await getExploreDB(userId, categoryId);
 
-//   ctx.body = { research };
-// }
-
-// async function getOrganizations(ctx) {
-//   const { userId, limit, page } = getUserIdAndPagination(ctx);
-
-//   const organizations = await getUserOrganizations(userId, limit, page);
-
-//   ctx.body = { organizations };
-// }
-
-// async function addReview(ctx) {
-//   const { id: userId } = ctx.state.authPayload;
-
-//   await addUserReview({ ...ctx.request.body, user_id: userId });
-
-//   ctx.body = { message: 'OK' };
-// }
-
-// async function getReviews(ctx) {
-//   const { userId, limit, page } = getUserIdAndPagination(ctx);
-
-//   const reviews = await getUserReviews(userId, limit, page);
-
-//   ctx.body = { reviews };
-// }
+  ctx.body = response;
+}
 
 module.exports = {
   getUser,
@@ -175,8 +148,5 @@ module.exports = {
   deleteScheduledEvent,
   getPlaces,
   getEvents,
-  // getResearch,
-  // getOrganizations,
-  // addReview,
-  // getReviews,
+  getExplore,
 };
