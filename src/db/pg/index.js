@@ -36,7 +36,7 @@ module.exports = (config) => {
     updatePlace,
     deletePlace,
   } = places(client);
-  const { createReview, getReviews, updateReview, deleteReview } = reviews(client);
+  const { upsertReview, getReviews, updateReview, deleteReview } = reviews(client);
   const { addPhotos, getPhotos, deletePhotos } = photos(client);
   const {
     createEvent,
@@ -98,7 +98,7 @@ module.exports = (config) => {
     updatePlace,
     deletePlace,
 
-    createReview,
+    upsertReview,
     getReviews,
     updateReview,
     deleteReview,
