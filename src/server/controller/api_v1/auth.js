@@ -1,18 +1,51 @@
-const { createUser, updateUser, getUserCredentials } = require('../../../db');
-const { hash, authorizationTokens } = require('../../../utils');
+const { google } = require('googleapis');
 
-function getCredentialsString(body) {
-  return `${body.email}${body.password}`;
+const { createUser, updateUser, getUserCredentials, checkUser } = require('../../../db');
+const { hash, authorizationTokens } = require('../../../utils');
+const config = require('../../../config');
+const log = require('../../../utils/logger')(__filename);
+
+const oAuth2Client = new google.auth.OAuth2({
+  clientId: config.auth.CLIENT_ID,
+  clientSecret: config.auth.CLIENT_SECRET,
+  redirectUri: config.auth.REDIRECT_URL,
+});
+
+function getPasswordHash(email, password) {
+  return hash.create(`${email}${password}`);
+}
+
+async function getUserTokens(id, role) {
+  const payload = { id, role };
+  const tokens = {
+    access_token: await authorizationTokens.generateAccessToken(payload),
+    refresh_token: await authorizationTokens.generateRefreshToken(payload),
+  };
+
+  const hashedRefresh = hash.create(tokens.refresh_token);
+  await updateUser({ id, refresh_token: hashedRefresh });
+
+  return tokens;
+}
+
+async function validateUser(email, password) {
+  const user = await getUserCredentials(email);
+  if (!user) {
+    return false;
+  }
+  const passwordHash = getPasswordHash(email, password);
+  const isCompared = hash.compare(passwordHash, user.password_hash);
+  if (!isCompared) {
+    return false;
+  }
+
+  return user;
 }
 
 async function registration(ctx) {
-  const passwordHash = hash.create(getCredentialsString(ctx.request.body));
-  const user = {
-    name: ctx.request.body.name,
-    avatar: ctx.request.body.avatar,
-    email: ctx.request.body.email,
-    passwordHash,
-  };
+  const { name, avatar, email, password } = ctx.request.body;
+  const passwordHash = getPasswordHash(email, password);
+  const user = { name, avatar, email, passwordHash };
   const userDB = await createUser(user);
 
   ctx.body = {
@@ -21,23 +54,10 @@ async function registration(ctx) {
 }
 
 async function login(ctx) {
-  const user = await getUserCredentials(ctx.request.body.email);
+  const { email, password } = ctx.request.body;
+  const user = validateUser(email, password);
   ctx.assert(user, 401, 'Incorrect credentials');
-  const passwordHash = hash.create(getCredentialsString(ctx.request.body));
-  const isCompared = hash.compare(passwordHash, user.password_hash);
-  ctx.assert(isCompared, 401, 'Incorrect credentials');
-
-  const payload = {
-    id: user.id,
-    role: user.role,
-  };
-  const tokens = {
-    access_token: await authorizationTokens.generateAccessToken(payload),
-    refresh_token: await authorizationTokens.generateRefreshToken(payload),
-  };
-
-  const hashedRefresh = hash.create(tokens.refresh_token);
-  await updateUser({ id: user.id, refresh_token: hashedRefresh });
+  const tokens = await getUserTokens(user.id, user.role);
 
   ctx.body = tokens;
 }
@@ -69,4 +89,50 @@ async function logout(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { registration, login, refresh, logout };
+async function googleLogin(ctx) {
+  if (ctx.request.query.error) {
+    const { error } = ctx.request.query;
+    log.error(`Google authorization error: ${error}`);
+    ctx.status = 400;
+    ctx.body = { message: error };
+    return;
+  }
+
+  try {
+    const ticket = await oAuth2Client.getToken(ctx.request.query.code);
+    const { payload } = await oAuth2Client.verifyIdToken({ idToken: ticket.tokens.id_token });
+
+    if (payload.aud !== config.auth.CLIENT_ID || !payload.email_verified) {
+      ctx.throw(403, 'Incorrect credentials');
+    }
+
+    let tokens;
+
+    const isUserExist = await checkUser(payload.email);
+    if (isUserExist) {
+      const user = await validateUser(payload.email, payload.sub);
+      ctx.assert(user, 401, 'Incorrect credentials');
+      tokens = await getUserTokens(user.id, user.role);
+    } else {
+      const newUser = {
+        name: payload.name,
+        avatar: payload.picture,
+        email: payload.email,
+        passwordHash: getPasswordHash(payload.email, payload.sub),
+      };
+
+      const user = await createUser(newUser);
+      tokens = await getUserTokens(user.id, user.role);
+    }
+
+    ctx.body = tokens;
+  } catch (err) {
+    log.error(err.message || err);
+    if (err.message === 'invalid_grant') {
+      ctx.throw(400, 'incorrect code');
+    }
+    ctx.throw(err);
+  }
+}
+
+module.exports = { registration, login, refresh, logout, googleLogin };
