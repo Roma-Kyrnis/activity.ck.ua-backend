@@ -171,7 +171,7 @@ const remove = {
   }),
 };
 
-const addReview = {
+const upsertReview = {
   // header: Joi.object({
   //   authorization: Joi.string()
   //     .pattern(/^[a-zA-Z]+ .+$/)
@@ -247,7 +247,7 @@ module.exports = {
   getApproved,
   update,
   remove,
-  addReview,
+  upsertReview,
   getReviews,
   updateReview,
   deleteReview,

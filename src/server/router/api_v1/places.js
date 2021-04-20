@@ -28,9 +28,9 @@ router.delete('/:id', { validate: validator.remove }, access([USER, ORGANIZER]),
 
 router.post(
   '/:id/reviews/',
-  { validate: validator.addReview },
+  { validate: validator.upsertReview },
   access([USER, ORGANIZER]),
-  places.addReview,
+  places.upsertReview,
 );
 router.get('/:id/reviews/', { validate: validator.getReviews }, places.getReviews);
 router.put(

@@ -8,7 +8,7 @@ const {
   addPhotos,
   getPhotos,
   isUserPlace,
-  createReview,
+  upsertReview: upsertReviewDB,
   getReviews: getReviewsDB,
   updateReview: updateReviewDB,
   deleteReview: deleteReviewDB,
@@ -103,11 +103,11 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-async function addReview(ctx) {
+async function upsertReview(ctx) {
   const { id: userId } = ctx.state.authPayload;
   const placeId = parseInt(ctx.request.params.id, 10);
 
-  await createReview({ ...ctx.request.body, user_id: userId, place_id: placeId });
+  await upsertReviewDB({ ...ctx.request.body, user_id: userId, place_id: placeId });
 
   ctx.body = { message: 'OK' };
 }
@@ -146,7 +146,7 @@ module.exports = {
   getApproved,
   update,
   remove,
-  addReview,
+  upsertReview,
   getReviews,
   updateReview,
   deleteReview,
