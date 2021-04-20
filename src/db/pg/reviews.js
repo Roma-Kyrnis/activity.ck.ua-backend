@@ -4,7 +4,7 @@ const log = require('../../utils/logger')(__filename);
 
 module.exports = (client) => {
   return {
-    createReview: async ({ place_id: placeId, user_id: userId, rating, comment }) => {
+    upsertReview: async ({ place_id: placeId, user_id: userId, rating, comment }) => {
       try {
         if (!userId) {
           throw new Error('ERROR: No user_id defined');
@@ -13,6 +13,8 @@ module.exports = (client) => {
         const res = await client.query(
           `INSERT INTO reviews (place_id, user_id, rating, comment)
             VALUES ($1, $2, $3, $4)
+            ON CONFLICT (place_id, user_id)
+            DO UPDATE SET rating = $3, comment = $4, created_at = now()
             RETURNING *;`,
           [placeId, userId, rating, comment],
         );
@@ -29,7 +31,7 @@ module.exports = (client) => {
           [placeId],
         );
 
-        log.debug(res.rows[0], 'New review created:');
+        log.debug(res.rows[0], 'New review created or updated:');
         return res.rows[0];
       } catch (err) {
         log.error(err.message || err);
