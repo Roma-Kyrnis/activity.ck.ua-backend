@@ -44,6 +44,10 @@ function checkError(err) {
   }
 
   // very unlikely errors:
+  if (err.message === 'division by zero') {
+    return new DatabaseError('ERROR: A places with this category_id does not exist!');
+  }
+
   if (err.constraint === 'places_fk0') {
     return new DatabaseError('ERROR: An organization with this ID does not exist!');
   }

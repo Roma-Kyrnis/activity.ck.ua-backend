@@ -72,7 +72,7 @@ module.exports = (client) => {
         return res.rows[0];
       } catch (err) {
         log.error(err.message || err);
-        throw err;
+        throw checkError(err);
       }
     },
 
