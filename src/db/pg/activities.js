@@ -59,8 +59,8 @@ module.exports = (client) => {
             100 *
             (SELECT COUNT(*)
               FROM places
-              JOIN visited_places AS v ON v.place_id = places.id
-              WHERE v.user_id = $1 AND deleted_at IS NULL)
+              JOIN visited_places AS v ON v.place_id = places.id AND v.user_id = $1
+              WHERE ${categoryId ? 'category_id = $2 AND' : ''} moderated AND deleted_at IS NULL)
             /
             (SELECT COUNT(*)
               FROM places
