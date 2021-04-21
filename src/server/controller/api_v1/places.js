@@ -13,7 +13,7 @@ const {
   updateReview: updateReviewDB,
   deleteReview: deleteReviewDB,
 } = require('../../../db');
-const paginationAndAccessibility = require('./paginationAndAccessibility');
+const { getPaginationAndFilters, getPagination } = require('./utils');
 const {
   ROLES: { MODERATOR },
 } = require('../../../config');
@@ -57,7 +57,7 @@ async function getOne(ctx) {
 }
 
 async function getApproved(ctx) {
-  const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
+  const { limit, page, filters } = getPaginationAndFilters(ctx.request.query);
   const { type_id: types, category_id: categoryId } = ctx.request.query;
 
   if (categoryId !== undefined) filters.categoryId = categoryId;
@@ -114,10 +114,7 @@ async function upsertReview(ctx) {
 
 async function getReviews(ctx) {
   const placeId = parseInt(ctx.request.params.id, 10);
-
-  let { _limit: limit, _page: page } = ctx.request.query;
-  limit = parseInt(limit, 10);
-  page = parseInt(page, 10);
+  const { limit, page } = getPagination(ctx.request.query);
 
   const response = await getReviewsDB(placeId, limit, page);
 
@@ -126,7 +123,7 @@ async function getReviews(ctx) {
 
 async function updateReview(ctx) {
   const placeId = parseInt(ctx.request.params.id, 10);
-  const userId = parseInt(ctx.request.params.userId, 10);
+  const userId = parseInt(ctx.request.body.user_id, 10);
 
   await updateReviewDB({ ...ctx.request.body, place_id: placeId, user_id: userId });
 
@@ -135,7 +132,7 @@ async function updateReview(ctx) {
 
 async function deleteReview(ctx) {
   const placeId = parseInt(ctx.request.params.id, 10);
-  const userId = parseInt(ctx.request.params.userId, 10);
+  const userId = parseInt(ctx.request.body.user_id, 10);
 
   await deleteReviewDB(placeId, userId);
 

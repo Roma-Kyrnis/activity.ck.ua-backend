@@ -215,12 +215,10 @@ const updateReview = {
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
       .required(),
-    userId: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
   }),
   body: Joi.object({
-    rating: Joi.number().integer().min(RATING.MIN).max(RATING.MAX).required(),
+    user_id: Joi.number().integer().min(1).required(),
+    rating: Joi.number().integer().min(RATING.MIN).max(RATING.MAX),
     comment: Joi.alternatives(Joi.allow(null), Joi.string()),
   }).or('rating', 'comment'),
   type: 'json',
@@ -236,10 +234,11 @@ const deleteReview = {
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
       .required(),
-    userId: Joi.string()
-      .pattern(/^[1-9]\d*$/)
-      .required(),
   }),
+  body: Joi.object({
+    user_id: Joi.number().integer().min(1).required(),
+  }),
+  type: 'json',
 };
 
 module.exports = {

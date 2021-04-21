@@ -33,17 +33,7 @@ router.post(
   places.upsertReview,
 );
 router.get('/:id/reviews/', { validate: validator.getReviews }, places.getReviews);
-router.put(
-  '/:id/reviews/:userId',
-  { validate: validator.updateReview },
-  access(),
-  places.updateReview,
-);
-router.delete(
-  '/:id/reviews/:userId',
-  { validate: validator.deleteReview },
-  access(),
-  places.deleteReview,
-);
+router.put('/:id/reviews/', { validate: validator.updateReview }, access(), places.updateReview);
+router.delete('/:id/reviews/', { validate: validator.deleteReview }, access(), places.deleteReview);
 
 module.exports = router;
