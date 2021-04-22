@@ -1,8 +1,6 @@
 const { createUser, updateUser, getUserCredentials, checkUser } = require('../../../db');
 const { hash, authorizationTokens } = require('../../../utils');
-const {
-  google,
-} = require('../../../lib/api_v1');
+const { google } = require('../../../lib/api_v1');
 const config = require('../../../config');
 const log = require('../../../utils/logger')(__filename);
 
