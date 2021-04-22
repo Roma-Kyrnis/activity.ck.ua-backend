@@ -91,6 +91,12 @@ const config = {
     email: process.env.MODERATOR_EMAIL || fatal('No MODERATOR_EMAIL'),
     password: process.env.MODERATOR_PASSWORD || fatal('No MODERATOR_PASSWORD'),
   },
+  REVIEW: {
+    RATING: {
+      MIN: 1,
+      MAX: 5,
+    },
+  },
 };
 
 module.exports = config;

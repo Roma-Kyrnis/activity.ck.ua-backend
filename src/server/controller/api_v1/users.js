@@ -11,21 +11,9 @@ const {
   detachScheduledEvent: detachScheduledEventDB,
   getUserPlaces,
   getUserEvents,
-  // getUserOrganizations,
-  // addReview: addUserReview,
-  // getUserReviews,
-  // getUserResearch,
+  getExplore: getExploreDB,
 } = require('../../../db');
-
-function getUserIdAndPagination(ctx) {
-  const { id: userId } = ctx.state.authPayload;
-  let { _limit: limit, _page: page } = ctx.request.query;
-
-  limit = parseInt(limit, 10);
-  page = parseInt(page, 10);
-
-  return { userId, limit, page };
-}
+const { getPaginationAndUser } = require('./utils');
 
 async function getUser(ctx) {
   const { id: userId } = ctx.state.authPayload;
@@ -45,7 +33,7 @@ async function addVisitedPlace(ctx) {
 }
 
 async function getVisitedPlaces(ctx) {
-  const { userId, limit, page } = getUserIdAndPagination(ctx);
+  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state.authPayload);
 
   const visitedPlaces = await getVisitedPlacesDB(userId, limit, page);
 
@@ -71,7 +59,7 @@ async function addFavoritePlace(ctx) {
 }
 
 async function getFavoritePlaces(ctx) {
-  const { userId, limit, page } = getUserIdAndPagination(ctx);
+  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state.authPayload);
 
   const favoritesPlaces = await getFavoritePlacesDB(userId, limit, page);
 
@@ -97,7 +85,7 @@ async function addScheduledEvent(ctx) {
 }
 
 async function getScheduledEvents(ctx) {
-  const { userId, limit, page } = getUserIdAndPagination(ctx);
+  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state.authPayload);
 
   const scheduledEvents = await getScheduledEventsDB(userId, limit, page);
 
@@ -114,7 +102,7 @@ async function deleteScheduledEvent(ctx) {
 }
 
 async function getPlaces(ctx) {
-  const { userId, limit, page } = getUserIdAndPagination(ctx);
+  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state.authPayload);
 
   const response = await getUserPlaces(userId, limit, page);
 
@@ -122,45 +110,21 @@ async function getPlaces(ctx) {
 }
 
 async function getEvents(ctx) {
-  const { userId, limit, page } = getUserIdAndPagination(ctx);
+  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state.authPayload);
 
   const response = await getUserEvents(userId, limit, page);
 
   ctx.body = response;
 }
 
-// async function getResearch(ctx) {
-//   const { id: userId } = ctx.state.authPayload;
-//   const { category_id: categoryId } = ctx.request.query;
+async function getExplore(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+  const { category_id: categoryId } = ctx.request.query;
 
-//   const research = await getUserResearch(userId, categoryId);
+  const response = await getExploreDB(userId, categoryId);
 
-//   ctx.body = { research };
-// }
-
-// async function getOrganizations(ctx) {
-//   const { userId, limit, page } = getUserIdAndPagination(ctx);
-
-//   const organizations = await getUserOrganizations(userId, limit, page);
-
-//   ctx.body = { organizations };
-// }
-
-// async function addReview(ctx) {
-//   const { id: userId } = ctx.state.authPayload;
-
-//   await addUserReview({ ...ctx.request.body, user_id: userId });
-
-//   ctx.body = { message: 'OK' };
-// }
-
-// async function getReviews(ctx) {
-//   const { userId, limit, page } = getUserIdAndPagination(ctx);
-
-//   const reviews = await getUserReviews(userId, limit, page);
-
-//   ctx.body = { reviews };
-// }
+  ctx.body = response;
+}
 
 module.exports = {
   getUser,
@@ -175,8 +139,5 @@ module.exports = {
   deleteScheduledEvent,
   getPlaces,
   getEvents,
-  // getResearch,
-  // getOrganizations,
-  // addReview,
-  // getReviews,
+  getExplore,
 };

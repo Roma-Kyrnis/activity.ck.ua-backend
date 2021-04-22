@@ -10,7 +10,7 @@ const {
   getPhotos,
   isUserEvent,
 } = require('../../../db');
-const paginationAndAccessibility = require('./paginationAndAccessibility');
+const { getPaginationAndFilters } = require('./utils');
 const {
   ROLES: { MODERATOR },
 } = require('../../../config');
@@ -45,7 +45,7 @@ async function getOne(ctx) {
 
 async function getApproved(ctx) {
   const { start_time: startTime, place_id: placeId } = ctx.request.query;
-  const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
+  const { limit, page, filters } = getPaginationAndFilters(ctx.request.query);
 
   let events;
   if (startTime) {
@@ -58,7 +58,7 @@ async function getApproved(ctx) {
 }
 
 async function getNow(ctx) {
-  const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
+  const { limit, page, filters } = getPaginationAndFilters(ctx.request.query);
 
   const events = await getCurrentEvents(limit, page, filters);
 
