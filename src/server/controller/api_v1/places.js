@@ -123,9 +123,8 @@ async function getReviews(ctx) {
 
 async function updateReview(ctx) {
   const placeId = parseInt(ctx.request.params.id, 10);
-  const userId = parseInt(ctx.request.body.user_id, 10);
 
-  await updateReviewDB({ ...ctx.request.body, place_id: placeId, user_id: userId });
+  await updateReviewDB({ ...ctx.request.body, place_id: placeId });
 
   ctx.body = { message: 'OK' };
 }
