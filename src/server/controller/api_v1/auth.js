@@ -21,14 +21,18 @@ async function getUserTokens(id, role) {
   return tokens;
 }
 
-async function validateUser(email, password) {
+async function validateUser(email, password = '') {
   const user = await getUserCredentials(email);
   if (!user) {
     return false;
   }
-  const passwordHash = getPasswordHash(email, password);
-  const isCompared = hash.compare(passwordHash, user.password_hash);
-  if (!isCompared) {
+  if (user.password_hash && password) {
+    const passwordHash = getPasswordHash(email, password);
+    const isCompared = hash.compare(passwordHash, user.password_hash);
+    if (!isCompared) {
+      return false;
+    }
+  } else if (!password !== !user.password_hash) {
     return false;
   }
 
@@ -48,7 +52,7 @@ async function registration(ctx) {
 
 async function login(ctx) {
   const { email, password } = ctx.request.body;
-  const user = validateUser(email, password);
+  const user = await validateUser(email, password);
   ctx.assert(user, 401, 'Incorrect credentials');
   const tokens = await getUserTokens(user.id, user.role);
 
@@ -92,28 +96,29 @@ async function googleLogin(ctx) {
   try {
     const payload = await google.getUserPayload(ctx.request.query.code);
 
-    if (payload.aud !== config.auth.google.CLIENT_ID || !payload.email_verified) {
+    if (payload.aud !== config.auth.google.CLIENT_ID) {
       ctx.throw(403, 'Incorrect credentials');
     }
 
-    let tokens;
+    const email = hash.create(payload.sub);
 
-    const isUserExist = await checkUser(payload.email);
+    let user;
+
+    const isUserExist = await checkUser(email);
     if (isUserExist) {
-      const user = await validateUser(payload.email, payload.sub);
+      user = await validateUser(email);
       ctx.assert(user, 401, 'Incorrect credentials');
-      tokens = await getUserTokens(user.id, user.role);
     } else {
       const newUser = {
         name: payload.name,
         avatar: payload.picture,
-        email: payload.email,
-        passwordHash: getPasswordHash(payload.email, payload.sub),
+        email,
       };
 
-      const user = await createUser(newUser);
-      tokens = await getUserTokens(user.id, user.role);
+      user = await createUser(newUser);
     }
+
+    const tokens = await getUserTokens(user.id, user.role);
 
     ctx.body = tokens;
   } catch (err) {
