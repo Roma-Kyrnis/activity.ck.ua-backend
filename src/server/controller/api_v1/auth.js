@@ -94,7 +94,7 @@ async function checkGoogleLogin(ctx, next) {
   try {
     const payload = await google.getUserPayload(ctx.request.query.code);
 
-    if (payload.aud !== config.auth.CLIENT_ID || !payload.email_verified) {
+    if (payload.aud !== config.auth.google.CLIENT_ID || !payload.email_verified) {
       ctx.throw(403, 'Incorrect credentials');
     }
 
