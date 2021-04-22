@@ -33,7 +33,7 @@ async function addVisitedPlace(ctx) {
 }
 
 async function getVisitedPlaces(ctx) {
-  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state);
+  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state.authPayload);
 
   const visitedPlaces = await getVisitedPlacesDB(userId, limit, page);
 
@@ -59,7 +59,7 @@ async function addFavoritePlace(ctx) {
 }
 
 async function getFavoritePlaces(ctx) {
-  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state);
+  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state.authPayload);
 
   const favoritesPlaces = await getFavoritePlacesDB(userId, limit, page);
 
@@ -85,7 +85,7 @@ async function addScheduledEvent(ctx) {
 }
 
 async function getScheduledEvents(ctx) {
-  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state);
+  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state.authPayload);
 
   const scheduledEvents = await getScheduledEventsDB(userId, limit, page);
 
@@ -102,7 +102,7 @@ async function deleteScheduledEvent(ctx) {
 }
 
 async function getPlaces(ctx) {
-  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state);
+  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state.authPayload);
 
   const response = await getUserPlaces(userId, limit, page);
 
@@ -110,7 +110,7 @@ async function getPlaces(ctx) {
 }
 
 async function getEvents(ctx) {
-  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state);
+  const { userId, limit, page } = getPaginationAndUser(ctx.request.query, ctx.state.authPayload);
 
   const response = await getUserEvents(userId, limit, page);
 
