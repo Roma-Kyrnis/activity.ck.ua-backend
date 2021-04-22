@@ -92,31 +92,11 @@ router.get(
   users.getEvents,
 );
 
-// router.get(
-//   '/research',
-//   { validate: validator.getResearch },
-//   access([USER, ORGANIZER]),
-//   users.getResearch,
-// );
-
-// router.get(
-//   '/created_organizations',
-//   { validate: validator.getOrganizations },
-//   access([ORGANIZER]),
-//   users.getOrganizations,
-// );
-
-// router.post(
-//   '/review',
-//   { validate: validator.addReview },
-//   access([USER, ORGANIZER]),
-//   users.addReview,
-// );
-// router.get(
-//   '/reviews',
-//   { validate: validator.getReviews },
-//   access([USER, ORGANIZER]),
-//   users.getReviews,
-// );
+router.get(
+  '/explore',
+  { validate: validator.getExplore },
+  access([USER, ORGANIZER]),
+  users.getExplore,
+);
 
 module.exports = router;

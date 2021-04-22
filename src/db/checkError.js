@@ -39,7 +39,15 @@ function checkError(err) {
     return new DatabaseError('ERROR: Event with this ID already scheduled!');
   }
 
+  if (err.constraint === 'reviews_pkey') {
+    return new DatabaseError('ERROR: A place with this ID already reviewed!');
+  }
+
   // very unlikely errors:
+  if (err.message === 'division by zero') {
+    return new DatabaseError('ERROR: A places with this category_id does not exist!');
+  }
+
   if (err.constraint === 'places_fk0') {
     return new DatabaseError('ERROR: An organization with this ID does not exist!');
   }
@@ -58,6 +66,10 @@ function checkError(err) {
 
   if (err.constraint === 'scheduled_events_fk0') {
     return new DatabaseError('ERROR: Event with this ID does not exist!');
+  }
+
+  if (err.constraint === 'reviews_fk0') {
+    return new DatabaseError('ERROR: A place with this ID does not exist!');
   }
 
   return err;
