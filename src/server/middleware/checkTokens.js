@@ -20,8 +20,7 @@ function isRolePermissible(roles, role) {
   return false;
 }
 
-function getToken(ctx) {
-  const { authorization } = ctx.headers;
+function getToken(authorization) {
   if (authorization) {
     return authorization.split(' ')[1];
   }
@@ -33,7 +32,7 @@ function access(roles = []) {
     try {
       // let data = { role: EVERY };
 
-      // const token = getToken(ctx);
+      // const token = getToken(ctx.headers.authorization);
       // if (token) {
       //   data = await verifyAccessToken(token);
       // }
@@ -58,7 +57,7 @@ function access(roles = []) {
 function refresh() {
   return async (ctx, next) => {
     try {
-      const token = getToken(ctx);
+      const token = getToken(ctx.headers.authorization);
       const payload = await verifyRefreshToken(token);
 
       const { refresh_token: userToken } = await getUserToken(payload.id);

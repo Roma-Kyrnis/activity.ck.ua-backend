@@ -23,14 +23,18 @@ async function getUserTokens(id, role) {
   return tokens;
 }
 
-async function validateUser(email, password) {
+async function validateUser(email, password = '') {
   const user = await getUserCredentials(email);
   if (!user) {
     return false;
   }
-  const passwordHash = getPasswordHash(email, password);
-  const isCompared = hash.compare(passwordHash, user.password_hash);
-  if (!isCompared) {
+  if (user.password_hash && password) {
+    const passwordHash = getPasswordHash(email, password);
+    const isCompared = hash.compare(passwordHash, user.password_hash);
+    if (!isCompared) {
+      return false;
+    }
+  } else if (!password !== !user.password_hash) {
     return false;
   }
 
@@ -50,7 +54,7 @@ async function registration(ctx) {
 
 async function login(ctx) {
   const { email, password } = ctx.request.body;
-  const user = validateUser(email, password);
+  const user = await validateUser(email, password);
   ctx.assert(user, 401, 'Incorrect credentials');
   const tokens = await getUserTokens(user.id, user.role);
 
@@ -94,7 +98,7 @@ async function checkGoogleLogin(ctx, next) {
   try {
     const payload = await google.getUserPayload(ctx.request.query.code);
 
-    if (payload.aud !== config.auth.google.CLIENT_ID || !payload.email_verified) {
+    if (payload.aud !== config.auth.google.CLIENT_ID) {
       ctx.throw(403, 'Incorrect credentials');
     }
 
