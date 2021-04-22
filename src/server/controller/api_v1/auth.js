@@ -104,8 +104,7 @@ async function checkGoogleLogin(ctx, next) {
 
     ctx.state.userMetadata = {
       name: payload.name,
-      email: payload.email,
-      password: payload.sub,
+      email: hash.create(payload.sub),
       avatar: payload.picture,
     };
 
@@ -126,8 +125,7 @@ async function checkFacebookLogin(ctx, next) {
 
     ctx.state.userMetadata = {
       name: user.name,
-      email: user.email,
-      password: user.id,
+      email: hash.create(user.id),
       avatar: user.picture.data.url,
     };
 
@@ -144,24 +142,23 @@ async function checkFacebookLogin(ctx, next) {
 
 async function userTokens(ctx) {
   const { userMetadata } = ctx.state;
-  let tokens;
+
+  let user;
 
   const isUserExist = await checkUser(userMetadata.email);
   if (isUserExist) {
-    const user = await validateUser(userMetadata.email, userMetadata.password);
+    user = await validateUser(userMetadata.email);
     ctx.assert(user, 401, 'Incorrect credentials');
-    tokens = await getUserTokens(user.id, user.role);
   } else {
     const newUser = {
       name: userMetadata.name,
       avatar: userMetadata.avatar,
       email: userMetadata.email,
-      passwordHash: getPasswordHash(userMetadata.email, userMetadata.password),
     };
-
-    const user = await createUser(newUser);
-    tokens = await getUserTokens(user.id, user.role);
+    user = await createUser(newUser);
   }
+
+  const tokens = await getUserTokens(user.id, user.role);
 
   ctx.body = tokens;
 }

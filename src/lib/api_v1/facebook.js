@@ -14,7 +14,7 @@ async function getUser(code) {
   });
 
   const user = await FB.api('me', {
-    fields: 'id,name,email,picture',
+    fields: ['id', 'name', 'picture'],
     access_token: accessToken,
   });
 
