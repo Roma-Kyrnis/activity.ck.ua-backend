@@ -1,7 +1,10 @@
+const { FacebookApiException } = require('fb');
+
 const { createUser, updateUser, getUserCredentials, checkUser } = require('../../../db');
 const { hash, authorizationTokens } = require('../../../utils');
 const {
   googleapis: { oAuth2Client },
+  facebook,
 } = require('../../../lib/api_v1');
 const config = require('../../../config');
 const log = require('../../../utils/logger')(__filename);
@@ -84,13 +87,11 @@ async function logout(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-async function googleLogin(ctx) {
+async function checkGoogleLogin(ctx, next) {
   if (ctx.request.query.error) {
     const { error } = ctx.request.query;
     log.error(`Google authorization error: ${error}`);
-    ctx.status = 400;
-    ctx.body = { message: error };
-    return;
+    ctx.throw(400, error);
   }
 
   try {
@@ -101,33 +102,96 @@ async function googleLogin(ctx) {
       ctx.throw(403, 'Incorrect credentials');
     }
 
-    let tokens;
+    ctx.state.userMetadata = {
+      name: payload.name,
+      email: payload.email,
+      password: payload.sub,
+      avatar: payload.picture,
+    };
 
-    const isUserExist = await checkUser(payload.email);
-    if (isUserExist) {
-      const user = await validateUser(payload.email, payload.sub);
-      ctx.assert(user, 401, 'Incorrect credentials');
-      tokens = await getUserTokens(user.id, user.role);
-    } else {
-      const newUser = {
-        name: payload.name,
-        avatar: payload.picture,
-        email: payload.email,
-        passwordHash: getPasswordHash(payload.email, payload.sub),
-      };
+    return next();
 
-      const user = await createUser(newUser);
-      tokens = await getUserTokens(user.id, user.role);
-    }
+    // let tokens;
 
-    ctx.body = tokens;
+    // const isUserExist = await checkUser(payload.email);
+    // if (isUserExist) {
+    //   const user = await validateUser(payload.email, payload.sub);
+    //   ctx.assert(user, 401, 'Incorrect credentials');
+    //   tokens = await getUserTokens(user.id, user.role);
+    // } else {
+    //   const newUser = {
+    //     name: payload.name,
+    //     avatar: payload.picture,
+    //     email: payload.email,
+    //     passwordHash: getPasswordHash(payload.email, payload.sub),
+    //   };
+
+    //   const user = await createUser(newUser);
+    //   tokens = await getUserTokens(user.id, user.role);
+    // }
+
+    // ctx.body = tokens;
   } catch (err) {
     log.error(err.message || err);
     if (err.message === 'invalid_grant') {
-      ctx.throw(400, 'incorrect code');
+      return ctx.throw(403, 'incorrect code');
     }
-    ctx.throw(err);
+
+    return ctx.throw(err);
   }
 }
 
-module.exports = { registration, login, refresh, logout, googleLogin };
+async function checkFacebookLogin(ctx, next) {
+  try {
+    const user = await facebook.getUser(ctx.request.query.code);
+
+    ctx.state.userMetadata = {
+      name: user.name,
+      email: user.email,
+      password: user.id,
+      avatar: user.picture.data.url,
+    };
+
+    return next();
+  } catch (err) {
+    if (err.name === FacebookApiException.name) {
+      log.error(err.response, 'Facebook authorization error: ');
+      ctx.throw(403, err.response.error.message);
+    }
+
+    throw err;
+  }
+}
+
+async function userTokens(ctx) {
+  const { userMetadata } = ctx.state;
+  let tokens;
+
+  const isUserExist = await checkUser(userMetadata.email);
+  if (isUserExist) {
+    const user = await validateUser(userMetadata.email, userMetadata.password);
+    ctx.assert(user, 401, 'Incorrect credentials');
+    tokens = await getUserTokens(user.id, user.role);
+  } else {
+    const newUser = {
+      name: userMetadata.name,
+      avatar: userMetadata.avatar,
+      email: userMetadata.email,
+      passwordHash: getPasswordHash(userMetadata.email, userMetadata.password),
+    };
+
+    const user = await createUser(newUser);
+    tokens = await getUserTokens(user.id, user.role);
+  }
+
+  ctx.body = tokens;
+}
+
+module.exports = {
+  registration,
+  login,
+  refresh,
+  logout,
+  googleLogin: [checkGoogleLogin, userTokens],
+  facebookLogin: [checkFacebookLogin, userTokens],
+};

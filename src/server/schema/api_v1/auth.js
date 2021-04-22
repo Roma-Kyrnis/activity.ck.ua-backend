@@ -43,4 +43,12 @@ const googleLogin = {
     .unknown(),
 };
 
-module.exports = { registration, login, refresh, logout, googleLogin };
+const facebookLogin = {
+  query: Joi.object({
+    code: Joi.string(),
+  })
+    .xor('code')
+    .unknown(),
+};
+
+module.exports = { registration, login, refresh, logout, googleLogin, facebookLogin };
