@@ -8,10 +8,12 @@ const {
   addPhotos,
   getPhotos,
   isUserPlace,
-  // addReview: addPlacesReview,
-  // getPlacesReviews,
+  upsertReview: upsertReviewDB,
+  getReviews: getReviewsDB,
+  updateReview: updateReviewDB,
+  deleteReview: deleteReviewDB,
 } = require('../../../db');
-const paginationAndAccessibility = require('./paginationAndAccessibility');
+const { getPaginationAndFilters, getPagination } = require('./utils');
 const {
   ROLES: { MODERATOR },
 } = require('../../../config');
@@ -55,7 +57,7 @@ async function getOne(ctx) {
 }
 
 async function getApproved(ctx) {
-  const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
+  const { limit, page, filters } = getPaginationAndFilters(ctx.request.query);
   const { type_id: types, category_id: categoryId } = ctx.request.query;
 
   if (categoryId !== undefined) filters.categoryId = categoryId;
@@ -101,27 +103,40 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-// async function addReview(ctx) {
-//   const { id: userId } = ctx.state.authPayload;
-//   const placeId = parseInt(ctx.request.params.id, 10);
+async function upsertReview(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+  const placeId = parseInt(ctx.request.params.id, 10);
 
-//   await addPlacesReview({ ...ctx.request.body, user_id: userId, place_id: placeId });
+  await upsertReviewDB({ ...ctx.request.body, user_id: userId, place_id: placeId });
 
-//   ctx.body = { message: 'OK' };
-// }
+  ctx.body = { message: 'OK' };
+}
 
-// async function getReviews(ctx) {
-//   const placeId = parseInt(ctx.request.params.id, 10);
+async function getReviews(ctx) {
+  const placeId = parseInt(ctx.request.params.id, 10);
+  const { limit, page } = getPagination(ctx.request.query);
 
-//   let { _limit: limit, _page: page } = ctx.request.query;
+  const response = await getReviewsDB(placeId, limit, page);
 
-//   limit = parseInt(limit, 10);
-//   page = parseInt(page, 10);
+  ctx.body = response;
+}
 
-//   const reviews = await getPlacesReviews(placeId, limit, page);
+async function updateReview(ctx) {
+  const placeId = parseInt(ctx.request.params.id, 10);
 
-//   ctx.body = { reviews };
-// }
+  await updateReviewDB({ ...ctx.request.body, place_id: placeId });
+
+  ctx.body = { message: 'OK' };
+}
+
+async function deleteReview(ctx) {
+  const placeId = parseInt(ctx.request.params.id, 10);
+  const userId = parseInt(ctx.request.body.user_id, 10);
+
+  await deleteReviewDB(placeId, userId);
+
+  ctx.body = { message: 'OK' };
+}
 
 module.exports = {
   create,
@@ -129,6 +144,8 @@ module.exports = {
   getApproved,
   update,
   remove,
-  // addReview,
-  // getReviews,
+  upsertReview,
+  getReviews,
+  updateReview,
+  deleteReview,
 };

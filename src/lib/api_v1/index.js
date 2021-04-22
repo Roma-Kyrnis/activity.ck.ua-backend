@@ -1,5 +1,6 @@
 const faker = require('./faker');
-const googleapis = require('./googleapis');
+const firebase = require('./firebase');
+const google = require('./google');
 const facebook = require('./facebook');
 
-module.exports = { faker, googleapis, facebook };
+module.exports = { faker, firebase, google, facebook };

@@ -90,6 +90,12 @@ module.exports = {
   updatePlace: async (place) => funcWrapper(dbWrapper().updatePlace)(place),
   deletePlace: async (id) => funcWrapper(dbWrapper().deletePlace)(id),
 
+  upsertReview: async (review) => funcWrapper(dbWrapper().upsertReview)(review),
+  getReviews: async (placeId, limit, page) =>
+    funcWrapper(dbWrapper().getReviews)(placeId, limit, page),
+  updateReview: async (review) => funcWrapper(dbWrapper().updateReview)(review),
+  deleteReview: async (placeId, userId) => funcWrapper(dbWrapper().deleteReview)(placeId, userId),
+
   addPhotos: async (photos, id, nameId) => funcWrapper(dbWrapper().addPhotos)(photos, id, nameId),
   getPhotos: async (id, nameId) => funcWrapper(dbWrapper().getPhotos)(id, nameId),
   deletePhotos: async (ids) => funcWrapper(dbWrapper().deletePhotos)(ids),
@@ -114,6 +120,7 @@ module.exports = {
     funcWrapper(dbWrapper().addVisitedPlace)(placeId, userId),
   addScheduledEvent: async (eventId, userId) =>
     funcWrapper(dbWrapper().addScheduledEvent)(eventId, userId),
+  getExplore: async (userId, categoryId) => funcWrapper(dbWrapper().getExplore)(userId, categoryId),
   getFavoritePlaces: async (userId, limit, page) =>
     funcWrapper(dbWrapper().getFavoritePlaces)(userId, limit, page),
   getVisitedPlaces: async (userId, limit, page) =>

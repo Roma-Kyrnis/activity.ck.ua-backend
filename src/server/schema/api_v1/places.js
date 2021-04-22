@@ -1,5 +1,9 @@
 const { Joi } = require('koa-joi-router');
 
+const {
+  REVIEW: { RATING },
+} = require('../../../config');
+
 const create = {
   // header: Joi.object({
   //   authorization: Joi.string()
@@ -167,44 +171,75 @@ const remove = {
   }),
 };
 
-// const addReview = {
-//   header: Joi.object({
-//     authorization: Joi.string()
-//       .pattern(/^[a-zA-Z]+ .+$/)
-//       .required(),
-//   }).unknown(),
-//   params: Joi.object({
-//     id: Joi.string()
-//       .pattern(/^[1-9]\d*$/)
-//       .required(),
-//   }),
-//   body: Joi.object({
-//     rating: Joi.string()
-//       .pattern(/^[1-9]\d*$/)
-//       .required(),
-//     review_text: Joi.string()
-//       .pattern(/^[1-9]\d*$/)
-//       .required(),
-//   }),
-//   type: 'json',
-// };
+const upsertReview = {
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
+  params: Joi.object({
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+  body: Joi.object({
+    rating: Joi.number().integer().min(RATING.MIN).max(RATING.MAX).required(),
+    comment: Joi.alternatives(Joi.allow(null), Joi.string()).required(),
+  }),
+  type: 'json',
+};
 
-// const getReviews = {
-//   header: Joi.object({
-//     authorization: Joi.string()
-//       .pattern(/^[a-zA-Z]+ .+$/)
-//       .required(),
-//   }).unknown(),
-//   params: Joi.object({
-//     id: Joi.string()
-//       .pattern(/^[1-9]\d*$/)
-//       .required(),
-//   }),
-//   query: Joi.object({
-//     _page: Joi.string().pattern(/^[1-9]\d*$/),
-//     _limit: Joi.string().pattern(/^[1-9]\d*$/),
-//   }),
-// };
+const getReviews = {
+  params: Joi.object({
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+  query: Joi.object({
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+};
+
+const updateReview = {
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
+  params: Joi.object({
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+  body: Joi.object({
+    user_id: Joi.number().integer().min(1).required(),
+    rating: Joi.number().integer().min(RATING.MIN).max(RATING.MAX),
+    comment: Joi.alternatives(Joi.allow(null), Joi.string()),
+  }).or('rating', 'comment'),
+  type: 'json',
+};
+
+const deleteReview = {
+  // header: Joi.object({
+  //   authorization: Joi.string()
+  //     .pattern(/^[a-zA-Z]+ .+$/)
+  //     .required(),
+  // }).unknown(),
+  params: Joi.object({
+    id: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+  body: Joi.object({
+    user_id: Joi.number().integer().min(1).required(),
+  }),
+  type: 'json',
+};
 
 module.exports = {
   create,
@@ -212,6 +247,8 @@ module.exports = {
   getApproved,
   update,
   remove,
-  // addReview,
-  // getReviews,
+  upsertReview,
+  getReviews,
+  updateReview,
+  deleteReview,
 };

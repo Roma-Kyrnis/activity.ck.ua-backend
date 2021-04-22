@@ -26,5 +26,4 @@ router.get('/login/facebook', { validate: validator.facebookLogin }, auth.facebo
 router.get('/refresh', { validate: validator.refresh }, refresh(), auth.refresh);
 router.get('/logout', { validate: validator.logout }, refresh(), auth.logout);
 
-
 module.exports = router;

@@ -8,4 +8,11 @@ const oAuth2Client = new google.auth.OAuth2({
   redirectUri: config.auth.REDIRECT_URL,
 });
 
-module.exports = { oAuth2Client };
+async function getUserPayload(code) {
+  const ticket = await oAuth2Client.getToken(code);
+  const { payload } = await oAuth2Client.verifyIdToken({ idToken: ticket.tokens.id_token });
+
+  return payload;
+}
+
+module.exports = { getUserPayload };

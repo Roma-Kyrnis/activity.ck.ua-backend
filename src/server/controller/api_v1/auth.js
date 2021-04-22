@@ -2,10 +2,7 @@ const { FacebookApiException } = require('fb');
 
 const { createUser, updateUser, getUserCredentials, checkUser } = require('../../../db');
 const { hash, authorizationTokens } = require('../../../utils');
-const {
-  googleapis: { oAuth2Client },
-  facebook,
-} = require('../../../lib/api_v1');
+const { google, facebook } = require('../../../lib/api_v1');
 const config = require('../../../config');
 const log = require('../../../utils/logger')(__filename);
 
@@ -95,8 +92,7 @@ async function checkGoogleLogin(ctx, next) {
   }
 
   try {
-    const ticket = await oAuth2Client.getToken(ctx.request.query.code);
-    const { payload } = await oAuth2Client.verifyIdToken({ idToken: ticket.tokens.id_token });
+    const payload = await google.getUserPayload(ctx.request.query.code);
 
     if (payload.aud !== config.auth.CLIENT_ID || !payload.email_verified) {
       ctx.throw(403, 'Incorrect credentials');
@@ -110,27 +106,6 @@ async function checkGoogleLogin(ctx, next) {
     };
 
     return next();
-
-    // let tokens;
-
-    // const isUserExist = await checkUser(payload.email);
-    // if (isUserExist) {
-    //   const user = await validateUser(payload.email, payload.sub);
-    //   ctx.assert(user, 401, 'Incorrect credentials');
-    //   tokens = await getUserTokens(user.id, user.role);
-    // } else {
-    //   const newUser = {
-    //     name: payload.name,
-    //     avatar: payload.picture,
-    //     email: payload.email,
-    //     passwordHash: getPasswordHash(payload.email, payload.sub),
-    //   };
-
-    //   const user = await createUser(newUser);
-    //   tokens = await getUserTokens(user.id, user.role);
-    // }
-
-    // ctx.body = tokens;
   } catch (err) {
     log.error(err.message || err);
     if (err.message === 'invalid_grant') {
@@ -156,10 +131,10 @@ async function checkFacebookLogin(ctx, next) {
   } catch (err) {
     if (err.name === FacebookApiException.name) {
       log.error(err.response, 'Facebook authorization error: ');
-      ctx.throw(403, err.response.error.message);
+      return ctx.throw(403, err.response.error.message);
     }
 
-    throw err;
+    return ctx.throw(err);
   }
 }
 
