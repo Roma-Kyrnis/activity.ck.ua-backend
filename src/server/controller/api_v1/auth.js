@@ -1,7 +1,7 @@
 const { createUser, updateUser, getUserCredentials, checkUser } = require('../../../db');
 const { hash, authorizationTokens } = require('../../../utils');
 const {
-  googleapis: { oAuth2Client },
+  google,
 } = require('../../../lib/api_v1');
 const config = require('../../../config');
 const log = require('../../../utils/logger')(__filename);
@@ -88,14 +88,11 @@ async function googleLogin(ctx) {
   if (ctx.request.query.error) {
     const { error } = ctx.request.query;
     log.error(`Google authorization error: ${error}`);
-    ctx.status = 400;
-    ctx.body = { message: error };
-    return;
+    ctx.throw(400, error);
   }
 
   try {
-    const ticket = await oAuth2Client.getToken(ctx.request.query.code);
-    const { payload } = await oAuth2Client.verifyIdToken({ idToken: ticket.tokens.id_token });
+    const payload = await google.getUserPayload(ctx.request.query.code);
 
     if (payload.aud !== config.auth.CLIENT_ID || !payload.email_verified) {
       ctx.throw(403, 'Incorrect credentials');
@@ -124,7 +121,7 @@ async function googleLogin(ctx) {
   } catch (err) {
     log.error(err.message || err);
     if (err.message === 'invalid_grant') {
-      ctx.throw(400, 'incorrect code');
+      ctx.throw(403, 'incorrect code');
     }
     ctx.throw(err);
   }

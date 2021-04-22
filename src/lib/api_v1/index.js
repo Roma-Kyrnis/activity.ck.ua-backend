@@ -1,4 +1,4 @@
 const faker = require('./faker');
-const googleapis = require('./googleapis');
+const google = require('./google');
 
-module.exports = { faker, googleapis };
+module.exports = { faker, google };
