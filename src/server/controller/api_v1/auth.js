@@ -109,7 +109,7 @@ async function checkGoogleLogin(ctx, next) {
   } catch (err) {
     log.error(err.message || err);
     if (err.message === 'invalid_grant') {
-      ctx.throw(403, 'incorrect code');
+      return ctx.throw(403, 'incorrect code');
     }
 
     return ctx.throw(err);

@@ -92,13 +92,16 @@ const config = {
     password: process.env.MODERATOR_PASSWORD || fatal('No MODERATOR_PASSWORD'),
   },
   auth: {
-    CLIENT_ID: process.env.GOOGLE_AUTH_CLIENT_ID || fatal('No GOOGLE_AUTH_CLIENT_ID'),
-    CLIENT_SECRET: process.env.GOOGLE_AUTH_CLIENT_SECRET || fatal('No GOOGLE_AUTH_CLIENT_SECRET'),
-    REDIRECT_URL: process.env.GOOGLE_AUTH_REDIRECT_URL || fatal('No GOOGLE_AUTH_REDIRECT_URL'),
+    google: {
+      CLIENT_ID: process.env.GOOGLE_AUTH_CLIENT_ID || fatal('No GOOGLE_AUTH_CLIENT_ID'),
+      CLIENT_SECRET: process.env.GOOGLE_AUTH_CLIENT_SECRET || fatal('No GOOGLE_AUTH_CLIENT_SECRET'),
+      REDIRECT_URL: process.env.GOOGLE_AUTH_REDIRECT_URL || fatal('No GOOGLE_AUTH_REDIRECT_URL'),
+    },
     facebook: {
-      CLIENT_ID: process.env.FACEBOOK_AUTH_APP_ID || fatal('No GOOGLE_AUTH_CLIENT_ID'),
-      CLIENT_SECRET: process.env.FACEBOOK_AUTH_APP_SECRET || fatal('No GOOGLE_AUTH_CLIENT_SECRET'),
-      REDIRECT_URL: process.env.FACEBOOK_AUTH_REDIRECT_URL || fatal('No GOOGLE_AUTH_REDIRECT_URL'),
+      CLIENT_ID: process.env.FACEBOOK_AUTH_APP_ID || fatal('No FACEBOOK_AUTH_APP_ID'),
+      CLIENT_SECRET: process.env.FACEBOOK_AUTH_APP_SECRET || fatal('No FACEBOOK_AUTH_APP_SECRET'),
+      REDIRECT_URL:
+        process.env.FACEBOOK_AUTH_REDIRECT_URL || fatal('No FACEBOOK_AUTH_REDIRECT_URL'),
     },
   },
   REVIEW: {
