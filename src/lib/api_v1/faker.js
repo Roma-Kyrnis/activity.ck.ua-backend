@@ -2,12 +2,8 @@
 const faker = require('faker');
 
 const { hash } = require('../../utils');
-const {
-  places: {
-    schema: { DAYS },
-  },
-} = require('../../config');
 
+const DAYS = ['sat', 'mon', 'tue', 'wed', 'thu', 'fri', 'sun'];
 const PASSWORDS = ['12345678'];
 const CATEGORY_IDS = [
   'culture',
@@ -33,6 +29,19 @@ const TYPE_IDS = [
 ];
 const MIN_PHOTO = 1;
 const MAX_PHOTO = 10;
+const PHOTOS_URL_CHERKASY = [
+  'https://media-cdn.tripadvisor.com/media/photo-s/12/41/fb/27/50.jpg',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYXxwsdrp41tfptp0FpPQ4ujnKeXb9u_rY0w&usqp=CAU',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDPBOi17RrAdJLKBVP91KUOXIpe2o6lGAmAg&usqp=CAU',
+  'https://cdn.britannica.com/94/151994-050-472C6FF4/Museum-lore-Cherkasy-Ukraine.jpg',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReLr5yJAwgrHWc0nuloNZryrqQEUHrbLDKQ9JQ2WSlObxrlE-qEgB4B41G8pvZi1qeBl0&usqp=CAU',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcEFXvX0r9uc2y5rsxAZiDIS2-515nHg8_eWb1UUbY1txpQBueokdUQu-P_NWH3PFThrA&usqp=CAU',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0ot6ov1exiBBdLxkTPDpVNYRvCS7wOn10bZ1TCSXJpFrngZdZRlh_gxblzwwfugyACTM&usqp=CAU',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSG5MWa7V18I-EdS4OOU6MejYyZw4G0fIxONAa84klTN8p14vliXuYMy2Oe750WZsGGzKM&usqp=CAU',
+  'https://ukraina-hotel.org/userfiles/Hill%20of%20glory(1).jpg',
+  'https://ukraina-hotel.org/userfiles/Philarmoniya.jpg',
+  'https://ukraina-hotel.org/userfiles/%D0%91%D1%83%D0%B4%D0%B4%D0%B8%D1%81%D0%BA%D0%B8%D0%B9%20%D1%85%D1%80%D0%B0%D0%BC(1).jpg',
+];
 
 const user = () => ({
   name: faker.name.findName(),
@@ -67,7 +76,7 @@ function getWorkTime() {
 
 const photos = () => {
   return Array.from(new Array(faker.random.number({ min: MIN_PHOTO, max: MAX_PHOTO }))).map(() => {
-    const photo = { url: faker.internet.url() };
+    const photo = { url: faker.random.arrayElement(PHOTOS_URL_CHERKASY) };
 
     if (faker.random.boolean()) {
       photo.author_name = faker.random.arrayElement([null, faker.name.findName()]);
@@ -90,27 +99,21 @@ const place = () => ({
   dog_friendly: faker.random.boolean(),
   child_friendly: faker.random.boolean(),
   description: faker.lorem.text(),
-  main_photo: faker.internet.url(),
+  main_photo: faker.random.arrayElement(PHOTOS_URL_CHERKASY),
 });
 
 function getStartEndTimes() {
-  const start = faker.random.arrayElement([
-    faker.date.past(),
-    faker.date.recent(),
-    faker.date.future(),
-  ]);
+  const dateNow = Date.now();
+  const monthInMilliseconds = 30 * 24 * 60 * 60 * 1000; // 30 days
+  const interval = {
+    min: 30 * 60 * 1000, // 30 minutes
+    max: 3 * 24 * 60 * 60 * 1000, // 3 days
+  };
 
-  let end = faker.random.arrayElement([
-    faker.date.past(),
-    faker.date.recent(),
-    faker.date.future(),
-  ]);
+  const start = dateNow + interval.min + faker.random.number(monthInMilliseconds);
+  const end = start + interval.min + faker.random.number(interval.max - interval.min);
 
-  while (end <= start) {
-    end = faker.random.arrayElement([faker.date.past(), faker.date.recent(), faker.date.future()]);
-  }
-
-  return { start_time: start, end_time: end };
+  return { start_time: new Date(start), end_time: new Date(end) };
 }
 
 const event = () => ({
@@ -126,7 +129,7 @@ const event = () => ({
   child_friendly: faker.random.boolean(),
   program: faker.lorem.text(),
   description: faker.lorem.text(),
-  main_photo: faker.internet.url(),
+  main_photo: faker.random.arrayElement(PHOTOS_URL_CHERKASY),
 });
 
 module.exports = { user, organization, photos, place, event };

@@ -35,10 +35,7 @@ const config = {
   },
   places: {
     schema: {
-      DAYS: ['sat', 'mon', 'tue', 'wed', 'thu', 'fri', 'sun'],
       PHONE: /^\+380\d{9}$/,
-      TIME: /^\d{1,2}:\d{2}$/,
-      TYPE_IDS: /^([a-zA-Z]|-)+$/,
     },
   },
   ROLES: {

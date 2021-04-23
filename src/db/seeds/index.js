@@ -14,14 +14,15 @@ const {
 } = require('../index');
 const { faker } = require('../../lib/api_v1');
 const {
-  roles,
+  ROLES,
   errors: { DATABASE },
 } = require('../../config');
 const log = require('../../utils/logger')(__filename);
 
 const MODERATOR = {
   name: 'moderator',
-  avatar: 'https://www.google.com',
+  avatar:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1200px-Circle-icons-profile.svg.png',
   email: 'moderator@tourism.test.com',
   password: '12345678',
 };
@@ -41,7 +42,7 @@ async function initDefault() {
   } else {
     userId = user.id;
   }
-  await updateUser({ id: userId, role: roles.MODERATOR });
+  await updateUser({ id: userId, role: ROLES.MODERATOR });
 
   log.info(`MODERATOR with id ${userId} created\n`);
 
@@ -56,26 +57,22 @@ async function initDefault() {
   return { userId, organizationId };
 }
 
-function getNumber(param) {
-  const number = Number.parseInt(param.slice(param.indexOf('=') + 1), 10);
-  if (Number.isNaN(number)) return null;
-  return number;
-}
-
-function getId(params, name) {
+function getParamValue(params, name) {
   const userParam = params.find((param) => param.includes(name));
-  if (userParam) return getNumber(userParam);
+  if (userParam) {
+    return Number.parseInt(userParam.slice(userParam.indexOf('=') + 1), 10) || null;
+  }
   return null;
 }
 
 async function userAndOrganizationIds(params) {
-  let userId = getId(params, PARAMS.USER);
+  let userId = getParamValue(params, PARAMS.USER);
   if (!userId) {
     const user = await createUser(faker.user());
     userId = user.id;
   }
 
-  let organizationId = getId(params, PARAMS.ORGANIZATION);
+  let organizationId = getParamValue(params, PARAMS.ORGANIZATION);
   if (!organizationId) {
     const organization = await createOrganization({ ...faker.organization(), user_id: userId });
     organizationId = organization.id;
@@ -85,7 +82,7 @@ async function userAndOrganizationIds(params) {
 }
 
 async function initPlaces(params) {
-  const count = getId(params, PARAMS.COUNT) || PLACES_SEEDS;
+  const count = getParamValue(params, PARAMS.COUNT) || PLACES_SEEDS;
 
   const { userId, organizationId } = await userAndOrganizationIds(params);
 
@@ -122,7 +119,7 @@ async function initPlaces(params) {
 }
 
 async function initEvents(params) {
-  const count = getId(params, PARAMS.COUNT) || PLACES_SEEDS;
+  const count = getParamValue(params, PARAMS.COUNT) || PLACES_SEEDS;
 
   const { userId, organizationId } = await userAndOrganizationIds(params);
 

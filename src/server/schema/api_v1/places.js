@@ -2,10 +2,14 @@ const { Joi } = require('koa-joi-router');
 
 const {
   places: {
-    schema: { PHONE, TIME, TYPE_IDS, DAYS },
+    schema: { PHONE },
   },
   REVIEW: { RATING },
 } = require('../../../config');
+
+const DAYS = ['sat', 'mon', 'tue', 'wed', 'thu', 'fri', 'sun'];
+const TIME = /^\d{1,2}:\d{2}$/;
+const TYPE_IDS = /^[\w-]+$/;
 
 const create = {
   // header: Joi.object({
