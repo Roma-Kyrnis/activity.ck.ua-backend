@@ -201,6 +201,56 @@ module.exports = (client) => {
       }
     },
 
+    searchPlaces: async (categoryId, searchString, limit, page) => {
+      try {
+        if (!searchString) {
+          throw new Error('ERROR: No searchString defined!');
+        }
+
+        let query;
+        const values = [];
+
+        if (categoryId) {
+          query = 'category_id = $1 AND name LIKE $2';
+          values.push(categoryId);
+        } else {
+          query = 'name LIKE $1';
+        }
+        values.push(`%${searchString}%`);
+
+        const {
+          rows: [{ count }],
+        } = await client.query(
+          `SELECT COUNT(*) FROM places
+            WHERE ${query} AND moderated AND deleted_at IS NULL;`,
+          values,
+        );
+        const total = Number(count);
+
+        values.push(limit);
+        values.push((page - 1) * limit);
+
+        const { rows: places } = await client.query(
+          `SELECT id, name, address, phones, website, main_photo, work_time, rating
+            FROM places
+            WHERE ${query} AND moderated AND deleted_at IS NULL
+            ORDER BY popularity_rating DESC, id DESC
+            LIMIT $${values.length - 1} OFFSET $${values.length};`,
+          values,
+        );
+
+        const res = {};
+        res.places = places;
+        res._total = total;
+        res._totalPages = Math.ceil(total / limit);
+
+        return res;
+      } catch (err) {
+        log.error(err.message || err);
+        throw err;
+      }
+    },
+
     updatePlace: async ({ id, ...place }) => {
       try {
         if (!id) {

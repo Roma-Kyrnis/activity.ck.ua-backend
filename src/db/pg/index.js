@@ -33,6 +33,7 @@ module.exports = (config) => {
     getPlaces,
     isUserPlace,
     getUserPlaces,
+    searchPlaces,
     updatePlace,
     deletePlace,
   } = places(client);
@@ -96,6 +97,7 @@ module.exports = (config) => {
     getPlaces,
     isUserPlace,
     getUserPlaces,
+    searchPlaces,
     updatePlace,
     deletePlace,
 
