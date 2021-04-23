@@ -250,6 +250,45 @@ module.exports = (client) => {
       }
     },
 
+    searchEvents: async (searchString, limit, page) => {
+      try {
+        if (!searchString) {
+          throw new Error('ERROR: No searchString defined!');
+        }
+
+        const {
+          rows: [{ count }],
+        } = await client.query(
+          `SELECT COUNT(*) FROM events
+            WHERE start_time > now() AND name LIKE $1
+              AND moderated AND deleted_at IS NULL;`,
+          [`%${searchString}%`],
+        );
+        const total = Number(count);
+
+        const offset = (page - 1) * limit;
+        const { rows: events } = await client.query(
+          `SELECT id, name, main_photo, start_time
+            FROM events
+            WHERE start_time > now() AND name LIKE $1
+              AND moderated AND deleted_at IS NULL
+            ORDER BY start_time
+            LIMIT $2 OFFSET $3;`,
+          [`%${searchString}%`, limit, offset],
+        );
+
+        const res = {};
+        res.events = events;
+        res._total = total;
+        res._totalPages = Math.ceil(total / limit);
+
+        return res;
+      } catch (err) {
+        log.error(err.message || err);
+        throw err;
+      }
+    },
+
     updateEvent: async ({ id, ...event }) => {
       try {
         if (!id) {
