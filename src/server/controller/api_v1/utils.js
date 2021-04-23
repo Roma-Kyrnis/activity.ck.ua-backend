@@ -27,4 +27,20 @@ function getPaginationAndFilters(query) {
   return { limit, page, filters };
 }
 
-module.exports = { getPaginationAndFilters, getPagination, getPaginationAndUser };
+function getSearchParams(query) {
+  const { limit, page } = getPagination(query);
+  const { name, type_id: types, category_id: categoryId } = query;
+
+  const filters = {};
+  if (categoryId !== undefined) filters.categoryId = categoryId;
+  if (types !== undefined) filters.types = types.split('-');
+
+  return { limit, page, name, filters };
+}
+
+module.exports = {
+  getPaginationAndFilters,
+  getPagination,
+  getPaginationAndUser,
+  getSearchParams,
+};

@@ -18,6 +18,7 @@ const config = {
       STORAGE: '/storage',
       USERS: { path: '/users', MYSELF: { path: '/myself' } },
       EVENTS: '/events',
+      SEARCH: '/search',
     },
     NODE_ENV: process.env.NODE_ENV || 'production',
     MORGAN_FORMAT: 'dev',
@@ -95,6 +96,11 @@ const config = {
     RATING: {
       MIN: 1,
       MAX: 5,
+    },
+  },
+  places: {
+    schema: {
+      TYPE_ID: /^[\w-]+$/,
     },
   },
 };
