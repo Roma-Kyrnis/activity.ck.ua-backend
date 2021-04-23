@@ -32,7 +32,7 @@ sudo docker exec -it node npm run knex:migrate:latest
 sudo docker exec -it node npm run seeds:default
 ```
 
-### 2. Create default quantity PLACES with new user and new organization
+### 2. Create 50 PLACES by default with new user and new organization
 ```bash
 sudo docker exec -it node npm run seeds:places
 ```
@@ -42,7 +42,7 @@ sudo docker exec -it node npm run seeds:places
 sudo docker exec -it node npm run seeds:places count=10
 ```
 
-### 4. Create default quantity EVENTS with new user and new organization
+### 4. Create 50 EVENTS by default with new user and new organization
 ```bash
 sudo docker exec -it node npm run seeds:events
 ```

@@ -26,7 +26,7 @@ const MODERATOR = {
   email: 'moderator@tourism.test.com',
   password: '12345678',
 };
-const PLACES_SEEDS = 50;
+const SEEDS_QUANTITY = 50;
 const PARAMS = {
   COUNT: 'count',
   USER: 'user_id',
@@ -82,7 +82,7 @@ async function userAndOrganizationIds(params) {
 }
 
 async function initPlaces(params) {
-  const count = getParamValue(params, PARAMS.COUNT) || PLACES_SEEDS;
+  const count = getParamValue(params, PARAMS.COUNT) || SEEDS_QUANTITY;
 
   const { userId, organizationId } = await userAndOrganizationIds(params);
 
@@ -119,7 +119,7 @@ async function initPlaces(params) {
 }
 
 async function initEvents(params) {
-  const count = getParamValue(params, PARAMS.COUNT) || PLACES_SEEDS;
+  const count = getParamValue(params, PARAMS.COUNT) || SEEDS_QUANTITY;
 
   const { userId, organizationId } = await userAndOrganizationIds(params);
 

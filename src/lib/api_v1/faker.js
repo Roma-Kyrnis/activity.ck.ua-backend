@@ -107,7 +107,7 @@ function getStartEndTimes() {
   const monthInMilliseconds = 30 * 24 * 60 * 60 * 1000; // 30 days
   const interval = {
     min: 30 * 60 * 1000, // 30 minutes
-    max: 3 * 24 * 60 * 60 * 1000, // 3 days
+    max: 24 * 60 * 60 * 1000, // 1 day
   };
 
   const start = dateNow + interval.min + faker.random.number(monthInMilliseconds);
