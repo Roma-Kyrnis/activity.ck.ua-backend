@@ -81,7 +81,7 @@ module.exports = {
   deleteOrganization: async (id) => funcWrapper(dbWrapper().deleteOrganization)(id),
 
   createPlace: async (place) => funcWrapper(dbWrapper().createPlace)(place),
-  getPlace: async (id) => funcWrapper(dbWrapper().getPlace)(id),
+  getPlace: async (id, userId) => funcWrapper(dbWrapper().getPlace)(id, userId),
   getPlaces: async (filters, limit, page) =>
     funcWrapper(dbWrapper().getPlaces)(filters, limit, page),
   isUserPlace: async (userId, placeId) => funcWrapper(dbWrapper().isUserPlace)(userId, placeId),
@@ -90,12 +90,18 @@ module.exports = {
   updatePlace: async (place) => funcWrapper(dbWrapper().updatePlace)(place),
   deletePlace: async (id) => funcWrapper(dbWrapper().deletePlace)(id),
 
+  upsertReview: async (review) => funcWrapper(dbWrapper().upsertReview)(review),
+  getReviews: async (placeId, limit, page) =>
+    funcWrapper(dbWrapper().getReviews)(placeId, limit, page),
+  updateReview: async (review) => funcWrapper(dbWrapper().updateReview)(review),
+  deleteReview: async (placeId, userId) => funcWrapper(dbWrapper().deleteReview)(placeId, userId),
+
   addPhotos: async (photos, id, nameId) => funcWrapper(dbWrapper().addPhotos)(photos, id, nameId),
   getPhotos: async (id, nameId) => funcWrapper(dbWrapper().getPhotos)(id, nameId),
   deletePhotos: async (ids) => funcWrapper(dbWrapper().deletePhotos)(ids),
 
   createEvent: async (event) => funcWrapper(dbWrapper().createEvent)(event),
-  getEvent: async (id) => funcWrapper(dbWrapper().getEvent)(id),
+  getEvent: async (id, userId) => funcWrapper(dbWrapper().getEvent)(id, userId),
   getEvents: async (startTime, limit, page, filters) =>
     funcWrapper(dbWrapper().getEvents)(startTime, limit, page, filters),
   getCurrentEvents: async (limit, page, filters) =>
@@ -107,4 +113,24 @@ module.exports = {
     funcWrapper(dbWrapper().getPlaceEvents)(placeId, limit, page),
   updateEvent: async (event) => funcWrapper(dbWrapper().updateEvent)(event),
   deleteEvent: async (id) => funcWrapper(dbWrapper().deleteEvent)(id),
+
+  addFavoritePlace: async (placeId, userId) =>
+    funcWrapper(dbWrapper().addFavoritePlace)(placeId, userId),
+  addVisitedPlace: async (placeId, userId) =>
+    funcWrapper(dbWrapper().addVisitedPlace)(placeId, userId),
+  addScheduledEvent: async (eventId, userId) =>
+    funcWrapper(dbWrapper().addScheduledEvent)(eventId, userId),
+  getExplore: async (userId, categoryId) => funcWrapper(dbWrapper().getExplore)(userId, categoryId),
+  getFavoritePlaces: async (userId, limit, page) =>
+    funcWrapper(dbWrapper().getFavoritePlaces)(userId, limit, page),
+  getVisitedPlaces: async (userId, limit, page) =>
+    funcWrapper(dbWrapper().getVisitedPlaces)(userId, limit, page),
+  getScheduledEvents: async (userId, limit, page) =>
+    funcWrapper(dbWrapper().getScheduledEvents)(userId, limit, page),
+  detachFavoritePlace: async (placeId, userId) =>
+    funcWrapper(dbWrapper().detachFavoritePlace)(placeId, userId),
+  detachVisitedPlace: async (placeId, userId) =>
+    funcWrapper(dbWrapper().detachVisitedPlace)(placeId, userId),
+  detachScheduledEvent: async (eventId, userId) =>
+    funcWrapper(dbWrapper().detachScheduledEvent)(eventId, userId),
 };

@@ -52,18 +52,26 @@ module.exports = (client) => {
       }
     },
 
-    getPlace: async (id) => {
+    getPlace: async (id, userId) => {
       try {
         if (!id) {
           throw new Error('ERROR: No place id defined');
         }
 
+        const query = `,
+          (SELECT place_id FROM favorite_places
+            WHERE place_id = $1 AND user_id = $2) IS NOT NULL AS favorite,
+          (SELECT place_id FROM visited_places
+            WHERE place_id = $1 AND user_id = $2) IS NOT NULL AS visited,
+          (SELECT place_id FROM reviews
+            WHERE place_id = $1 AND user_id = $2) IS NOT NULL AS reviewed`;
         const res = await client.query(
           `SELECT id, name, address, phones, website, description, accessibility,
               dog_friendly, child_friendly, work_time, rating, organization_id
+              ${userId ? query : ''}
             FROM places
             WHERE id = $1 AND moderated AND deleted_at IS NULL;`,
-          [id],
+          userId ? [id, userId] : [id],
         );
 
         return res.rows[0];
@@ -173,7 +181,7 @@ module.exports = (client) => {
 
         const offset = (page - 1) * limit;
         const { rows: places } = await client.query(
-          `SELECT id, name, address, phones, website, main_photo, work_time, rating, organization_id
+          `SELECT id, name, address, phones, website, main_photo, work_time, rating, category_id
             FROM places
             WHERE user_id = $1 AND deleted_at IS NULL
             ORDER BY popularity_rating DESC, id DESC

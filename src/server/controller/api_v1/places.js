@@ -8,8 +8,12 @@ const {
   addPhotos,
   getPhotos,
   isUserPlace,
+  upsertReview: upsertReviewDB,
+  getReviews: getReviewsDB,
+  updateReview: updateReviewDB,
+  deleteReview: deleteReviewDB,
 } = require('../../../db');
-const paginationAndAccessibility = require('./paginationAndAccessibility');
+const { getPaginationAndFilters, getPagination } = require('./utils');
 const {
   ROLES: { MODERATOR },
 } = require('../../../config');
@@ -30,32 +34,30 @@ async function create(ctx) {
     organization_id: organizationId,
   };
 
-  const { id } = await createPlace(dataPlace);
+  const { id: placeId } = await createPlace(dataPlace);
 
-  await addPhotos(ctx.request.body.photos, id, 'place_id');
+  await addPhotos(ctx.request.body.photos, placeId, 'place_id');
 
   ctx.body = { message: 'OK' };
 }
 
 async function getOne(ctx) {
+  const { id: userId } = ctx.state.authPayload;
   const id = parseInt(ctx.request.params.id, 10);
 
-  try {
-    const place = await getPlace(id);
-    const photos = await getPhotos(id, 'place_id');
+  const place = await getPlace(id, userId);
 
-    place.photos = photos;
+  ctx.assert(place, 404, `No place with id - ${id}`);
 
-    ctx.body = { place };
-  } catch (err) {
-    err.status = 404;
-    err.message = `No place with id - ${id}`;
-    ctx.app.emit('error', err, ctx);
-  }
+  const photos = await getPhotos(id, 'place_id');
+
+  place.photos = photos;
+
+  ctx.body = { place };
 }
 
 async function getApproved(ctx) {
-  const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
+  const { limit, page, filters } = getPaginationAndFilters(ctx.request.query);
   const { type_id: types, category_id: categoryId } = ctx.request.query;
 
   if (categoryId !== undefined) filters.categoryId = categoryId;
@@ -101,4 +103,49 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { create, getOne, getApproved, update, remove };
+async function upsertReview(ctx) {
+  const { id: userId } = ctx.state.authPayload;
+  const placeId = parseInt(ctx.request.params.id, 10);
+
+  await upsertReviewDB({ ...ctx.request.body, user_id: userId, place_id: placeId });
+
+  ctx.body = { message: 'OK' };
+}
+
+async function getReviews(ctx) {
+  const placeId = parseInt(ctx.request.params.id, 10);
+  const { limit, page } = getPagination(ctx.request.query);
+
+  const response = await getReviewsDB(placeId, limit, page);
+
+  ctx.body = response;
+}
+
+async function updateReview(ctx) {
+  const placeId = parseInt(ctx.request.params.id, 10);
+
+  await updateReviewDB({ ...ctx.request.body, place_id: placeId });
+
+  ctx.body = { message: 'OK' };
+}
+
+async function deleteReview(ctx) {
+  const placeId = parseInt(ctx.request.params.id, 10);
+  const userId = parseInt(ctx.request.body.user_id, 10);
+
+  await deleteReviewDB(placeId, userId);
+
+  ctx.body = { message: 'OK' };
+}
+
+module.exports = {
+  create,
+  getOne,
+  getApproved,
+  update,
+  remove,
+  upsertReview,
+  getReviews,
+  updateReview,
+  deleteReview,
+};

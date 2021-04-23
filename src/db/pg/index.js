@@ -2,8 +2,10 @@ const { Pool } = require('pg');
 const users = require('./users');
 const organizations = require('./organizations');
 const places = require('./places');
+const reviews = require('./reviews');
 const photos = require('./photos');
 const events = require('./events');
+const activities = require('./activities');
 const log = require('../../utils/logger')(__filename);
 
 const name = 'pg';
@@ -34,6 +36,7 @@ module.exports = (config) => {
     updatePlace,
     deletePlace,
   } = places(client);
+  const { upsertReview, getReviews, updateReview, deleteReview } = reviews(client);
   const { addPhotos, getPhotos, deletePhotos } = photos(client);
   const {
     createEvent,
@@ -46,6 +49,18 @@ module.exports = (config) => {
     updateEvent,
     deleteEvent,
   } = events(client);
+  const {
+    addFavoritePlace,
+    addVisitedPlace,
+    addScheduledEvent,
+    getExplore,
+    getFavoritePlaces,
+    getVisitedPlaces,
+    getScheduledEvents,
+    detachFavoritePlace,
+    detachVisitedPlace,
+    detachScheduledEvent,
+  } = activities(client);
 
   return {
     testConnection: async () => {
@@ -84,6 +99,11 @@ module.exports = (config) => {
     updatePlace,
     deletePlace,
 
+    upsertReview,
+    getReviews,
+    updateReview,
+    deleteReview,
+
     addPhotos,
     getPhotos,
     deletePhotos,
@@ -97,5 +117,16 @@ module.exports = (config) => {
     getPlaceEvents,
     updateEvent,
     deleteEvent,
+
+    addFavoritePlace,
+    addVisitedPlace,
+    addScheduledEvent,
+    getExplore,
+    getFavoritePlaces,
+    getVisitedPlaces,
+    getScheduledEvents,
+    detachFavoritePlace,
+    detachVisitedPlace,
+    detachScheduledEvent,
   };
 };

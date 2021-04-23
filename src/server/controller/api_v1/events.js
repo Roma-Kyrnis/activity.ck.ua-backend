@@ -8,10 +8,9 @@ const {
   deleteEvent,
   addPhotos,
   getPhotos,
-  addEventAttend,
   isUserEvent,
 } = require('../../../db');
-const paginationAndAccessibility = require('./paginationAndAccessibility');
+const { getPaginationAndFilters } = require('./utils');
 const {
   ROLES: { MODERATOR },
 } = require('../../../config');
@@ -30,12 +29,14 @@ async function create(ctx) {
 }
 
 async function getOne(ctx) {
+  const { id: userId } = ctx.state.authPayload;
   const id = parseInt(ctx.request.params.id, 10);
 
-  const event = await getEvent(id);
-  const photos = await getPhotos(id, 'event_id');
+  const event = await getEvent(id, userId);
 
   ctx.assert(event, 404, `Cannot find event with id ${id}`);
+
+  const photos = await getPhotos(id, 'event_id');
 
   event.photos = photos;
 
@@ -44,7 +45,7 @@ async function getOne(ctx) {
 
 async function getApproved(ctx) {
   const { start_time: startTime, place_id: placeId } = ctx.request.query;
-  const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
+  const { limit, page, filters } = getPaginationAndFilters(ctx.request.query);
 
   let events;
   if (startTime) {
@@ -57,7 +58,7 @@ async function getApproved(ctx) {
 }
 
 async function getNow(ctx) {
-  const { limit, page, filters } = paginationAndAccessibility(ctx.request.query);
+  const { limit, page, filters } = getPaginationAndFilters(ctx.request.query);
 
   const events = await getCurrentEvents(limit, page, filters);
 
@@ -86,7 +87,6 @@ async function update(ctx) {
 
 async function remove(ctx) {
   const id = parseInt(ctx.request.params.id, 10);
-
   const { id: userId, role } = ctx.state.authPayload;
 
   if (role !== MODERATOR) {
@@ -100,13 +100,11 @@ async function remove(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-async function addAttend(ctx) {
-  const { id: userId } = ctx.state.authPayload;
-
-  const eventId = parseInt(ctx.request.params.id, 10);
-  await addEventAttend({ user_id: userId, event_id: eventId });
-
-  ctx.body = { message: 'OK' };
-}
-
-module.exports = { create, getOne, getApproved, getNow, update, remove, addAttend };
+module.exports = {
+  create,
+  getOne,
+  getApproved,
+  getNow,
+  update,
+  remove,
+};
