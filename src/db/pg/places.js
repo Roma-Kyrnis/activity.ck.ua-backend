@@ -83,28 +83,40 @@ module.exports = (client) => {
 
     getPlaces: async (filters, limit, page) => {
       try {
-        const { categoryId, types } = filters;
+        const { categoryId, types, unexplored, userId } = filters;
 
-        if (!categoryId === !types) {
+        if (!categoryId === !types || !unexplored !== !userId) {
           throw new Error('ERROR: Invalid filters!');
         }
 
+        let queryUnexplored = '';
+        let queryUnexploredWhere = '';
         let queryFilter;
         const values = [];
+        let i = 0;
+
+        if (unexplored) {
+          i += 1;
+          queryUnexplored = `LEFT JOIN visited_places AS v ON v.place_id = places.id AND v.user_id = $${i}`;
+          queryUnexploredWhere = 'place_id IS NULL AND';
+          values.push(userId);
+        }
 
         if (categoryId) {
-          queryFilter = 'category_id = $1';
+          i += 1;
+          queryFilter = `category_id = $${i} AND`;
           values.push(categoryId);
         }
 
         if (types) {
           const query = [];
           // eslint-disable-next-line no-restricted-syntax
-          for (const [i, v] of types.entries()) {
-            query.push(`$${i + 1}`);
-            values.push(v);
+          for (const value of types) {
+            i += 1;
+            query.push(`$${i}`);
+            values.push(value);
           }
-          queryFilter = `type_id IN (${query.join(', ')})`;
+          queryFilter = `type_id IN (${query.join(', ')}) AND`;
         }
 
         if (!values.length) {
@@ -115,8 +127,9 @@ module.exports = (client) => {
           rows: [{ count }],
         } = await client.query(
           `SELECT COUNT(*) FROM places
-            WHERE ${queryFilter} ${queryAccessibility(filters)}
-              AND moderated AND deleted_at IS NULL;`,
+            ${queryUnexplored}
+            WHERE ${queryFilter} ${queryUnexploredWhere} ${queryAccessibility(filters)}
+              moderated AND deleted_at IS NULL;`,
           values,
         );
         const total = Number(count);
@@ -127,8 +140,9 @@ module.exports = (client) => {
         const { rows: places } = await client.query(
           `SELECT id, name, address, phones, website, main_photo, work_time, rating
             FROM places
-            WHERE ${queryFilter} ${queryAccessibility(filters)}
-              AND moderated AND deleted_at IS NULL
+            ${queryUnexplored}
+            WHERE ${queryFilter} ${queryUnexploredWhere} ${queryAccessibility(filters)}
+              moderated AND deleted_at IS NULL
             ORDER BY popularity_rating DESC, id DESC
             LIMIT $${values.length - 1} OFFSET $${values.length};`,
           values,
