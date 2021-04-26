@@ -1,7 +1,9 @@
 const { createUser, updateUser, getUserCredentials, checkUser } = require('../../../db');
 const { hash, authorizationTokens } = require('../../../utils');
 const { google } = require('../../../lib/api_v1');
-const config = require('../../../config');
+const {
+  AUTH: { GOOGLE },
+} = require('../../../config');
 const log = require('../../../utils/logger')(__filename);
 
 function getPasswordHash(email, password) {
@@ -53,7 +55,7 @@ async function registration(ctx) {
 async function login(ctx) {
   const { email, password } = ctx.request.body;
   const user = await validateUser(email, password);
-  ctx.assert(user, 401, 'Incorrect credentials');
+  ctx.assert(user, 403, 'Incorrect credentials');
   const tokens = await getUserTokens(user.id, user.role);
 
   ctx.body = tokens;
@@ -96,7 +98,7 @@ async function googleLogin(ctx) {
   try {
     const payload = await google.getUserPayload(ctx.request.query.code);
 
-    if (payload.aud !== config.auth.google.CLIENT_ID) {
+    if (payload.aud !== GOOGLE.CLIENT_ID) {
       ctx.throw(403, 'Incorrect credentials');
     }
 
@@ -107,7 +109,7 @@ async function googleLogin(ctx) {
     const isUserExist = await checkUser(email);
     if (isUserExist) {
       user = await validateUser(email);
-      ctx.assert(user, 401, 'Incorrect credentials');
+      ctx.assert(user, 403, 'Incorrect credentials');
     } else {
       const newUser = {
         name: payload.name,

@@ -25,5 +25,4 @@ router.get('/login/google', { validate: validator.googleLogin }, auth.googleLogi
 router.get('/refresh', { validate: validator.refresh }, refresh(), auth.refresh);
 router.get('/logout', { validate: validator.logout }, refresh(), auth.logout);
 
-
 module.exports = router;
