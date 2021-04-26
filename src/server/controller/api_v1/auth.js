@@ -112,7 +112,6 @@ async function checkGoogleLogin(ctx, next) {
 
     return next();
   } catch (err) {
-    log.error(err.message || err);
     if (err.message === 'invalid_grant') {
       return ctx.throw(403, 'incorrect code');
     }
@@ -142,7 +141,7 @@ async function checkFacebookLogin(ctx, next) {
   }
 }
 
-async function userTokens(ctx) {
+async function authorizeUser(ctx) {
   const { userMetadata } = ctx.state;
 
   let user;
@@ -170,6 +169,6 @@ module.exports = {
   login,
   refresh,
   logout,
-  googleLogin: [checkGoogleLogin, userTokens],
-  facebookLogin: [checkFacebookLogin, userTokens],
+  googleLogin: [checkGoogleLogin, authorizeUser],
+  facebookLogin: [checkFacebookLogin, authorizeUser],
 };

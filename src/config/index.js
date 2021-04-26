@@ -97,7 +97,7 @@ const config = {
       CLIENT_SECRET: process.env.GOOGLE_AUTH_CLIENT_SECRET || fatal('No GOOGLE_AUTH_CLIENT_SECRET'),
       REDIRECT_URL: process.env.GOOGLE_AUTH_REDIRECT_URL || fatal('No GOOGLE_AUTH_REDIRECT_URL'),
     },
-    facebook: {
+    FACEBOOK: {
       CLIENT_ID: process.env.FACEBOOK_AUTH_APP_ID || fatal('No FACEBOOK_AUTH_APP_ID'),
       CLIENT_SECRET: process.env.FACEBOOK_AUTH_APP_SECRET || fatal('No FACEBOOK_AUTH_APP_SECRET'),
       REDIRECT_URL:

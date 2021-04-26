@@ -46,9 +46,7 @@ const googleLogin = {
 const facebookLogin = {
   query: Joi.object({
     code: Joi.string(),
-  })
-    .xor('code')
-    .unknown(),
+  }).unknown(),
 };
 
 module.exports = { registration, login, refresh, logout, googleLogin, facebookLogin };
