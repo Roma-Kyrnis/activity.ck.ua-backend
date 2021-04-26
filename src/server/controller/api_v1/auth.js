@@ -150,6 +150,7 @@ async function authorizeUser(ctx) {
   if (isUserExist) {
     user = await validateUser(userMetadata.email);
     ctx.assert(user, 403, 'Incorrect credentials');
+    user = await updateUser({ id: user.id, avatar: userMetadata.avatar });
   } else {
     const newUser = {
       name: userMetadata.name,
