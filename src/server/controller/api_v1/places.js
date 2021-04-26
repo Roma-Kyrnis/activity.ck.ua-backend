@@ -57,11 +57,16 @@ async function getOne(ctx) {
 }
 
 async function getApproved(ctx) {
+  const { id: userId } = ctx.state.authPayload;
   const { limit, page, filters } = getPaginationAndFilters(ctx.request.query);
-  const { type_id: types, category_id: categoryId } = ctx.request.query;
+  const { type_id: types, category_id: categoryId, unexplored } = ctx.request.query;
 
   if (categoryId !== undefined) filters.categoryId = categoryId;
   if (types !== undefined) filters.types = types.split('-');
+  if (unexplored && userId) {
+    filters.unexplored = unexplored;
+    filters.userId = userId;
+  }
 
   const data = await getPlaces(filters, limit, page);
 
