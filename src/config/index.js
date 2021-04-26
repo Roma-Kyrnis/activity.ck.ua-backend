@@ -97,6 +97,13 @@ const config = {
       MAX: 5,
     },
   },
+  AUTH: {
+    CODE: {
+      TIMELIFE: 2 * 60 * 60 * 1000, // 2 hours
+      SIZE: 21,
+      ALLOW_ANEW_SEND_AFTER: 3 * 60 * 1000, // 3 minutes
+    },
+  },
 };
 
 module.exports = config;

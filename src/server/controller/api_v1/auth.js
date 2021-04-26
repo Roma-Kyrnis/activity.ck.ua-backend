@@ -1,5 +1,10 @@
+const { nanoid } = require('nanoid');
+
 const { createUser, updateUser, getUserCredentials } = require('../../../db');
 const { hash, authorizationTokens } = require('../../../utils');
+const {
+  AUTH: { CODE },
+} = require('../../../config');
 
 function getCredentialsString(body) {
   return `${body.email}${body.password}`;
@@ -69,4 +74,78 @@ async function logout(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-module.exports = { registration, login, refresh, logout };
+async function forgotPassword(ctx) {
+  // const { email } = ctx.request.body;
+
+  // get user name by email
+  // const user = await getUserWithCodeExpired(email);
+  // ctx.assert(user, 403, 'Incorrect email');
+
+  // const lastSend = user.code_expired_at - Date.now();
+  // ctx.assert(
+  //   lastSend < CODE.ALLOW_ANEW_SEND_AFTER,
+  //   403,
+  //   `Wait ${lastSend} to resend code to email`,
+  // );
+
+  // // generate code and save in DB with expired time
+  // const code = nanoid(CODE.SIZE);
+  // const expiredTime = Date.now() + CODE.TIMELIFE;
+  // await updateUserCode({ id: user.id, code, code_expired_at: new Date(expiredTime) });
+
+  // send email with url to frontend
+
+  ctx.body = { message: 'OK' };
+}
+
+async function verifyCode(email, code) {
+  const user = await getUserWithCodeExpired(email);
+
+  const isCodeAuthentic = user.code === code && user.code_expired_at > new Date();
+  if (!isCodeAuthentic) {
+    return false;
+  }
+
+  return user;
+}
+
+async function changePassword(ctx) {
+  // const { email, code, password } = ctx.request.body;
+
+  // const user = await verifyCode(email, code);
+  // ctx.assert(user, 403, 'Invalid or expired code');
+
+  // // check if it truly new password
+  // ctx.assert(user.password_hash !== password, 400, 'Enter new password');
+
+  // const passwordHashed = hash.create(getCredentialsString({ email, password }));
+  // await updateUser({
+  //   id: user.id,
+  //   code: null,
+  //   code_expired_at: null,
+  //   password_hash: passwordHashed,
+  // });
+
+  // // Send email password changed
+
+  ctx.body = { message: 'OK' };
+}
+
+async function checkCode(ctx) {
+  // const { email, code } = ctx.request.params;
+
+  // const user = await verifyCode(email, code);
+  // ctx.assert(user, 403, 'Invalid or expired code');
+
+  ctx.body = '';
+}
+
+module.exports = {
+  registration,
+  login,
+  refresh,
+  logout,
+  forgotPassword,
+  changePassword,
+  checkCode,
+};

@@ -34,4 +34,35 @@ const logout = {
   }).unknown(),
 };
 
-module.exports = { registration, login, refresh, logout };
+const forgotPassword = {
+  body: Joi.object({
+    email: Joi.string().email().required(),
+  }),
+  type: 'json',
+};
+
+const checkCode = {
+  params: Joi.object({
+    email: Joi.string().email().required(),
+    code: Joi.string().min(3).required(),
+  }),
+};
+
+const changePassword = {
+  body: Joi.object({
+    email: Joi.string().email().required(),
+    code: Joi.string().min(3).required(),
+    password: Joi.string().pattern(/^\w+$/).min(8).max(255).required(),
+  }),
+  type: 'json',
+};
+
+module.exports = {
+  registration,
+  login,
+  refresh,
+  logout,
+  forgotPassword,
+  checkCode,
+  changePassword,
+};

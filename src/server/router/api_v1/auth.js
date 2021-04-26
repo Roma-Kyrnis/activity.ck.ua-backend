@@ -24,4 +24,8 @@ router.post('/login', { validate: validator.login }, auth.login);
 router.get('/refresh', { validate: validator.refresh }, refresh(), auth.refresh);
 router.get('/logout', { validate: validator.logout }, refresh(), auth.logout);
 
+router.patch('/password/forgot', { validate: validator.forgotPassword }, auth.forgotPassword);
+router.put('/password/change', { validate: validator.changePassword }, auth.changePassword);
+router.head('/email/:email/code/:code', { validate: validator.checkCode }, auth.checkCode);
+
 module.exports = router;
