@@ -81,41 +81,56 @@ async function userAndOrganizationIds(params) {
   return { userId, organizationId };
 }
 
+async function createPlaceOrEvent(userId, organizationId, type) {
+  try {
+    let id;
+
+    try {
+      const creator = {
+        user_id: userId,
+        organization_id: organizationId,
+      };
+
+      if (type === 'place') {
+        const place = await createPlace({ ...faker.place, ...creator });
+        id = place.id;
+      } else {
+        const event = await createEvent({ ...faker.event(), ...creator });
+        id = event.id;
+      }
+    } catch (err) {
+      if (err.name === DATABASE) {
+        throw err;
+      } else {
+        throw new Error(`No user with id ${userId} or/and organization with id ${organizationId}`);
+      }
+    }
+
+    if (type === 'place') {
+      await updatePlace({ id, moderated: true });
+    } else {
+      await updateEvent({ id, moderated: true });
+    }
+
+    const photos = faker.photos();
+    await addPhotos(photos, id, `${type}_id`);
+
+    log.info(`${type} ${id} created`);
+  } catch (err) {
+    log.error(`Cannot create ${type}: ${err.message}`);
+  }
+}
+
 async function initPlaces(params) {
   const count = getParamValue(params, PARAMS.COUNT) || SEEDS_QUANTITY;
 
   const { userId, organizationId } = await userAndOrganizationIds(params);
 
-  // eslint-disable-next-line no-unused-vars
-  for await (const i of new Array(count)) {
-    try {
-      let place;
-
-      try {
-        place = await createPlace({
-          ...faker.place(),
-          user_id: userId,
-          organization_id: organizationId,
-        });
-      } catch (err) {
-        if (err.name === DATABASE) {
-          throw err;
-        } else {
-          throw new Error(
-            `No user with id ${userId} or/and organization with id ${organizationId}`,
-          );
-        }
-      }
-      await updatePlace({ id: place.id, moderated: true });
-
-      const photos = faker.photos();
-      await addPhotos(photos, place.id, 'place_id');
-
-      log.info(`Place ${place.id} created`);
-    } catch (err) {
-      log.error(`Cannot create place: ${err.message}`);
-    }
+  const places = [];
+  for (let i = 0; i <= count; i += 1) {
+    places.push(createPlaceOrEvent(userId, organizationId, 'place'));
   }
+  await Promise.all(places);
 }
 
 async function initEvents(params) {
@@ -123,36 +138,11 @@ async function initEvents(params) {
 
   const { userId, organizationId } = await userAndOrganizationIds(params);
 
-  // eslint-disable-next-line no-unused-vars
-  for await (const i of new Array(count)) {
-    try {
-      let event;
-
-      try {
-        event = await createEvent({
-          ...faker.event(),
-          user_id: userId,
-          organization_id: organizationId,
-        });
-      } catch (err) {
-        if (err.name === DATABASE) {
-          throw err;
-        } else {
-          throw new Error(
-            `No user with id ${userId} or/and organization with id ${organizationId}`,
-          );
-        }
-      }
-      await updateEvent({ id: event.id, moderated: true });
-
-      const photos = faker.photos();
-      await addPhotos(photos, event.id, 'event_id');
-
-      log.info(`Event ${event.id} created`);
-    } catch (err) {
-      log.error(`Cannot create event: ${err.message}`);
-    }
+  const events = [];
+  for (let i = 0; i <= count; i += 1) {
+    events.push(createPlaceOrEvent(userId, organizationId, 'event'));
   }
+  await Promise.all(events);
 }
 
 async function start() {
