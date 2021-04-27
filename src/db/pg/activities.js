@@ -74,7 +74,7 @@ module.exports = (client) => {
         if (!placesCount)
           throw new DatabaseError('ERROR: A places with this category_id does not exist!');
 
-        const explore = Math.trunc((explored / placesCount) * 100);
+        const explore = Math.trunc((Number(explored) / placesCount) * 100);
 
         return { explore };
       } catch (err) {
