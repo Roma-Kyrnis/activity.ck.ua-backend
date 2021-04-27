@@ -92,7 +92,7 @@ async function createPlaceOrEvent(userId, organizationId, type) {
       };
 
       if (type === 'place') {
-        const place = await createPlace({ ...faker.place, ...creator });
+        const place = await createPlace({ ...faker.place(), ...creator });
         id = place.id;
       } else {
         const event = await createEvent({ ...faker.event(), ...creator });
@@ -127,7 +127,7 @@ async function initPlaces(params) {
   const { userId, organizationId } = await userAndOrganizationIds(params);
 
   const places = [];
-  for (let i = 0; i <= count; i += 1) {
+  for (let i = 1; i <= count; i += 1) {
     places.push(createPlaceOrEvent(userId, organizationId, 'place'));
   }
   await Promise.all(places);
@@ -139,7 +139,7 @@ async function initEvents(params) {
   const { userId, organizationId } = await userAndOrganizationIds(params);
 
   const events = [];
-  for (let i = 0; i <= count; i += 1) {
+  for (let i = 1; i <= count; i += 1) {
     events.push(createPlaceOrEvent(userId, organizationId, 'event'));
   }
   await Promise.all(events);
