@@ -13,6 +13,7 @@ const {
   server: {
     prefix: { STORAGE },
   },
+  ROLES: { USER, ORGANIZER },
 } = require('../../../config');
 
 const router = new Router();
@@ -22,7 +23,7 @@ router.prefix(STORAGE);
 router.get(
   '/token',
   { validate: validator.getCustomToken },
-  access(['user', 'organizer']),
+  access([USER, ORGANIZER]),
   storage.getCustomToken,
 );
 
