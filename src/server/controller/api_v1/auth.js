@@ -62,20 +62,9 @@ async function login(ctx) {
 }
 
 async function refresh(ctx) {
-  const { authPayload } = ctx.state;
+  const { id, role } = ctx.state.authPayload;
 
-  const payload = {
-    id: authPayload.id,
-    role: authPayload.role,
-  };
-
-  const tokens = {
-    access_token: await authorizationTokens.generateAccessToken(payload),
-    refresh_token: await authorizationTokens.generateRefreshToken(payload),
-  };
-
-  const hashedRefresh = hash.create(tokens.refresh_token);
-  await updateUser({ id: payload.id, refresh_token: hashedRefresh });
+  const tokens = await getUserTokens(id, role);
 
   ctx.body = tokens;
 }
