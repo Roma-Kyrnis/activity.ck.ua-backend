@@ -5,11 +5,11 @@ const {
 } = require('../../../config');
 
 const create = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   body: Joi.object({
     organization_id: Joi.number().min(0),
     organization: Joi.object({
@@ -66,6 +66,9 @@ const create = {
 };
 
 const getOne = {
+  header: Joi.object({
+    authorization: Joi.string().pattern(/^[a-zA-Z]+ .+$/),
+  }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -74,6 +77,9 @@ const getOne = {
 };
 
 const getApproved = {
+  header: Joi.object({
+    authorization: Joi.string().pattern(/^[a-zA-Z]+ .+$/),
+  }).unknown(),
   query: Joi.object({
     category_id: Joi.string(),
     type_id: Joi.string().pattern(/^([a-zA-Z]|-)+$/),
@@ -91,11 +97,11 @@ const getApproved = {
 };
 
 const update = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -134,13 +140,6 @@ const update = {
       main_photo: Joi.string().uri(),
       moderated: Joi.boolean(),
     }),
-    // photos: Joi.array().items(
-    //   Joi.object({
-    //     url: Joi.string().uri().required(),
-    //     author_name: Joi.string().min(3).max(255),
-    //     author_link: Joi.string().uri(),
-    //   }).required(),
-    // ),
   }).or(
     'place.name',
     'place.category_id',
@@ -160,11 +159,11 @@ const update = {
 };
 
 const remove = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -173,11 +172,11 @@ const remove = {
 };
 
 const upsertReview = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -207,11 +206,11 @@ const getReviews = {
 };
 
 const updateReview = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -226,11 +225,11 @@ const updateReview = {
 };
 
 const deleteReview = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
