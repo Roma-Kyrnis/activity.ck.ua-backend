@@ -98,7 +98,11 @@ function googleGetAccess(isLogin) {
         return ctx.throw(403, 'Incorrect credentials');
       }
 
-      ctx.state.payload = payload;
+      ctx.state.payload = {
+        name: payload.name,
+        email: payload.sub,
+        avatar: payload.picture,
+      };
 
       return next();
     } catch (err) {
@@ -115,8 +119,8 @@ async function serviceRegistration(ctx) {
 
   const newUser = {
     name: payload.name,
-    avatar: payload.picture,
-    email: hash.create(payload.sub),
+    avatar: payload.avatar,
+    email: hash.create(payload.email),
   };
   const user = await createUser(newUser);
 
@@ -128,7 +132,7 @@ async function serviceRegistration(ctx) {
 async function serviceLogin(ctx) {
   const { payload } = ctx.state;
 
-  const user = await validateUser(hash.create(payload.sub));
+  const user = await validateUser(hash.create(payload.email));
   ctx.assert(user, 403, 'Incorrect credentials');
   // update user if avatar or name changed
 
