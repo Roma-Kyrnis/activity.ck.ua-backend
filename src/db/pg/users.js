@@ -51,21 +51,6 @@ module.exports = (client) => {
       }
     },
 
-    checkUser: async (email) => {
-      try {
-        const res = await client.query(
-          `SELECT id FROM users
-            WHERE email = $1;`,
-          [email],
-        );
-
-        return res.rows[0];
-      } catch (err) {
-        log.error(err.message || err);
-        throw err;
-      }
-    },
-
     getUserCredentials: async (email) => {
       try {
         if (!email) {
@@ -73,7 +58,7 @@ module.exports = (client) => {
         }
 
         const res = await client.query(
-          `SELECT id, email, password_hash, role FROM users
+          `SELECT id, email, password_hash, role, name, avatar FROM users
             WHERE email = $1 AND deleted_at IS NULL;`,
           [email],
         );
