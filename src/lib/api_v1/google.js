@@ -2,20 +2,24 @@ const { google } = require('googleapis');
 
 const {
   AUTH: {
-    GOOGLE: { CLIENT_ID, CLIENT_SECRET, REDIRECT_URL_LOGIN, REDIRECT_URL_REGISTRATION },
+    GOOGLE: {
+      CLIENT_ID,
+      CLIENT_SECRET,
+      REDIRECT_URLS: { LOGIN, REGISTRATION },
+    },
   },
 } = require('../../config');
 
 const oAuth2ClientRegistration = new google.auth.OAuth2({
   clientId: CLIENT_ID,
   clientSecret: CLIENT_SECRET,
-  redirectUri: REDIRECT_URL_REGISTRATION,
+  redirectUri: REGISTRATION,
 });
 
 const oAuth2ClientLogin = new google.auth.OAuth2({
   clientId: CLIENT_ID,
   clientSecret: CLIENT_SECRET,
-  redirectUri: REDIRECT_URL_LOGIN,
+  redirectUri: LOGIN,
 });
 
 async function getUserPayloadLogin(code) {
