@@ -33,6 +33,7 @@ module.exports = (config) => {
     getPlaces,
     isUserPlace,
     getUserPlaces,
+    searchPlaces,
     updatePlace,
     deletePlace,
   } = places(client);
@@ -46,6 +47,7 @@ module.exports = (config) => {
     isUserEvent,
     getUserEvents,
     getPlaceEvents,
+    searchEvents,
     updateEvent,
     deleteEvent,
   } = events(client);
@@ -96,6 +98,7 @@ module.exports = (config) => {
     getPlaces,
     isUserPlace,
     getUserPlaces,
+    searchPlaces,
     updatePlace,
     deletePlace,
 
@@ -115,6 +118,7 @@ module.exports = (config) => {
     isUserEvent,
     getUserEvents,
     getPlaceEvents,
+    searchEvents,
     updateEvent,
     deleteEvent,
 

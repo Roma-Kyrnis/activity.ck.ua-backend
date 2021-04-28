@@ -87,6 +87,8 @@ module.exports = {
   isUserPlace: async (userId, placeId) => funcWrapper(dbWrapper().isUserPlace)(userId, placeId),
   getUserPlaces: async (userId, limit, page) =>
     funcWrapper(dbWrapper().getUserPlaces)(userId, limit, page),
+  searchPlaces: async (searchString, limit, page) =>
+    funcWrapper(dbWrapper().searchPlaces)(searchString, limit, page),
   updatePlace: async (place) => funcWrapper(dbWrapper().updatePlace)(place),
   deletePlace: async (id) => funcWrapper(dbWrapper().deletePlace)(id),
 
@@ -111,6 +113,8 @@ module.exports = {
     funcWrapper(dbWrapper().getUserEvents)(userId, limit, page),
   getPlaceEvents: async (placeId, limit, page) =>
     funcWrapper(dbWrapper().getPlaceEvents)(placeId, limit, page),
+  searchEvents: async (searchString, limit, page) =>
+    funcWrapper(dbWrapper().searchEvents)(searchString, limit, page),
   updateEvent: async (event) => funcWrapper(dbWrapper().updateEvent)(event),
   deleteEvent: async (id) => funcWrapper(dbWrapper().deleteEvent)(id),
 

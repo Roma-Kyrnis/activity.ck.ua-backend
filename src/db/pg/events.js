@@ -92,8 +92,8 @@ module.exports = (client) => {
           rows: [{ count }],
         } = await client.query(
           `SELECT COUNT(*) FROM events
-            WHERE start_time > $1 AND start_time < $1 + $2 AND start_time > now()
-              ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL;`,
+            WHERE start_time > $1 AND start_time < $1 + $2 AND start_time > now() AND
+              ${queryAccessibility(filters)} moderated AND deleted_at IS NULL;`,
           [new Date(startTime), EVENTS_PERIOD],
         );
         const total = Number(count);
@@ -102,8 +102,8 @@ module.exports = (client) => {
         const { rows: events } = await client.query(
           `SELECT id, name, main_photo, start_time
             FROM events
-            WHERE start_time > $1 AND start_time < $1 + $2 AND start_time > now()
-              ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL
+            WHERE start_time > $1 AND start_time < $1 + $2 AND start_time > now() AND
+              ${queryAccessibility(filters)} moderated AND deleted_at IS NULL
             ORDER BY start_time
             LIMIT $3 OFFSET $4;`,
           [new Date(startTime), EVENTS_PERIOD, limit, offset],
@@ -128,8 +128,8 @@ module.exports = (client) => {
         } = await client.query(
           // start_time > TIMESTAMP 'today'
           `SELECT COUNT(*) FROM events
-            WHERE end_time > now() AND start_time < now()
-              ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL;`,
+            WHERE end_time > now() AND start_time < now() AND
+              ${queryAccessibility(filters)} moderated AND deleted_at IS NULL;`,
         );
         const total = Number(count);
 
@@ -137,8 +137,8 @@ module.exports = (client) => {
         const { rows: events } = await client.query(
           `SELECT id, name, main_photo, start_time
             FROM events
-            WHERE end_time > now() AND start_time < now()
-              ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL
+            WHERE end_time > now() AND start_time < now() AND
+              ${queryAccessibility(filters)} moderated AND deleted_at IS NULL
             ORDER BY start_time
             LIMIT $1 OFFSET $2;`,
           [limit, offset],
@@ -236,6 +236,45 @@ module.exports = (client) => {
             ORDER BY start_time
             LIMIT $2 OFFSET $3;`,
           [placeId, limit, offset],
+        );
+
+        const res = {};
+        res.events = events;
+        res._total = total;
+        res._totalPages = Math.ceil(total / limit);
+
+        return res;
+      } catch (err) {
+        log.error(err.message || err);
+        throw err;
+      }
+    },
+
+    searchEvents: async (searchString, limit, page) => {
+      try {
+        if (!searchString) {
+          throw new Error('ERROR: No searchString defined!');
+        }
+
+        const {
+          rows: [{ count }],
+        } = await client.query(
+          `SELECT COUNT(*) FROM events
+            WHERE start_time > now() AND name LIKE $1
+              AND moderated AND deleted_at IS NULL;`,
+          [`%${searchString}%`],
+        );
+        const total = Number(count);
+
+        const offset = (page - 1) * limit;
+        const { rows: events } = await client.query(
+          `SELECT id, name, main_photo, start_time
+            FROM events
+            WHERE start_time > now() AND name LIKE $1
+              AND moderated AND deleted_at IS NULL
+            ORDER BY start_time
+            LIMIT $2 OFFSET $3;`,
+          [`%${searchString}%`, limit, offset],
         );
 
         const res = {};
