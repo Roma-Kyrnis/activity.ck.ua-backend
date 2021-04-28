@@ -79,75 +79,83 @@ async function logout(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-async function checkGoogleLogin(ctx, next) {
-  if (ctx.request.query.error) {
-    const { error } = ctx.request.query;
-    log.error(`Google authorization error: ${error}`);
-    ctx.throw(400, error);
-  }
-
-  try {
-    const payload = await google.getUserPayload(ctx.request.query.code);
-
-    if (payload.aud !== GOOGLE.CLIENT_ID) {
-      ctx.throw(403, 'Incorrect credentials');
+function googleGetAccess(isLogin) {
+  return async (ctx, next) => {
+    if (ctx.request.query.error) {
+      const { error } = ctx.request.query;
+      log.error(`Google authorization error: ${error}`);
+      return ctx.throw(400, error);
     }
 
-    ctx.state.userMetadata = {
-      name: payload.name,
-      email: hash.create(payload.sub),
-      avatar: payload.picture,
-    };
+    try {
+      let payload;
 
-    return next();
-  } catch (err) {
-    if (err.message === 'invalid_grant') {
-      return ctx.throw(403, 'incorrect code');
+      if (isLogin) {
+        payload = await google.getUserPayloadLogin(ctx.request.query.code);
+      } else {
+        payload = await google.getUserPayloadRegistration(ctx.request.query.code);
+      }
+
+      if (payload.aud !== GOOGLE.CLIENT_ID) {
+        return ctx.throw(403, 'Incorrect credentials');
+      }
+
+      ctx.state.payload = payload;
+
+      return next();
+    } catch (err) {
+      if (err.message === 'invalid_grant') {
+        return ctx.throw(403, 'incorrect code');
+      }
+      return ctx.throw(err);
     }
-
-    return ctx.throw(err);
-  }
+  };
 }
 
-async function checkFacebookLogin(ctx, next) {
-  try {
-    const user = await facebook.getUser(ctx.request.query.code);
+async function facebookGetAccess(isLogin) {
+  return async (ctx, next) => {
+    try {
+      const user = await facebook.getUser(ctx.request.query.code, isLogin);
 
-    ctx.state.userMetadata = {
-      name: user.name,
-      email: hash.create(user.id),
-      avatar: user.picture.data.url,
-    };
+      ctx.state.payload = {
+        name: user.name,
+        avatar: user.picture.data.url,
+        email: user.id,
+      };
 
-    return next();
-  } catch (err) {
-    if (err.name === FacebookApiException.name) {
-      log.error(err.response, 'Facebook authorization error: ');
-      return ctx.throw(403, err.response.error.message);
+      return next();
+    } catch (err) {
+      if (err.name === FacebookApiException.name) {
+        log.error(err.response, 'Facebook authorization error: ');
+        return ctx.throw(403, err.response.error.message);
+      }
+
+      return ctx.throw(err);
     }
-
-    return ctx.throw(err);
-  }
+  };
 }
 
-async function authorizeUser(ctx) {
-  const { userMetadata } = ctx.state;
+async function serviceRegistration(ctx) {
+  const { payload } = ctx.state;
 
-  let user;
+  const newUser = {
+    name: payload.name,
+    avatar: payload.picture,
+    email: hash.create(payload.sub),
+  };
+  const user = await createUser(newUser);
 
-  const isUserExist = await checkUser(userMetadata.email);
-  if (isUserExist) {
-    user = await validateUser(userMetadata.email);
-    ctx.assert(user, 403, 'Incorrect credentials');
-    user = await updateUser({ id: user.id, avatar: userMetadata.avatar });
-  } else {
-    const newUser = {
-      name: userMetadata.name,
-      avatar: userMetadata.avatar,
-      email: userMetadata.email,
-    };
-    user = await createUser(newUser);
-  }
+  const tokens = await getUserTokens(user.id, user.role);
+
+  ctx.body = tokens;
+}
+
+async function serviceLogin(ctx) {
+  const { payload } = ctx.state;
+
+  const user = await validateUser(hash.create(payload.sub));
+  ctx.assert(user, 403, 'Incorrect credentials');
+  // update user if avatar or name changed
 
   const tokens = await getUserTokens(user.id, user.role);
 
@@ -159,6 +167,8 @@ module.exports = {
   login,
   refresh,
   logout,
-  googleLogin: [checkGoogleLogin, authorizeUser],
-  facebookLogin: [checkFacebookLogin, authorizeUser],
+  googleRegistration: [googleGetAccess(false), serviceRegistration],
+  googleLogin: [googleGetAccess(true), serviceLogin],
+  facebookRegistration: [facebookGetAccess(false), serviceRegistration],
+  facebookLogin: [facebookGetAccess(true), serviceLogin],
 };
