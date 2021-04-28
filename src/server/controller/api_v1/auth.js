@@ -159,7 +159,17 @@ async function serviceLogin(ctx) {
 
   const user = await validateUser(hash.create(payload.email));
   ctx.assert(user, 403, 'Incorrect credentials');
-  // update user if avatar or name changed
+
+  const editUser = { id: user.id };
+  if (payload.name !== user.name) {
+    editUser.name = payload.name;
+  }
+  if (payload.avatar !== user.avatar) {
+    editUser.avatar = payload.avatar;
+  }
+  if (editUser.name || editUser.avatar) {
+    await updateUser(editUser);
+  }
 
   const tokens = await getUserTokens(user.id, user.role);
 
