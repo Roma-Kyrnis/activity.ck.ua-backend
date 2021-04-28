@@ -12,15 +12,9 @@ const name = 'pg';
 
 module.exports = (config) => {
   const client = new Pool(config);
-  const {
-    createUser,
-    getUser,
-    checkUser,
-    getUserCredentials,
-    getUserToken,
-    updateUser,
-    deleteUser,
-  } = users(client);
+  const { createUser, getUser, getUserCredentials, getUserToken, updateUser, deleteUser } = users(
+    client,
+  );
   const {
     createOrganization,
     getOrganizations,
@@ -33,6 +27,7 @@ module.exports = (config) => {
     getPlaces,
     isUserPlace,
     getUserPlaces,
+    searchPlaces,
     updatePlace,
     deletePlace,
   } = places(client);
@@ -46,6 +41,7 @@ module.exports = (config) => {
     isUserEvent,
     getUserEvents,
     getPlaceEvents,
+    searchEvents,
     updateEvent,
     deleteEvent,
   } = events(client);
@@ -80,7 +76,6 @@ module.exports = (config) => {
 
     createUser,
     getUser,
-    checkUser,
     getUserCredentials,
     getUserToken,
     updateUser,
@@ -96,6 +91,7 @@ module.exports = (config) => {
     getPlaces,
     isUserPlace,
     getUserPlaces,
+    searchPlaces,
     updatePlace,
     deletePlace,
 
@@ -115,6 +111,7 @@ module.exports = (config) => {
     isUserEvent,
     getUserEvents,
     getPlaceEvents,
+    searchEvents,
     updateEvent,
     deleteEvent,
 
