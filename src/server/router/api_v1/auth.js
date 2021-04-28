@@ -25,6 +25,11 @@ router.get(
   { validate: validator.googleRegistration },
   auth.googleRegistration,
 );
+router.get(
+  '/registration/facebook',
+  { validate: validator.facebookRegistration },
+  auth.facebookRegistration,
+);
 router.post('/login', { validate: validator.login }, auth.login);
 router.get('/login/google', { validate: validator.googleLogin }, auth.googleLogin);
 router.get('/login/facebook', { validate: validator.facebookLogin }, auth.facebookLogin);

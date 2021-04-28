@@ -71,6 +71,6 @@ module.exports = {
   logout,
   googleRegistration,
   googleLogin,
-  facebookLogin,
   facebookRegistration,
+  facebookLogin,
 };

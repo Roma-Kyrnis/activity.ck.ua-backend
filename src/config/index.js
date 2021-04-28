@@ -105,11 +105,12 @@ const config = {
       CLIENT_ID: process.env.FACEBOOK_AUTH_APP_ID || fatal('No FACEBOOK_AUTH_APP_ID'),
       CLIENT_SECRET: process.env.FACEBOOK_AUTH_APP_SECRET || fatal('No FACEBOOK_AUTH_APP_SECRET'),
       REDIRECT_URLS: {
-        LOGIN:
-          process.env.FACEBOOK_AUTH_REDIRECT_URL || fatal('No FACEBOOK_AUTH_REDIRECT_URL_LOGIN'),
         REGISTRATION:
-          process.env.FACEBOOK_AUTH_REDIRECT_URL ||
+          process.env.FACEBOOK_AUTH_REDIRECT_URL_REGISTRATION ||
           fatal('No FACEBOOK_AUTH_REDIRECT_URL_REGISTRATION'),
+        LOGIN:
+          process.env.FACEBOOK_AUTH_REDIRECT_URL_LOGIN ||
+          fatal('No FACEBOOK_AUTH_REDIRECT_URL_LOGIN'),
       },
     },
   },
