@@ -20,6 +20,11 @@ const router = Router();
 router.prefix(AUTH);
 
 router.post('/registration', { validate: validator.registration }, auth.registration);
+router.get(
+  '/registration/google',
+  { validate: validator.googleRegistration },
+  auth.googleRegistration,
+);
 router.post('/login', { validate: validator.login }, auth.login);
 router.get('/login/google', { validate: validator.googleLogin }, auth.googleLogin);
 router.get('/refresh', { validate: validator.refresh }, refresh(), auth.refresh);

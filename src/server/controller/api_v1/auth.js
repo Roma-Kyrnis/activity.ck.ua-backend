@@ -1,4 +1,4 @@
-const { createUser, updateUser, getUserCredentials, checkUser } = require('../../../db');
+const { createUser, updateUser, getUserCredentials } = require('../../../db');
 const { hash, authorizationTokens } = require('../../../utils');
 const { google } = require('../../../lib/api_v1');
 const {
@@ -77,43 +77,34 @@ async function logout(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-async function googleLogin(ctx) {
+async function googleIfError(ctx, next) {
   if (ctx.request.query.error) {
     const { error } = ctx.request.query;
     log.error(`Google authorization error: ${error}`);
-    ctx.throw(400, error);
+    return ctx.throw(400, error);
   }
 
-  try {
-    const payload = await google.getUserPayload(ctx.request.query.code);
+  return next();
+}
 
+async function serviceRegistration(ctx) {
+  try {
+    const payload = await google.getUserPayloadRegistration(ctx.request.query.code);
     if (payload.aud !== GOOGLE.CLIENT_ID) {
       ctx.throw(403, 'Incorrect credentials');
     }
 
-    const email = hash.create(payload.sub);
-
-    let user;
-
-    const isUserExist = await checkUser(email);
-    if (isUserExist) {
-      user = await validateUser(email);
-      ctx.assert(user, 403, 'Incorrect credentials');
-    } else {
-      const newUser = {
-        name: payload.name,
-        avatar: payload.picture,
-        email,
-      };
-
-      user = await createUser(newUser);
-    }
+    const newUser = {
+      name: payload.name,
+      avatar: payload.picture,
+      email: hash.create(payload.sub),
+    };
+    const user = await createUser(newUser);
 
     const tokens = await getUserTokens(user.id, user.role);
 
     ctx.body = tokens;
   } catch (err) {
-    log.error(err.message || err);
     if (err.message === 'invalid_grant') {
       ctx.throw(403, 'incorrect code');
     }
@@ -121,4 +112,33 @@ async function googleLogin(ctx) {
   }
 }
 
-module.exports = { registration, login, refresh, logout, googleLogin };
+async function serviceLogin(ctx) {
+  try {
+    const payload = await google.getUserPayloadLogin(ctx.request.query.code);
+    if (payload.aud !== GOOGLE.CLIENT_ID) {
+      ctx.throw(403, 'Incorrect credentials');
+    }
+
+    const user = await validateUser(hash.create(payload.sub));
+    ctx.assert(user, 403, 'Incorrect credentials');
+    // update user if avatar or name changed
+
+    const tokens = await getUserTokens(user.id, user.role);
+
+    ctx.body = tokens;
+  } catch (err) {
+    if (err.message === 'invalid_grant') {
+      ctx.throw(403, 'incorrect code');
+    }
+    ctx.throw(err);
+  }
+}
+
+module.exports = {
+  registration,
+  login,
+  refresh,
+  logout,
+  googleRegistration: [googleIfError, serviceRegistration],
+  googleLogin: [googleIfError, serviceLogin],
+};
