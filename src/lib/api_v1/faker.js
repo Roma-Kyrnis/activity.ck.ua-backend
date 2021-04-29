@@ -60,14 +60,14 @@ function getWorkTime() {
   const workTime = {};
 
   for (let day = 0; day <= faker.random.number({ min: 1, max: 6 }); day += 1) {
-    const startMinutes = faker.random.number({ min: 0, max: 60 });
-    const endMinutes = faker.random.number({ min: 0, max: 60 });
+    const startMinutes = faker.random.number({ min: 0, max: 59 });
+    const endMinutes = faker.random.number({ min: 0, max: 59 });
 
     workTime[DAYS[day]] = {
-      start: `${faker.random.number({ min: 0, max: 24 })}:${
+      start: `${faker.random.number({ min: 0, max: 23 })}:${
         startMinutes < 10 ? '0' : ''
       }${startMinutes}`,
-      end: `${faker.random.number({ min: 0, max: 24 })}:${endMinutes < 10 ? '0' : ''}${endMinutes}`,
+      end: `${faker.random.number({ min: 0, max: 23 })}:${endMinutes < 10 ? '0' : ''}${endMinutes}`,
     };
   }
 
