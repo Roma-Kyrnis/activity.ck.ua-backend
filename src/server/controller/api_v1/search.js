@@ -9,15 +9,15 @@ async function global(ctx) {
   response.places = await searchPlaces(name, limit, page);
   response.events = await searchEvents(name, limit, page);
 
-  return response;
+  ctx.body = response;
 }
 
 async function places(ctx) {
-  const { name, limit, page, filters } = getSearchParams(ctx.request.query);
+  const { name, limit, page } = getSearchParams(ctx.request.query);
 
-  const response = await searchPlaces(name, limit, page, filters);
+  const response = await searchPlaces(name, limit, page);
 
-  return response;
+  ctx.body = response;
 }
 
 async function events(ctx) {
@@ -25,7 +25,7 @@ async function events(ctx) {
 
   const response = await searchEvents(name, limit, page);
 
-  return response;
+  ctx.body = response;
 }
 
 module.exports = { global, places, events };

@@ -29,13 +29,9 @@ function getPaginationAndFilters(query) {
 
 function getSearchParams(query) {
   const { limit, page } = getPagination(query);
-  const { name, type_id: types, category_id: categoryId } = query;
+  const { name } = query;
 
-  const filters = {};
-  if (categoryId !== undefined) filters.categoryId = categoryId;
-  if (types !== undefined) filters.types = types.split('-');
-
-  return { limit, page, name, filters };
+  return { limit, page, name };
 }
 
 module.exports = {
