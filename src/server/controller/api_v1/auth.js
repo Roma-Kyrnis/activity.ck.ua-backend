@@ -95,7 +95,7 @@ async function forgotPassword(ctx) {
 
   // send email with url to frontend
   // const stringifiedParams = querystring.stringify({ email, code });
-  // await mail.recoverPassword(email, `${AUTH.CHANGE_PASSWORD_REDIRECT_URL}${stringifiedParams}`);
+  // await mail.recoverPassword(email, `${AUTH.CHANGE_PASSWORD_REDIRECT_URL}?${stringifiedParams}`);
 
   ctx.body = { message: 'OK' };
 }
