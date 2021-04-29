@@ -34,7 +34,7 @@ const logout = {
   }).unknown(),
 };
 
-const googleRegistration = {
+const google = {
   query: Joi.object({
     error: Joi.string(),
     code: Joi.string(),
@@ -43,13 +43,4 @@ const googleRegistration = {
     .unknown(),
 };
 
-const googleLogin = {
-  query: Joi.object({
-    error: Joi.string(),
-    code: Joi.string(),
-  })
-    .xor('error', 'code')
-    .unknown(),
-};
-
-module.exports = { registration, login, refresh, logout, googleRegistration, googleLogin };
+module.exports = { registration, login, refresh, logout, google };

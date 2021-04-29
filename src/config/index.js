@@ -95,13 +95,7 @@ const config = {
     GOOGLE: {
       CLIENT_ID: process.env.GOOGLE_AUTH_CLIENT_ID || fatal('No GOOGLE_AUTH_CLIENT_ID'),
       CLIENT_SECRET: process.env.GOOGLE_AUTH_CLIENT_SECRET || fatal('No GOOGLE_AUTH_CLIENT_SECRET'),
-      REDIRECT_URLS: {
-        REGISTRATION:
-          process.env.GOOGLE_AUTH_REDIRECT_URL_REGISTRATION ||
-          fatal('No GOOGLE_AUTH_REDIRECT_URL_REGISTRATION'),
-        LOGIN:
-          process.env.GOOGLE_AUTH_REDIRECT_URL_LOGIN || fatal('No GOOGLE_AUTH_REDIRECT_URL_LOGIN'),
-      },
+      REDIRECT_URL: process.env.GOOGLE_AUTH_REDIRECT_URL || fatal('No GOOGLE_AUTH_REDIRECT_URL'),
     },
   },
   REVIEW: {
