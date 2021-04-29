@@ -5,9 +5,9 @@ module.exports = {
     if (filters) {
       const { accessibility, dogFriendly, childFriendly } = filters;
 
-      if (accessibility) query = 'AND accessibility';
-      if (dogFriendly) query += ' AND dog_friendly';
-      if (childFriendly) query += ' AND child_friendly';
+      if (accessibility) query = 'accessibility AND ';
+      if (dogFriendly) query += 'dog_friendly AND ';
+      if (childFriendly) query += 'child_friendly AND ';
     }
 
     return query;

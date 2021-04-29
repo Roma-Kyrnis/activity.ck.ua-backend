@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const log = require('../../utils/logger')(__filename);
-const { checkError } = require('../checkError');
+const { checkError, DatabaseError } = require('../checkError');
 
 module.exports = (client) => {
   return {
@@ -54,22 +54,29 @@ module.exports = (client) => {
 
     getExplore: async (userId, categoryId) => {
       try {
-        const res = await client.query(
-          `SELECT ceil(
-            100 *
+        const {
+          rows: [{ explored, total }],
+        } = await client.query(
+          `SELECT
             (SELECT COUNT(*)
               FROM places
               JOIN visited_places AS v ON v.place_id = places.id AND v.user_id = $1
-              WHERE ${categoryId ? 'category_id = $2 AND' : ''} moderated AND deleted_at IS NULL)
-            /
+              WHERE ${categoryId ? 'category_id = $2 AND' : ''} moderated AND deleted_at IS NULL
+            ) AS explored,
             (SELECT COUNT(*)
               FROM places
-              WHERE ${categoryId ? 'category_id = $2 AND' : ''} moderated AND deleted_at IS NULL))
-            AS explore;`,
+              WHERE ${categoryId ? 'category_id = $2 AND' : ''} moderated AND deleted_at IS NULL
+            ) AS total;`,
           categoryId ? [userId, categoryId] : [userId],
         );
 
-        return res.rows[0];
+        const placesCount = Number(total);
+        if (!placesCount)
+          throw new DatabaseError('ERROR: A places with this category_id does not exist!');
+
+        const explore = Math.trunc((Number(explored) / placesCount) * 100);
+
+        return { explore };
       } catch (err) {
         log.error(err.message || err);
         throw checkError(err);

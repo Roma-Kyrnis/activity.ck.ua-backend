@@ -92,8 +92,8 @@ module.exports = (client) => {
           rows: [{ count }],
         } = await client.query(
           `SELECT COUNT(*) FROM events
-            WHERE start_time > $1 AND start_time < $1 + $2 AND start_time > now()
-              ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL;`,
+            WHERE start_time > $1 AND start_time < $1 + $2 AND start_time > now() AND
+              ${queryAccessibility(filters)} moderated AND deleted_at IS NULL;`,
           [new Date(startTime), EVENTS_PERIOD],
         );
         const total = Number(count);
@@ -102,8 +102,8 @@ module.exports = (client) => {
         const { rows: events } = await client.query(
           `SELECT id, name, main_photo, start_time
             FROM events
-            WHERE start_time > $1 AND start_time < $1 + $2 AND start_time > now()
-              ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL
+            WHERE start_time > $1 AND start_time < $1 + $2 AND start_time > now() AND
+              ${queryAccessibility(filters)} moderated AND deleted_at IS NULL
             ORDER BY start_time
             LIMIT $3 OFFSET $4;`,
           [new Date(startTime), EVENTS_PERIOD, limit, offset],
@@ -128,8 +128,8 @@ module.exports = (client) => {
         } = await client.query(
           // start_time > TIMESTAMP 'today'
           `SELECT COUNT(*) FROM events
-            WHERE end_time > now() AND start_time < now()
-              ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL;`,
+            WHERE end_time > now() AND start_time < now() AND
+              ${queryAccessibility(filters)} moderated AND deleted_at IS NULL;`,
         );
         const total = Number(count);
 
@@ -137,8 +137,8 @@ module.exports = (client) => {
         const { rows: events } = await client.query(
           `SELECT id, name, main_photo, start_time
             FROM events
-            WHERE end_time > now() AND start_time < now()
-              ${queryAccessibility(filters)} AND moderated AND deleted_at IS NULL
+            WHERE end_time > now() AND start_time < now() AND
+              ${queryAccessibility(filters)} moderated AND deleted_at IS NULL
             ORDER BY start_time
             LIMIT $1 OFFSET $2;`,
           [limit, offset],

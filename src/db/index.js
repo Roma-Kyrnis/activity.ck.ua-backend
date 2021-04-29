@@ -67,7 +67,6 @@ module.exports = {
 
   createUser: async (user) => funcWrapper(dbWrapper().createUser)(user),
   getUser: async (id) => funcWrapper(dbWrapper().getUser)(id),
-  checkUser: async (email) => funcWrapper(dbWrapper().checkUser)(email),
   getUserCredentials: async (email) => funcWrapper(dbWrapper().getUserCredentials)(email),
   getUserToken: async (id) => funcWrapper(dbWrapper().getUserToken)(id),
   updateUser: async (user) => funcWrapper(dbWrapper().updateUser)(user),
@@ -87,8 +86,8 @@ module.exports = {
   isUserPlace: async (userId, placeId) => funcWrapper(dbWrapper().isUserPlace)(userId, placeId),
   getUserPlaces: async (userId, limit, page) =>
     funcWrapper(dbWrapper().getUserPlaces)(userId, limit, page),
-  searchPlaces: async (categoryId, searchString, limit, page) =>
-    funcWrapper(dbWrapper().searchPlaces)(categoryId, searchString, limit, page),
+  searchPlaces: async (searchString, limit, page) =>
+    funcWrapper(dbWrapper().searchPlaces)(searchString, limit, page),
   updatePlace: async (place) => funcWrapper(dbWrapper().updatePlace)(place),
   deletePlace: async (id) => funcWrapper(dbWrapper().deletePlace)(id),
 
