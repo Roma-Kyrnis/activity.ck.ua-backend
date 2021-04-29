@@ -104,6 +104,25 @@ const config = {
       ALLOW_ANEW_SEND_AFTER: 3 * 60 * 1000, // 3 minutes
     },
   },
+  MAIL: {
+    FROM: 'Cherkasy activity <activity@activity.ck.ua>',
+    MESSAGES: {
+      RECOVER_PASSWORD: {
+        SUBJECT: 'Відновлення паролю',
+        TEXT: 'Для відновлення паролю перейдіть за посиланням:',
+      },
+      PASSWORD_CHANGED: {
+        SUBJECT: 'Пароль змінився',
+        TEXT: 'Пароль для входу в аккаунт змінився',
+      },
+    },
+    AUTH: {
+      USER: process.env.MAIL_AUTH_USER || fatal('No MAIL_AUTH_USER'),
+      CLIENT_ID: process.env.MAIL_AUTH_CLIENT_ID || fatal('No MAIL_AUTH_CLIENT_ID'),
+      CLIENT_SECRET: process.env.MAIL_AUTH_CLIENT_SECRET || fatal('No MAIL_AUTH_CLIENT_SECRET'),
+      REFRESH_TOKEN: process.env.MAIL_AUTH_REFRESH_TOKEN || fatal('No MAIL_AUTH_REFRESH_TOKEN'),
+    },
+  },
 };
 
 module.exports = config;
