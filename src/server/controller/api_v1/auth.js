@@ -79,96 +79,72 @@ async function logout(ctx) {
   ctx.body = { message: 'OK' };
 }
 
-function googleGetAccess(isLogin) {
-  return async (ctx, next) => {
-    if (ctx.request.query.error) {
-      const { error } = ctx.request.query;
-      log.error(`Google authorization error: ${error}`);
-      return ctx.throw(400, error);
+async function googleGetAccess(ctx, next) {
+  if (ctx.request.query.error) {
+    const { error } = ctx.request.query;
+    log.error(`Google authorization error: ${error}`);
+    return ctx.throw(400, error);
+  }
+
+  try {
+    const payload = await google.getUserPayload(ctx.request.query.code);
+
+    if (payload.aud !== GOOGLE.CLIENT_ID) {
+      return ctx.throw(403, 'Incorrect credentials');
     }
 
-    try {
-      let payload;
+    ctx.state.payload = {
+      name: payload.name,
+      email: payload.sub,
+      avatar: payload.picture,
+    };
 
-      if (isLogin) {
-        payload = await google.getUserPayloadLogin(ctx.request.query.code);
-      } else {
-        payload = await google.getUserPayloadRegistration(ctx.request.query.code);
-      }
-
-      if (payload.aud !== GOOGLE.CLIENT_ID) {
-        return ctx.throw(403, 'Incorrect credentials');
-      }
-
-      ctx.state.payload = {
-        name: payload.name,
-        email: payload.sub,
-        avatar: payload.picture,
-      };
-
-      return next();
-    } catch (err) {
-      if (err.message === 'invalid_grant') {
-        return ctx.throw(403, 'incorrect code');
-      }
-      return ctx.throw(err);
+    return next();
+  } catch (err) {
+    if (err.message === 'invalid_grant') {
+      return ctx.throw(403, 'incorrect code');
     }
-  };
+    return ctx.throw(err);
+  }
 }
 
-function facebookGetAccess(isLogin) {
-  return async (ctx, next) => {
-    try {
-      const user = await facebook.getUser(ctx.request.query.code, isLogin);
+async function facebookGetAccess(ctx, next) {
+  try {
+    const user = await facebook.getUser(ctx.request.query.code);
 
-      ctx.state.payload = {
-        name: user.name,
-        email: user.id,
-        avatar: user.picture.data.url,
-      };
+    ctx.state.payload = {
+      name: user.name,
+      email: user.id,
+      avatar: user.picture.data.url,
+    };
 
-      return next();
-    } catch (err) {
-      if (err.name === FacebookApiException.name) {
-        log.error(err.response, 'Facebook authorization error: ');
-        return ctx.throw(403, err.response.error.message);
-      }
-
-      return ctx.throw(err);
+    return next();
+  } catch (err) {
+    if (err.name === FacebookApiException.name) {
+      log.error(err.response, 'Facebook authorization error: ');
+      return ctx.throw(403, err.response.error.message);
     }
-  };
+
+    return ctx.throw(err);
+  }
 }
 
-async function serviceRegistration(ctx) {
+async function serviceAuthorization(ctx) {
   const { payload } = ctx.state;
 
-  const newUser = {
-    name: payload.name,
-    avatar: payload.avatar,
-    email: hash.create(payload.email),
-  };
-  const user = await createUser(newUser);
+  let user = await getUserCredentials(payload.email);
 
-  const tokens = await getUserTokens(user.id, user.role);
+  if (user) {
+    const isValidUser = await validateUser(payload.email);
+    ctx.assert(isValidUser, 403, 'Incorrect credentials');
 
-  ctx.body = tokens;
-}
-
-async function serviceLogin(ctx) {
-  const { payload } = ctx.state;
-
-  const user = await validateUser(hash.create(payload.email));
-  ctx.assert(user, 403, 'Incorrect credentials');
-
-  const editUser = { id: user.id };
-  if (payload.name !== user.name) {
-    editUser.name = payload.name;
-  }
-  if (payload.avatar !== user.avatar) {
-    editUser.avatar = payload.avatar;
-  }
-  if (editUser.name || editUser.avatar) {
-    await updateUser(editUser);
+    const columnsToBeEdit = Object.entries(payload).filter(([key, value]) => value !== user[key]);
+    if (columnsToBeEdit.length) {
+      const editUser = { id: user.id, ...Object.fromEntries(columnsToBeEdit) };
+      await updateUser(editUser);
+    }
+  } else {
+    user = await createUser(payload);
   }
 
   const tokens = await getUserTokens(user.id, user.role);
@@ -181,8 +157,6 @@ module.exports = {
   login,
   refresh,
   logout,
-  googleRegistration: [googleGetAccess(false), serviceRegistration],
-  googleLogin: [googleGetAccess(true), serviceLogin],
-  facebookRegistration: [facebookGetAccess(false), serviceRegistration],
-  facebookLogin: [facebookGetAccess(true), serviceLogin],
+  google: [googleGetAccess, serviceAuthorization],
+  facebook: [facebookGetAccess, serviceAuthorization],
 };

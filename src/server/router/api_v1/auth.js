@@ -20,19 +20,11 @@ const router = Router();
 router.prefix(AUTH);
 
 router.post('/registration', { validate: validator.registration }, auth.registration);
-router.get(
-  '/registration/google',
-  { validate: validator.googleRegistration },
-  auth.googleRegistration,
-);
-router.get(
-  '/registration/facebook',
-  { validate: validator.facebookRegistration },
-  auth.facebookRegistration,
-);
 router.post('/login', { validate: validator.login }, auth.login);
-router.get('/login/google', { validate: validator.googleLogin }, auth.googleLogin);
-router.get('/login/facebook', { validate: validator.facebookLogin }, auth.facebookLogin);
+
+router.get('/google', { validate: validator.google }, auth.google);
+router.get('/facebook', { validate: validator.facebook }, auth.facebook);
+
 router.get('/refresh', { validate: validator.refresh }, refresh(), auth.refresh);
 router.get('/logout', { validate: validator.logout }, refresh(), auth.logout);
 

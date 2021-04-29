@@ -34,7 +34,7 @@ const logout = {
   }).unknown(),
 };
 
-const googleRegistration = {
+const google = {
   query: Joi.object({
     error: Joi.string(),
     code: Joi.string(),
@@ -43,22 +43,7 @@ const googleRegistration = {
     .unknown(),
 };
 
-const googleLogin = {
-  query: Joi.object({
-    error: Joi.string(),
-    code: Joi.string(),
-  })
-    .xor('error', 'code')
-    .unknown(),
-};
-
-const facebookRegistration = {
-  query: Joi.object({
-    code: Joi.string(),
-  }).unknown(),
-};
-
-const facebookLogin = {
+const facebook = {
   query: Joi.object({
     code: Joi.string(),
   }).unknown(),
@@ -69,8 +54,7 @@ module.exports = {
   login,
   refresh,
   logout,
-  googleRegistration,
-  googleLogin,
-  facebookRegistration,
-  facebookLogin,
+  google,
+  facebook,
 };
+module.exports = { registration, login, refresh, logout, google };

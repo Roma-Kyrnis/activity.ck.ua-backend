@@ -95,25 +95,13 @@ const config = {
     GOOGLE: {
       CLIENT_ID: process.env.GOOGLE_AUTH_CLIENT_ID || fatal('No GOOGLE_AUTH_CLIENT_ID'),
       CLIENT_SECRET: process.env.GOOGLE_AUTH_CLIENT_SECRET || fatal('No GOOGLE_AUTH_CLIENT_SECRET'),
-      REDIRECT_URLS: {
-        REGISTRATION:
-          process.env.GOOGLE_AUTH_REDIRECT_URL_REGISTRATION ||
-          fatal('No GOOGLE_AUTH_REDIRECT_URL_REGISTRATION'),
-        LOGIN:
-          process.env.GOOGLE_AUTH_REDIRECT_URL_LOGIN || fatal('No GOOGLE_AUTH_REDIRECT_URL_LOGIN'),
-      },
+      REDIRECT_URL: process.env.GOOGLE_AUTH_REDIRECT_URL || fatal('No GOOGLE_AUTH_REDIRECT_URL'),
     },
     FACEBOOK: {
       CLIENT_ID: process.env.FACEBOOK_AUTH_APP_ID || fatal('No FACEBOOK_AUTH_APP_ID'),
       CLIENT_SECRET: process.env.FACEBOOK_AUTH_APP_SECRET || fatal('No FACEBOOK_AUTH_APP_SECRET'),
-      REDIRECT_URLS: {
-        REGISTRATION:
-          process.env.FACEBOOK_AUTH_REDIRECT_URL_REGISTRATION ||
-          fatal('No FACEBOOK_AUTH_REDIRECT_URL_REGISTRATION'),
-        LOGIN:
-          process.env.FACEBOOK_AUTH_REDIRECT_URL_LOGIN ||
-          fatal('No FACEBOOK_AUTH_REDIRECT_URL_LOGIN'),
-      },
+      REDIRECT_URL:
+        process.env.FACEBOOK_AUTH_REDIRECT_URL || fatal('No FACEBOOK_AUTH_REDIRECT_URL'),
     },
   },
   REVIEW: {

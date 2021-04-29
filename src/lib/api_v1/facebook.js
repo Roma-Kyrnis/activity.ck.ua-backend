@@ -2,22 +2,18 @@ const { Facebook } = require('fb');
 
 const {
   AUTH: {
-    FACEBOOK: {
-      CLIENT_ID,
-      CLIENT_SECRET,
-      REDIRECT_URLS: { LOGIN, REGISTRATION },
-    },
+    FACEBOOK: { CLIENT_ID, CLIENT_SECRET, REDIRECT_URL },
   },
 } = require('../../config');
 
 const FB = new Facebook();
 FB.options({ version: 'v10.0' });
 
-async function getUser(code, isLogin) {
+async function getUser(code) {
   const { access_token: accessToken } = await FB.api('oauth/access_token', {
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
-    redirect_uri: isLogin ? LOGIN : REGISTRATION,
+    redirect_uri: REDIRECT_URL,
     code,
   });
 
