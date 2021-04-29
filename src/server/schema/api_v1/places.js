@@ -2,10 +2,9 @@ const { Joi } = require('koa-joi-router');
 
 const {
   REVIEW: { RATING },
-  places: {
-    schema: { TYPE_ID },
-  },
 } = require('../../../config');
+
+const TYPE_ID = /^[\w-]+$/;
 
 const create = {
   // header: Joi.object({

@@ -98,11 +98,6 @@ const config = {
       MAX: 5,
     },
   },
-  places: {
-    schema: {
-      TYPE_ID: /^[\w-]+$/,
-    },
-  },
 };
 
 module.exports = config;
