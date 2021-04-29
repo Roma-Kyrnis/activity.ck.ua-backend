@@ -1,10 +1,10 @@
 const { nanoid } = require('nanoid');
+const querystring = require('querystring');
 
 const { createUser, updateUser, getUserCredentials } = require('../../../db');
 const { hash, authorizationTokens } = require('../../../utils');
-const {
-  AUTH: { CODE },
-} = require('../../../config');
+const { mail } = require('../../../lib/api_v1');
+const { AUTH } = require('../../../config');
 
 function getCredentialsString(body) {
   return `${body.email}${body.password}`;
@@ -83,17 +83,19 @@ async function forgotPassword(ctx) {
 
   // const lastSend = user.code_expired_at - Date.now();
   // ctx.assert(
-  //   lastSend < CODE.ALLOW_ANEW_SEND_AFTER,
+  //   lastSend < AUTH.CODE.ALLOW_ANEW_SEND_AFTER,
   //   403,
   //   `Wait ${lastSend} to resend code to email`,
   // );
 
   // // generate code and save in DB with expired time
-  // const code = nanoid(CODE.SIZE);
-  // const expiredTime = Date.now() + CODE.TIMELIFE;
+  // const code = nanoid(AUTH.CODE.SIZE);
+  // const expiredTime = Date.now() + AUTH.CODE.TIMELIFE;
   // await updateUserCode({ id: user.id, code, code_expired_at: new Date(expiredTime) });
 
   // send email with url to frontend
+  // const stringifiedParams = querystring.stringify({ email, code });
+  // await mail.recoverPassword(email, `${AUTH.CHANGE_PASSWORD_REDIRECT_URL}${stringifiedParams}`);
 
   ctx.body = { message: 'OK' };
 }
@@ -127,6 +129,7 @@ async function changePassword(ctx) {
   // });
 
   // // Send email password changed
+  // await mail.passwordChanged(email);
 
   ctx.body = { message: 'OK' };
 }

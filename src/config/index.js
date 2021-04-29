@@ -98,6 +98,7 @@ const config = {
     },
   },
   AUTH: {
+    CHANGE_PASSWORD_REDIRECT_URL: 'http://localhost:3000/api/v1/', // CHANGE to frontend url
     CODE: {
       TIMELIFE: 2 * 60 * 60 * 1000, // 2 hours
       SIZE: 21,
