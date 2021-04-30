@@ -4,6 +4,8 @@ const {
   REVIEW: { RATING },
 } = require('../../../config');
 
+const TYPE_ID = /^[\w-]+$/;
+
 const create = {
   // header: Joi.object({
   //   authorization: Joi.string()
@@ -26,7 +28,7 @@ const create = {
     place: Joi.object({
       name: Joi.string().min(3).max(255).required(),
       category_id: Joi.string().min(3).max(255).required(), // change to ENUM
-      type_id: Joi.string().pattern(/^([a-z]|-)+$/),
+      type_id: Joi.string().pattern(TYPE_ID),
       address: Joi.string().min(3).max(255).required(),
       phones: Joi.array()
         .items(Joi.string().pattern(/^\+380\d{9}$/))
@@ -76,7 +78,7 @@ const getOne = {
 const getApproved = {
   query: Joi.object({
     category_id: Joi.string(),
-    type_id: Joi.string().pattern(/^([a-zA-Z]|-)+$/),
+    type_id: Joi.string().pattern(TYPE_ID),
     accessibility: Joi.boolean().truthy('true').falsy('false'),
     dog_friendly: Joi.boolean().truthy('true').falsy('false'),
     child_friendly: Joi.boolean().truthy('true').falsy('false'),
@@ -106,7 +108,7 @@ const update = {
     place: Joi.object({
       name: Joi.string().min(3).max(255),
       category_id: Joi.string().min(3).max(255), // change to ENUM
-      type_id: Joi.string().pattern(/^([a-z]|-)+$/),
+      type_id: Joi.string().pattern(TYPE_ID),
       address: Joi.string().min(3).max(255),
       phones: Joi.array().items(
         Joi.string()
