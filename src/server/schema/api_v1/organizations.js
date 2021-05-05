@@ -3,6 +3,11 @@ const { Joi } = require('koa-joi-router');
 const getAll = {};
 
 const update = {
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -22,6 +27,11 @@ const update = {
 };
 
 const remove = {
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   params: Joi.object({
     id: Joi.string()
       .pattern(/^[1-9]\d*$/)
