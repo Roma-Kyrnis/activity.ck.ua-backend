@@ -89,6 +89,7 @@ const getApproved = {
     dog_friendly: Joi.boolean().truthy('true').falsy('false'),
     child_friendly: Joi.boolean().truthy('true').falsy('false'),
     unexplored: Joi.boolean().truthy('true').falsy('false'),
+    opened: Joi.boolean().truthy('true').falsy('false'),
     _page: Joi.string()
       .pattern(/^[1-9]\d*$/)
       .required(),
