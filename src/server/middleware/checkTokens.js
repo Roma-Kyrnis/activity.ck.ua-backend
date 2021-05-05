@@ -7,9 +7,9 @@ const {
   ROLES: { EVERY, MODERATOR },
 } = require('../../config');
 
-function isRolePermissible(roles, role) {
-  const isModerator = role === MODERATOR;
-  const isPermissible = roles.find((accessibleRole) => accessibleRole === role);
+function isRolePermissible(roles, userRole) {
+  const isModerator = userRole === MODERATOR;
+  const isPermissible = roles.find((role) => role === userRole || role === EVERY);
 
   if (isModerator || isPermissible) {
     return true;
