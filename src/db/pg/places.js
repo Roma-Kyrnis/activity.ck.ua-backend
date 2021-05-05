@@ -127,7 +127,7 @@ module.exports = (client) => {
           queryOpened = `(work_time -> '${day}' ->> 'start')::time
               < (CURRENT_TIME AT TIME ZONE 'Europe/Kiev')::time
             AND (work_time -> '${day}' ->> 'end')::time
-              > (CURRENT_TIME AT TIME ZONE 'Europe/Kiev')::time + INTERVAL '30 minutes'
+              > (CURRENT_TIME AT TIME ZONE 'Europe/Kiev')::time
             AND`;
         }
 
