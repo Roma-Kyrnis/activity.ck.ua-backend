@@ -13,6 +13,7 @@ const {
   server: {
     prefix: { AUTH },
   },
+  ROLES: { USER, ORGANIZER },
 } = require('../../../config');
 
 const router = Router();
@@ -22,6 +23,6 @@ router.prefix(AUTH);
 router.post('/registration', { validate: validator.registration }, auth.registration);
 router.post('/login', { validate: validator.login }, auth.login);
 router.get('/refresh', { validate: validator.refresh }, refresh(), auth.refresh);
-router.get('/logout', { validate: validator.logout }, access(), auth.logout);
+router.get('/logout', { validate: validator.logout }, access([USER, ORGANIZER]), auth.logout);
 
 module.exports = router;
