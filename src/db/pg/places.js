@@ -3,6 +3,8 @@ const log = require('../../utils/logger')(__filename);
 const { checkError } = require('../checkError');
 const { queryAccessibility } = require('./queryBuilder');
 
+const DAYS = ['sat', 'mon', 'tue', 'wed', 'thu', 'fri', 'sun'];
+
 module.exports = (client) => {
   return {
     createPlace: async (place) => {
@@ -83,7 +85,7 @@ module.exports = (client) => {
 
     getPlaces: async (filters, limit, page) => {
       try {
-        const { categoryId, types, unexplored, userId } = filters;
+        const { categoryId, types, opened, unexplored, userId } = filters;
 
         if (!categoryId === !types || !unexplored !== !userId) {
           throw new Error('ERROR: Invalid filters!');
@@ -92,6 +94,7 @@ module.exports = (client) => {
         let queryUnexplored = '';
         let queryUnexploredWhere = '';
         let queryFilter;
+        let queryOpened = '';
         const values = [];
         let i = 0;
 
@@ -119,8 +122,13 @@ module.exports = (client) => {
           queryFilter = `type_id IN (${query.join(', ')}) AND`;
         }
 
-        if (!values.length) {
-          throw new Error('ERROR: No filters!');
+        if (opened) {
+          const day = DAYS[new Date().getDay()];
+          queryOpened = `(work_time -> '${day}' ->> 'start')::time
+              < (CURRENT_TIME AT TIME ZONE 'Europe/Kiev')::time
+            AND (work_time -> '${day}' ->> 'end')::time
+              > (CURRENT_TIME AT TIME ZONE 'Europe/Kiev')::time
+            AND`;
         }
 
         const {
@@ -129,7 +137,7 @@ module.exports = (client) => {
           `SELECT COUNT(*) FROM places
             ${queryUnexplored}
             WHERE ${queryFilter} ${queryUnexploredWhere} ${queryAccessibility(filters)}
-              moderated AND deleted_at IS NULL;`,
+              ${queryOpened} moderated AND deleted_at IS NULL;`,
           values,
         );
         const total = Number(count);
@@ -142,7 +150,7 @@ module.exports = (client) => {
             FROM places
             ${queryUnexplored}
             WHERE ${queryFilter} ${queryUnexploredWhere} ${queryAccessibility(filters)}
-              moderated AND deleted_at IS NULL
+              ${queryOpened} moderated AND deleted_at IS NULL
             ORDER BY popularity_rating DESC, id DESC
             LIMIT $${values.length - 1} OFFSET $${values.length};`,
           values,
