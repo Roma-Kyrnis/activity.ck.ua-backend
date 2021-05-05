@@ -27,4 +27,16 @@ function getPaginationAndFilters(query) {
   return { limit, page, filters };
 }
 
-module.exports = { getPaginationAndFilters, getPagination, getPaginationAndUser };
+function getSearchParams(query) {
+  const { limit, page } = getPagination(query);
+  const { name } = query;
+
+  return { limit, page, name };
+}
+
+module.exports = {
+  getPaginationAndFilters,
+  getPagination,
+  getPaginationAndUser,
+  getSearchParams,
+};
