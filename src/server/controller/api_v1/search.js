@@ -12,4 +12,20 @@ async function global(ctx) {
   ctx.body = response;
 }
 
-module.exports = { global };
+async function places(ctx) {
+  const { name, limit, page } = getSearchParams(ctx.request.query);
+
+  const response = await searchPlaces(name, limit, page);
+
+  ctx.body = response;
+}
+
+async function events(ctx) {
+  const { name, limit, page } = getSearchParams(ctx.request.query);
+
+  const response = await searchPlaces(name, limit, page);
+
+  ctx.body = response;
+}
+
+module.exports = { global, places, events };
