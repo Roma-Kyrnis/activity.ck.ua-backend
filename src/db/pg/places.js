@@ -240,7 +240,7 @@ module.exports = (client) => {
 
         const offset = (page - 1) * limit;
         const { rows: places } = await client.query(
-          `SELECT id, name, address, phones, website, main_photo, work_time, rating
+          `SELECT id, name, address, phones, website, main_photo, work_time, rating, category_id
             FROM places
             WHERE name LIKE $1 AND moderated AND deleted_at IS NULL
             ORDER BY popularity_rating DESC, id DESC
