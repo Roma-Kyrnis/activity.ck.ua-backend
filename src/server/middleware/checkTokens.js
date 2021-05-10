@@ -7,11 +7,9 @@ const {
   ROLES: { EVERY, MODERATOR },
 } = require('../../config');
 
-const DEFAULT_USER_ID = 1; // CHANGE to truly user id from JWT token
-
-function isRolePermissible(roles, role) {
-  const isModerator = role === MODERATOR;
-  const isPermissible = roles.find((accessibleRole) => accessibleRole === role);
+function isRolePermissible(roles, userRole) {
+  const isModerator = userRole === MODERATOR;
+  const isPermissible = roles.find((role) => role === userRole || role === EVERY);
 
   if (isModerator || isPermissible) {
     return true;
@@ -31,22 +29,16 @@ function getToken(ctx) {
 function access(roles = []) {
   return async (ctx, next) => {
     try {
-      // let data = { role: EVERY };
+      let data = { role: EVERY };
 
-      // const token = getToken(ctx);
-      // if (token) {
-      //   data = await verifyAccessToken(token);
-      // }
+      const token = getToken(ctx);
+      if (token) {
+        data = await verifyAccessToken(token);
+      }
 
-      // ctx.assert(isRolePermissible(roles, data.role), 401, `Access denied`);
+      ctx.assert(isRolePermissible(roles, data.role), 401, `Access denied`);
 
-      // ctx.state.authPayload = data;
-
-      // ------- Temporary: ------- Because authorization does not work on frontend
-      ctx.state.authPayload = {
-        id: DEFAULT_USER_ID,
-        role: MODERATOR,
-      };
+      ctx.state.authPayload = data;
 
       return next();
     } catch (err) {

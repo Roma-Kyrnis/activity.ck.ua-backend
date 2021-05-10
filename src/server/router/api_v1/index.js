@@ -6,6 +6,7 @@ const organizations = require('./organizations');
 const storage = require('./storage');
 const users = require('./users');
 const events = require('./events');
+const search = require('./search');
 
 const {
   server: {
@@ -23,5 +24,6 @@ router.use(organizations);
 router.use(storage);
 router.use(users);
 router.use(events);
+router.use(search);
 
 module.exports = router;
