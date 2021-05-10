@@ -18,6 +18,7 @@ const config = {
       STORAGE: '/storage',
       USERS: { path: '/users', MYSELF: { path: '/myself' } },
       EVENTS: '/events',
+      SEARCH: '/search',
     },
     NODE_ENV: process.env.NODE_ENV || 'production',
     MORGAN_FORMAT: 'dev',
