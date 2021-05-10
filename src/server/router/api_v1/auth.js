@@ -7,12 +7,13 @@ const {
   apiV1: { auth: validator },
 } = require('../../schema');
 const {
-  checkTokens: { refresh },
+  checkTokens: { access, refresh },
 } = require('../../middleware');
 const {
   server: {
     prefix: { AUTH },
   },
+  ROLES: { USER, ORGANIZER },
 } = require('../../../config');
 
 const router = Router();
@@ -26,6 +27,6 @@ router.get('/google', { validate: validator.google }, auth.google);
 router.get('/facebook', { validate: validator.facebook }, auth.facebook);
 
 router.get('/refresh', { validate: validator.refresh }, refresh(), auth.refresh);
-router.get('/logout', { validate: validator.logout }, refresh(), auth.logout);
+router.get('/logout', { validate: validator.logout }, access([USER, ORGANIZER]), auth.logout);
 
 module.exports = router;

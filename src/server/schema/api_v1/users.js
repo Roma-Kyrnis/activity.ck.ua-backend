@@ -1,19 +1,19 @@
 const { Joi } = require('koa-joi-router');
 
 const getUser = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
 };
 
 const addVisitedPlace = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   params: Joi.object({
     placeId: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -22,11 +22,11 @@ const addVisitedPlace = {
 };
 
 const getVisitedPlaces = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   query: Joi.object({
     _page: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -38,11 +38,11 @@ const getVisitedPlaces = {
 };
 
 const deleteVisitedPlace = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   params: Joi.object({
     placeId: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -51,11 +51,11 @@ const deleteVisitedPlace = {
 };
 
 const addFavoritePlace = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   params: Joi.object({
     placeId: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -64,11 +64,11 @@ const addFavoritePlace = {
 };
 
 const getFavoritePlaces = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   query: Joi.object({
     _page: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -80,11 +80,11 @@ const getFavoritePlaces = {
 };
 
 const deleteFavoritePlace = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   params: Joi.object({
     placeId: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -93,11 +93,11 @@ const deleteFavoritePlace = {
 };
 
 const addScheduledEvent = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   params: Joi.object({
     eventId: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -105,11 +105,11 @@ const addScheduledEvent = {
   }),
 };
 const getScheduledEvents = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   query: Joi.object({
     _page: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -120,11 +120,11 @@ const getScheduledEvents = {
   }),
 };
 const deleteScheduledEvent = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   params: Joi.object({
     eventId: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -133,11 +133,11 @@ const deleteScheduledEvent = {
 };
 
 const getPlaces = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   query: Joi.object({
     _page: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -149,11 +149,11 @@ const getPlaces = {
 };
 
 const getEvents = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   query: Joi.object({
     _page: Joi.string()
       .pattern(/^[1-9]\d*$/)
@@ -165,11 +165,11 @@ const getEvents = {
 };
 
 const getExplore = {
-  // header: Joi.object({
-  //   authorization: Joi.string()
-  //     .pattern(/^[a-zA-Z]+ .+$/)
-  //     .required(),
-  // }).unknown(),
+  header: Joi.object({
+    authorization: Joi.string()
+      .pattern(/^[a-zA-Z]+ .+$/)
+      .required(),
+  }).unknown(),
   query: Joi.object({
     category_id: Joi.string().min(3),
   }),
