@@ -99,6 +99,15 @@ const getApproved = {
   }).xor('category_id', 'type_id'),
 };
 
+const getByAddress = {
+  header: Joi.object({
+    authorization: Joi.string().pattern(/^[a-zA-Z]+ .+$/),
+  }).unknown(),
+  query: Joi.object({
+    address: Joi.string().required(),
+  }),
+};
+
 const update = {
   header: Joi.object({
     authorization: Joi.string()
@@ -248,6 +257,7 @@ module.exports = {
   create,
   getOne,
   getApproved,
+  getByAddress,
   update,
   remove,
   upsertReview,

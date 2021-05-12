@@ -2,6 +2,7 @@ const {
   createPlace,
   getPlace,
   getPlaces,
+  searchPlacesByAddress,
   updatePlace,
   deletePlace,
   createOrganization,
@@ -72,6 +73,13 @@ async function getApproved(ctx) {
   const data = await getPlaces(filters, limit, page);
 
   ctx.body = data;
+}
+
+async function getByAddress(ctx) {
+  const { address } = ctx.request.query;
+  const places = await searchPlacesByAddress(address);
+
+  ctx.body = { places };
 }
 
 async function update(ctx) {
@@ -148,6 +156,7 @@ module.exports = {
   create,
   getOne,
   getApproved,
+  getByAddress,
   update,
   remove,
   upsertReview,
