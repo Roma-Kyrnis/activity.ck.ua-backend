@@ -1,6 +1,6 @@
 const { Joi } = require('koa-joi-router');
 
-const global = {
+const places = {
   query: Joi.object({
     name: Joi.string().required(),
     _page: Joi.string()
@@ -12,4 +12,16 @@ const global = {
   }),
 };
 
-module.exports = { global };
+const events = {
+  query: Joi.object({
+    name: Joi.string().required(),
+    _page: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+    _limit: Joi.string()
+      .pattern(/^[1-9]\d*$/)
+      .required(),
+  }),
+};
+
+module.exports = { places, events };
