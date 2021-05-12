@@ -260,6 +260,26 @@ module.exports = (client) => {
       }
     },
 
+    searchPlacesByAddress: async (address) => {
+      try {
+        if (!address) {
+          throw new Error('ERROR: No address defined!');
+        }
+
+        const res = await client.query(
+          `SELECT id, name, main_photo
+            FROM places
+            WHERE address = $1 AND moderated AND deleted_at IS NULL;`,
+          [address],
+        );
+
+        return res.rows;
+      } catch (err) {
+        log.error(err.message || err);
+        throw err;
+      }
+    },
+
     updatePlace: async ({ id, ...place }) => {
       try {
         if (!id) {
