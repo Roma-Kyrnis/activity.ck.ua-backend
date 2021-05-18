@@ -2,7 +2,7 @@ exports.up = async (knex) => {
   await knex.schema.createTable('users', (table) => {
     table.increments('id');
     table.string('name').notNullable();
-    table.string('avatar').notNullable();
+    table.string('avatar', 1024).notNullable();
     table.string('password_hash').nullable();
     table.string('email').notNullable();
     table
@@ -28,6 +28,7 @@ exports.up = async (knex) => {
     // table.text('description').notNullable();
     table.integer('user_id').notNullable();
     table.boolean('moderated').notNullable().defaultTo(false);
+    table.timestamp('deleted_at').nullable();
     table.foreign('user_id', 'organizations_fk0').references('users.id');
     table.unique('email', 'organizations_email_unk');
     table.unique('name', 'organizations_name_unk');
@@ -57,8 +58,8 @@ exports.up = async (knex) => {
     table.string('category_id').notNullable();
     table.string('type_id').nullable();
     table.json('work_time').notNullable();
-    table.decimal('rating').notNullable().defaultTo(1.0);
-    table.decimal('popularity_rating').notNullable().defaultTo(1.0);
+    table.decimal('rating', 2, 1).notNullable().defaultTo(1.0);
+    table.decimal('popularity_rating', 5, 3).notNullable().defaultTo(1.0);
     table.integer('organization_id').notNullable();
     table.foreign('organization_id', 'places_fk0').references('organizations.id');
     table.inherits('general_info');
@@ -69,7 +70,8 @@ exports.up = async (knex) => {
     table.integer('place_id').notNullable();
     table.integer('user_id').notNullable();
     table.integer('rating').notNullable();
-    table.text('review_text').notNullable();
+    table.text('comment').nullable();
+    table.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
     table.foreign('place_id', 'reviews_fk0').references('places.id');
     table.foreign('user_id', 'reviews_fk1').references('users.id');
     table.primary(['place_id', 'user_id'], 'reviews_pkey');
@@ -97,7 +99,7 @@ exports.up = async (knex) => {
     table.timestamp('end_time').notNullable();
     table.string('organizer').notNullable();
     table.integer('place_id').nullable();
-    table.decimal('price').notNullable().defaultTo(0.0);
+    table.decimal('price', 6, 2).notNullable().defaultTo(0.0);
     table.text('program').notNullable();
     table.foreign('place_id', 'events_fk0').references('places.id');
     table.foreign('user_id', 'events_fk1').references('users.id');
@@ -114,7 +116,7 @@ exports.up = async (knex) => {
 
   await knex.schema.createTable('photos', (table) => {
     table.increments('id');
-    table.string('url').notNullable();
+    table.string('url', 1024).notNullable();
     table.string('author_name').nullable();
     table.string('author_link').nullable();
     // table.string('description').nullable();
