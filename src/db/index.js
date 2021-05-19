@@ -67,6 +67,7 @@ module.exports = {
 
   createUser: async (user) => funcWrapper(dbWrapper().createUser)(user),
   getUser: async (id) => funcWrapper(dbWrapper().getUser)(id),
+  checkUser: async (email) => funcWrapper(dbWrapper().checkUser)(email),
   getUserCredentials: async (email) => funcWrapper(dbWrapper().getUserCredentials)(email),
   getUserToken: async (id) => funcWrapper(dbWrapper().getUserToken)(id),
   updateUser: async (user) => funcWrapper(dbWrapper().updateUser)(user),
