@@ -55,8 +55,8 @@ const config = {
           password: process.env.POSTGRES_PASSWORD || fatal('POSTGRES_PASSWORD is not defined'), */
         },
         pool: {
-          min: 2,
-          max: 10,
+          min: 1,
+          max: 4,
         },
         debug: true,
       },
@@ -68,6 +68,7 @@ const config = {
         port: Number(process.env.POSTGRES_PORT) || fatal('DB_PORT is not defined'),
         database: process.env.POSTGRES_DB || fatal('POSTGRES_DB is not defined'),
         password: process.env.POSTGRES_PASSWORD || fatal('POSTGRES_PASSWORD is not defined'), */
+        max: 4,
       },
     },
   },
